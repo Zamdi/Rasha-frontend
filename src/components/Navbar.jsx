@@ -13,22 +13,25 @@ export default function Navbar() {
 
   return (
     <nav className="fixed top-0 w-full z-50 glass-high border-b border-secondary-container/20 shadow-lg">
-      <div className="max-w-7xl mx-auto flex justify-between items-center h-16 px-4 md:px-6">
+      <div className="max-w-7xl mx-auto flex justify-between items-center h-20 px-6">
         {/* Logo */}
         <Link to="/" className="font-display font-extrabold text-xl tracking-widest text-secondary-fixed uppercase">
           RASHA
         </Link>
 
         {/* Desktop nav */}
-        <div className="hidden md:flex items-center gap-6 text-sm font-semibold">
-          <Link to="/" className="text-on-surface-variant hover:text-secondary-fixed transition-colors">
+        <div className="hidden md:flex items-center gap-8">
+          <Link to="/" className="text-secondary-fixed font-bold border-b-2 border-secondary-fixed pb-1 text-xs font-semibold uppercase tracking-wider">
             {t('Home', 'الرئيسية')}
           </Link>
-          <Link to="/book" className="text-on-surface-variant hover:text-secondary-fixed transition-colors">
-            {t('Book a Wash', 'احجز غسيل')}
+          <a href="#services" className="text-on-surface-variant hover:text-secondary-fixed transition-colors text-xs font-semibold uppercase tracking-wider">
+            {t('Services', 'الخدمات')}
+          </a>
+          <Link to="/book" className="text-on-surface-variant hover:text-secondary-fixed transition-colors text-xs font-semibold uppercase tracking-wider">
+            {t('Booking', 'حجز')}
           </Link>
           {customer && (
-            <Link to="/loyalty" className="text-on-surface-variant hover:text-secondary-fixed transition-colors">
+            <Link to="/loyalty" className="text-on-surface-variant hover:text-secondary-fixed transition-colors text-xs font-semibold uppercase tracking-wider">
               {t('My Card', 'بطاقتي')}
             </Link>
           )}
@@ -55,11 +58,11 @@ export default function Navbar() {
             </div>
           ) : (
             <div className="flex items-center gap-2">
-              <Link to="/login" className="glass px-4 py-2 rounded-full text-xs font-bold text-on-surface hover:border-secondary-fixed/50 transition-all">
+              <Link to="/login" className="hydro-gradient px-6 py-2.5 rounded-full text-xs font-bold text-on-primary hover:shadow-lg transition-all"
+                style={{ boxShadow: '0 0 0 rgba(0,241,254,0)' }}
+                onMouseEnter={e => e.currentTarget.style.boxShadow = '0 0 20px rgba(0,241,254,0.3)'}
+                onMouseLeave={e => e.currentTarget.style.boxShadow = '0 0 0 rgba(0,241,254,0)'}>
                 {t('Sign In', 'تسجيل الدخول')}
-              </Link>
-              <Link to="/register" className="hydro-gradient px-4 py-2 rounded-full text-xs font-bold text-white hover:opacity-90 transition-opacity hidden md:block">
-                {t('Register', 'إنشاء حساب')}
               </Link>
             </div>
           )}
