@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
+import { useEffect, useState } from 'react'
 
 const items = [
   { to: '/', icon: 'home', en: 'Home', ar: 'الرئيسية' },
@@ -8,13 +9,43 @@ const items = [
   { to: '/login', icon: 'person', en: 'Profile', ar: 'حسابي' },
 ]
 
+// Pages where mobile nav should be completely hidden
+const HIDDEN_PAGES = ['/staff', '/confirmation']
+
 export default function MobileNav() {
   const { pathname } = useLocation()
   const { t, customer } = useApp()
-  if (pathname.startsWith('/staff')) return null
+  const [visible, setVisible] = useState(true)
+  const [lastY, setLastY] = useState(0)
+
+  // Hide on scroll down, show on scroll up
+  useEffect(() => {
+    const onScroll = () => {
+      const currentY = window.scrollY
+      if (currentY < 60) {
+        setVisible(true) // always show near top
+      } else if (currentY > lastY + 5) {
+        setVisible(false) // scrolling down — hide
+      } else if (currentY < lastY - 5) {
+        setVisible(true)  // scrolling up — show
+      }
+      setLastY(currentY)
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [lastY])
+
+  // Reset visibility on page change
+  useEffect(() => { setVisible(true) }, [pathname])
+
+  // Hide on staff pages and confirmation
+  if (HIDDEN_PAGES.some(p => pathname.startsWith(p))) return null
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 w-full z-50 glass-high border-t border-outline-variant/30">
+    <nav
+      className="md:hidden fixed bottom-0 left-0 w-full z-50 glass-high border-t border-outline-variant/30 transition-transform duration-300"
+      style={{ transform: visible ? 'translateY(0)' : 'translateY(100%)' }}
+    >
       <div className="flex justify-around items-center px-4 py-2">
         {items.map(item => {
           const active = pathname === item.to

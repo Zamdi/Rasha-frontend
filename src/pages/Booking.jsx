@@ -88,7 +88,7 @@ export default function Booking() {
   }
 
   const serviceLabel = form.service === 'full'
-    ? t('Full Wash (Inside & Outside)', 'غسيل كامل (داخلي وخارجي)')
+    ? t('Full Wash', 'غسيل كامل')
     : t('Exterior Only', 'خارجي فقط')
 
   const StepCircle = ({ n, active }) => (
@@ -151,7 +151,7 @@ export default function Booking() {
             <div>
               <label className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2 block">{t('Service Type', 'نوع الخدمة')} *</label>
               <select className="rasha-select" value={form.service} onChange={e => setForm(f => ({...f, service: e.target.value}))}>
-                <option value="full">{t('Full Wash (Inside & Outside)', 'غسيل كامل (داخلي وخارجي)')}</option>
+                <option value="full">{t('Full Wash', 'غسيل كامل')}</option>
                 <option value="outside">{t('Exterior Only', 'خارجي فقط')}</option>
               </select>
             </div>
