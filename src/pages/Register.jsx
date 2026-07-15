@@ -35,7 +35,7 @@ export default function Register() {
   }
 
   const verify = async () => {
-    if (otp.length < 6) { showToast(t('Enter the full code','أدخل الرمز كاملاً'),'error'); return }
+    if (otp.length < 4) { showToast(t('Enter the full code','أدخل الرمز كاملاً'),'error'); return }
     setLoading(true)
     try {
       const res = await fetch(`${API}/api/auth/verify-register`, {

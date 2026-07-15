@@ -1,6 +1,6 @@
 import { useRef, useEffect } from 'react'
 
-export default function OtpInput({ value = '', onChange, length = 6 }) {
+export default function OtpInput({ value = '', onChange, length = 4 }) {
   const refs = useRef([])
 
   useEffect(() => { refs.current[0]?.focus() }, [])
