@@ -6,6 +6,7 @@ const items = [
   { to: '/', icon: 'home', en: 'Home', ar: 'الرئيسية' },
   { to: '/book', icon: 'local_car_wash', en: 'Book', ar: 'احجز' },
   { to: '/loyalty', icon: 'loyalty', en: 'Card', ar: 'بطاقتي' },
+  { to: '/contact', icon: 'support_agent', en: 'Support', ar: 'الدعم' },
   { to: '/login', icon: 'person', en: 'Profile', ar: 'حسابي' },
 ]
 

@@ -18,7 +18,7 @@ export default function Booking() {
   const [form, setForm] = useState({
     firstName: customer?.first_name || '',
     lastName: customer?.last_name || '',
-    phone: (customer?.phone || '').replace('+249', ''),
+    phone: (customer?.phone || '').replace('+249', '') || location.state?.phone || '',
     email: customer?.email || '',
     vehicle: '',
     service: location.state?.service || 'full',

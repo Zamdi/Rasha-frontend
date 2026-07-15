@@ -253,16 +253,11 @@ export default function Confirmation() {
 
           {/* ── Secondary links ── */}
           <div className="mt-6 flex flex-wrap justify-center gap-x-8 gap-y-3">
-            <Link to="/book"
-              className="text-secondary-fixed hover:text-white transition-colors flex items-center gap-1 text-xs font-semibold">
-              <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>edit_calendar</span>
-              {t('Reschedule', 'إعادة الجدولة')}
-            </Link>
-            <a href="#"
+            <Link to="/contact"
               className="text-on-surface-variant hover:text-on-surface transition-colors flex items-center gap-1 text-xs font-semibold">
               <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>support_agent</span>
               {t('Contact Support', 'الدعم')}
-            </a>
+            </Link>
             <Link to="/"
               className="text-on-surface-variant hover:text-on-surface transition-colors flex items-center gap-1 text-xs font-semibold">
               <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>home</span>
@@ -280,6 +275,7 @@ export default function Confirmation() {
           <div className="flex gap-6">
             <a href="#" className="text-on-surface-variant hover:text-secondary-fixed transition-colors text-xs">{t('Privacy Policy', 'سياسة الخصوصية')}</a>
             <a href="#" className="text-on-surface-variant hover:text-secondary-fixed transition-colors text-xs">{t('Terms of Service', 'شروط الخدمة')}</a>
+            <Link to="/contact" className="text-on-surface-variant hover:text-secondary-fixed transition-colors text-xs">{t('Contact Support', 'الدعم')}</Link>
           </div>
         </div>
       </footer>

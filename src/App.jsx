@@ -12,6 +12,7 @@ import Login from './pages/Login'
 import Loyalty from './pages/Loyalty'
 import StaffLogin from './pages/StaffLogin'
 import StaffDashboard from './pages/StaffDashboard'
+import Contact from './pages/Contact'
 
 export default function App() {
   return (
@@ -29,6 +30,7 @@ export default function App() {
           <Route path="/loyalty" element={<Loyalty />} />
           <Route path="/staff" element={<StaffLogin />} />
           <Route path="/staff/dashboard" element={<StaffDashboard />} />
+          <Route path="/contact" element={<Contact />} />
         </Routes>
         <MobileNav />
       </BrowserRouter>

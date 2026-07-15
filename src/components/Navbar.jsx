@@ -32,6 +32,9 @@ export default function Navbar() {
               {t('My Card', 'بطاقتي')}
             </Link>
           )}
+          <Link to="/contact" className="text-on-surface-variant hover:text-secondary-fixed transition-colors">
+            {t('Support', 'الدعم')}
+          </Link>
         </div>
 
         {/* Right actions */}
