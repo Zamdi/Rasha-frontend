@@ -150,7 +150,7 @@ export default function Loyalty() {
               >
                 <div className="bg-white p-3 rounded-xl mx-auto transition-transform group-hover:scale-105 group-active:scale-95"
                   style={{ width: 170, height: 170 }}>
-                  <QRCodeSVG value={customerId} size={146} level="M" />
+                  <QRCodeSVG value={customerId} size={146} level="M" fgColor="#000000" bgColor="#ffffff" />
                 </div>
                 {/* Expand hint */}
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"
@@ -205,7 +205,7 @@ export default function Loyalty() {
             {/* Large QR */}
             <div className="bg-white p-5 rounded-3xl shadow-2xl"
               style={{ boxShadow: '0 0 60px rgba(116,245,255,0.3)' }}>
-              <QRCodeSVG value={customerId} size={260} level="M" />
+              <QRCodeSVG value={customerId} size={260} level="M" fgColor="#000000" bgColor="#ffffff" />
             </div>
             <div className="text-center">
               <p className="text-secondary-fixed font-bold text-xl font-display tracking-widest">{customerId}</p>
