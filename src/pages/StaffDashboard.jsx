@@ -340,10 +340,12 @@ export default function StaffDashboard() {
             <h1 className="text-2xl font-bold text-secondary-fixed font-display">{t('Operations Overview', 'لوحة العمليات')}</h1>
             <p className="text-on-surface-variant text-sm">{shiftInfo}</p>
           </div>
-          <button onClick={openAddModal} className="hydro-gradient px-5 py-2.5 rounded-xl text-white text-xs font-bold flex items-center gap-2 hover:opacity-90 transition-opacity cyan-glow">
-            <span className="material-symbols-outlined text-base">person_add</span>
-            {t('Add Customer', 'إضافة عميل')}
-          </button>
+          {activeTab !== 'customers' && (
+            <button onClick={openAddModal} className="hydro-gradient px-5 py-2.5 rounded-xl text-white text-xs font-bold flex items-center gap-2 hover:opacity-90 transition-opacity cyan-glow">
+              <span className="material-symbols-outlined text-base">person_add</span>
+              {t('Add Customer', 'إضافة عميل')}
+            </button>
+          )}
         </div>
 
         {/* Tabs */}
@@ -425,7 +427,7 @@ export default function StaffDashboard() {
                     <thead style={{ background: 'rgba(39,42,44,0.4)' }}>
                       <tr>
                         {[t('Customer','العميل'), t('ID','الرمز'), t('Phone','الهاتف'), t('Stamps','الطوابع'), t('Washes','الغسيلات'), t('Status','الحالة'), t('Joined','الانضمام'), ''].map(h => (
-                          <th key={h} className="px-4 py-3 text-left text-xs text-on-surface-variant uppercase font-semibold whitespace-nowrap">{h}</th>
+                          <th key={h} className="px-4 py-3 text-start text-xs text-on-surface-variant uppercase font-semibold whitespace-nowrap">{h}</th>
                         ))}
                       </tr>
                     </thead>
@@ -729,7 +731,7 @@ export default function StaffDashboard() {
                   <thead className="bg-surface-container-high/30">
                     <tr>
                       {[t('Ref','المرجع'),t('Customer','العميل'),t('Service','الخدمة'),t('Date/Time','التاريخ'),t('Status','الحالة'),''].map(h=>(
-                        <th key={h} className="px-4 py-3 text-xs text-on-surface-variant uppercase font-semibold whitespace-nowrap">{h}</th>
+                        <th key={h} className="px-4 py-3 text-start text-xs text-on-surface-variant uppercase font-semibold whitespace-nowrap">{h}</th>
                       ))}
                     </tr>
                   </thead>
