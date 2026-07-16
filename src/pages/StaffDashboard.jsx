@@ -18,6 +18,10 @@ export default function StaffDashboard() {
   const [stats, setStats] = useState(null)
   const [bookings, setBookings] = useState([])
   const [messages, setMessages] = useState([])
+  const [unreadCount, setUnreadCount] = useState(0)
+  const [allCustomers, setAllCustomers] = useState([])
+  const [customersLoading, setCustomersLoading] = useState(false)
+  const [customerSearch, setCustomerSearch] = useState('')
   const [loading, setLoading] = useState(true)
   const [uidInput, setUidInput] = useState('')
   const [customer, setCustomer] = useState(null)
@@ -61,13 +65,38 @@ export default function StaffDashboard() {
       const res = await fetch(`${API}/api/messages`, { headers: hdrs })
       if (res.ok) {
         const data = await res.json()
-        setMessages(data.messages || [])
+        const msgs = data.messages || []
+        setMessages(msgs)
+        setUnreadCount(msgs.filter(m => !m.is_read).length)
       }
     } catch {}
   }
 
+  const loadAllCustomers = async (search = '') => {
+    setCustomersLoading(true)
+    try {
+      const url = search
+        ? `${API}/api/admin/customers?search=${encodeURIComponent(search)}`
+        : `${API}/api/admin/customers`
+      const res = await fetch(url, { headers: hdrs })
+      if (res.ok) {
+        const data = await res.json()
+        setAllCustomers(data.customers || [])
+      }
+    } catch {}
+    finally { setCustomersLoading(false) }
+  }
+
+  // Poll unread count every 30 seconds while on dashboard
   useEffect(() => {
-    if (activeTab === 'messages') loadMessages()
+    if (!staffToken) return
+    loadMessages() // load count on mount
+    const interval = setInterval(loadMessages, 30000)
+    return () => clearInterval(interval)
+  }, [staffToken])
+
+  useEffect(() => {
+    if (activeTab === 'customers') loadAllCustomers(customerSearch)
   }, [activeTab])
 
   const lookup = async (uid) => {
@@ -105,17 +134,18 @@ export default function StaffDashboard() {
     } catch { showToast(t('Error', 'خطأ'), 'error') }
   }
 
-  const deleteCustomer = async () => {
-    if (!customer) return
-    if (!confirm(t(`Delete ${customer.first_name} ${customer.last_name}? This cannot be undone.`, `حذف ${customer.first_name} ${customer.last_name}؟ لا يمكن التراجع عن هذا.`))) return
+  const deleteCustomer = async (cust) => {
+    const c = cust || customer
+    if (!c) return
+    if (!confirm(t(`Delete ${c.first_name} ${c.last_name}? This cannot be undone.`, `حذف ${c.first_name} ${c.last_name}؟ لا يمكن التراجع.`))) return
     try {
-      const res = await fetch(`${API}/api/admin/customers/${customer.customer_uid}`, { method: 'DELETE', headers: hdrs })
+      const res = await fetch(`${API}/api/admin/customers/${c.customer_uid}`, { method: 'DELETE', headers: hdrs })
       const data = await res.json()
       if (!res.ok) { showToast(data.error || t('Error', 'خطأ'), 'error'); return }
       showToast(t('Customer deleted', 'تم حذف العميل'))
-      setCustomer(null)
-      setUidInput('')
+      if (customer?.customer_uid === c.customer_uid) { setCustomer(null); setUidInput('') }
       loadData()
+      if (activeTab === 'customers') loadAllCustomers(customerSearch)
     } catch { showToast(t('Error', 'خطأ'), 'error') }
   }
 
@@ -125,16 +155,19 @@ export default function StaffDashboard() {
     setShowModal(true)
   }
 
-  const openEditModal = () => {
-    if (!customer) return
+  const openEditModal = (cust) => {
     setModalMode('edit')
+    const c = cust || customer
+    if (!c) return
     setModalForm({
-      firstName: customer.first_name || '',
-      lastName: customer.last_name || '',
-      email: customer.email || '',
-      phone: (customer.phone || '').replace('+249', ''),
+      firstName: c.first_name || '',
+      lastName: c.last_name || '',
+      email: c.email || '',
+      phone: (c.phone || '').replace('+249', ''),
       password: '',
+      uid: c.customer_uid,
     })
+    if (cust) setCustomer(cust)
     setShowModal(true)
   }
 
@@ -153,21 +186,25 @@ export default function StaffDashboard() {
         if (!res.ok) { showToast(data.error || t('Error', 'خطأ'), 'error'); setModalLoading(false); return }
         showToast(t('Customer added!', 'تم إضافة العميل!'))
       } else {
+        const editUid = modalForm.uid || customer?.customer_uid
         const body = {
           firstName: modalForm.firstName, lastName: modalForm.lastName,
           email: modalForm.email, phone: '+249' + modalForm.phone,
         }
         if (modalForm.password) body.password = modalForm.password
-        const res = await fetch(`${API}/api/admin/customers/${customer.customer_uid}`, {
+        const res = await fetch(`${API}/api/admin/customers/${editUid}`, {
           method: 'PATCH', headers: hdrs, body: JSON.stringify(body)
         })
         const data = await res.json()
         if (!res.ok) { showToast(data.error || t('Error', 'خطأ'), 'error'); setModalLoading(false); return }
         showToast(t('Customer updated!', 'تم تحديث العميل!'))
-        setCustomer(c => ({ ...c, first_name: modalForm.firstName, last_name: modalForm.lastName, email: modalForm.email, phone: '+249' + modalForm.phone }))
+        if (customer && customer.customer_uid === editUid) {
+          setCustomer(c => ({ ...c, first_name: modalForm.firstName, last_name: modalForm.lastName, email: modalForm.email, phone: '+249' + modalForm.phone }))
+        }
       }
       setShowModal(false)
       loadData()
+      if (activeTab === 'customers') loadAllCustomers(customerSearch)
     } catch { showToast(t('Error', 'خطأ'), 'error') }
     finally { setModalLoading(false) }
   }
@@ -194,21 +231,71 @@ export default function StaffDashboard() {
     }, 400)
   }
 
+  const scanAnimRef = useRef(null)
+  const canvasRef = useRef(null)
+
   const toggleScanner = async () => {
     if (scannerOn) { stopScanner(); return }
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } }
+      })
       streamRef.current = stream
-      videoRef.current.srcObject = stream
       setScannerOn(true)
-    } catch { showToast(t('Camera access denied', 'لا يمكن الوصول للكاميرا'), 'error') }
+      // videoRef will be set by the callback ref once the element mounts
+    } catch (err) {
+      const msg = err.name === 'NotAllowedError'
+        ? t('Camera permission denied. Please allow camera access in your browser settings.', 'تم رفض إذن الكاميرا. يرجى السماح بالوصول من إعدادات المتصفح.')
+        : t('Could not open camera.', 'تعذر فتح الكاميرا.')
+      showToast(msg, 'error')
+    }
+  }
+
+  // Callback ref — called when video element mounts/unmounts
+  const setVideoRef = (el) => {
+    videoRef.current = el
+    if (el && streamRef.current) {
+      el.srcObject = streamRef.current
+      el.play().catch(() => {})
+      startQRLoop(el)
+    }
+  }
+
+  const startQRLoop = (videoEl) => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+
+    const tick = () => {
+      if (!streamRef.current) return
+      if (videoEl.readyState === videoEl.HAVE_ENOUGH_DATA && videoEl.videoWidth > 0) {
+        canvas.width  = videoEl.videoWidth
+        canvas.height = videoEl.videoHeight
+        ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height)
+
+        if (window.jsQR) {
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+          const code = window.jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: 'dontInvert' })
+          if (code && code.data) {
+            const uid = code.data.trim().toUpperCase()
+            stopScanner()
+            setUidInput(uid)
+            lookup(uid)
+            return
+          }
+        }
+      }
+      scanAnimRef.current = requestAnimationFrame(tick)
+    }
+    scanAnimRef.current = requestAnimationFrame(tick)
   }
 
   const stopScanner = () => {
-    streamRef.current?.getTracks().forEach(t => t.stop())
+    if (scanAnimRef.current) cancelAnimationFrame(scanAnimRef.current)
+    scanAnimRef.current = null
+    streamRef.current?.getTracks().forEach(tr => tr.stop())
     streamRef.current = null
     setScannerOn(false)
-
   }
 
   const staffLogout = () => { stopScanner(); setStaffToken(null); navigate('/') }
@@ -254,14 +341,163 @@ export default function StaffDashboard() {
 
         {/* Tabs */}
         <div className="flex gap-1 mb-6 p-1 rounded-xl w-fit" style={{ background: '#1d2022', border: '1px solid rgba(66,71,82,0.4)' }}>
-          {[['dashboard', 'dashboard', t('Dashboard', 'اللوحة')], ['messages', 'mail', t('Messages', 'الرسائل')]].map(([tab, icon, label]) => (
-            <button key={tab} onClick={() => setActiveTab(tab)}
-              className={`flex items-center gap-2 px-5 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === tab ? 'hydro-gradient text-white' : 'text-on-surface-variant hover:text-on-surface'}`}>
+          {[
+            ['dashboard', 'dashboard', t('Dashboard', 'اللوحة'), null],
+            ['customers', 'group', t('Customers', 'العملاء'), null],
+            ['messages', 'mail', t('Messages', 'الرسائل'), unreadCount],
+          ].map(([tab, icon, label, badge]) => (
+            <button key={tab}
+              onClick={() => {
+                setActiveTab(tab)
+                if (tab === 'messages') { loadMessages(); setUnreadCount(0) }
+                if (tab === 'customers') loadAllCustomers('')
+              }}
+              className={`relative flex items-center gap-2 px-5 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === tab ? 'hydro-gradient text-white' : 'text-on-surface-variant hover:text-on-surface'}`}>
               <span className="material-symbols-outlined text-base">{icon}</span>
               {label}
+              {badge > 0 && (
+                <span className="absolute -top-2 -right-2 min-w-[18px] h-[18px] rounded-full flex items-center justify-center text-white font-extrabold px-1"
+                  style={{ background: '#e53935', fontSize: '10px', boxShadow: '0 0 0 2px #1d2022', lineHeight: 1 }}>
+                  {badge > 99 ? '99+' : badge}
+                </span>
+              )}
             </button>
           ))}
         </div>
+
+        {/* Customers Tab */}
+        {activeTab === 'customers' && (
+          <div className="space-y-4 animate-fade-in">
+            {/* Search + Add bar */}
+            <div className="flex flex-col sm:flex-row gap-3">
+              <div className="relative flex-1">
+                <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-xl pointer-events-none">search</span>
+                <input
+                  type="text"
+                  placeholder={t('Search by name, phone, email or ID...', 'ابحث بالاسم أو الهاتف أو البريد أو الرمز...')}
+                  value={customerSearch}
+                  onChange={e => {
+                    setCustomerSearch(e.target.value)
+                    clearTimeout(searchTimeout.current)
+                    searchTimeout.current = setTimeout(() => loadAllCustomers(e.target.value), 400)
+                  }}
+                  className="w-full pl-10 pr-4 py-3 rounded-xl text-on-surface text-sm focus:outline-none"
+                  style={{ background: '#1d2022', border: '1px solid rgba(66,71,82,0.4)' }}
+                  onFocus={e => e.target.style.borderColor = '#74f5ff'}
+                  onBlur={e => e.target.style.borderColor = 'rgba(66,71,82,0.4)'}
+                />
+              </div>
+              <button onClick={openAddModal} className="hydro-gradient px-5 py-3 rounded-xl text-white text-xs font-bold flex items-center gap-2 hover:opacity-90 transition-opacity shrink-0 cyan-glow">
+                <span className="material-symbols-outlined text-base">person_add</span>
+                {t('Add Customer', 'إضافة عميل')}
+              </button>
+            </div>
+
+            {/* Customers table */}
+            <div className="glass rounded-2xl overflow-hidden">
+              <div className="p-4 border-b border-outline-variant/20 flex justify-between items-center">
+                <h3 className="font-bold text-on-surface">
+                  {t('All Customers', 'جميع العملاء')}
+                  {!customersLoading && <span className="ms-2 text-xs text-on-surface-variant font-normal">({allCustomers.length})</span>}
+                </h3>
+                <button onClick={() => loadAllCustomers(customerSearch)} className="text-secondary-fixed text-xs flex items-center gap-1 hover:underline">
+                  <span className="material-symbols-outlined text-base">refresh</span>{t('Refresh', 'تحديث')}
+                </button>
+              </div>
+
+              {customersLoading ? (
+                <div className="flex justify-center py-12"><div className="loader" /></div>
+              ) : allCustomers.length === 0 ? (
+                <div className="p-12 text-center">
+                  <span className="material-symbols-outlined text-on-surface-variant text-5xl mb-3 block">group_off</span>
+                  <p className="text-on-surface-variant text-sm">{t('No customers found', 'لا يوجد عملاء')}</p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead style={{ background: 'rgba(39,42,44,0.4)' }}>
+                      <tr>
+                        {[t('Customer','العميل'), t('ID','الرمز'), t('Phone','الهاتف'), t('Stamps','الطوابع'), t('Washes','الغسيلات'), t('Status','الحالة'), t('Joined','الانضمام'), ''].map(h => (
+                          <th key={h} className="px-4 py-3 text-left text-xs text-on-surface-variant uppercase font-semibold whitespace-nowrap">{h}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-outline-variant/10">
+                      {allCustomers.map(c => (
+                        <tr key={c.id} className="hover:bg-surface-variant/5 transition-colors group">
+                          <td className="px-4 py-3">
+                            <div className="flex items-center gap-3">
+                              <div className="w-9 h-9 rounded-full hydro-gradient flex items-center justify-center text-white text-xs font-bold shrink-0">
+                                {c.first_name?.[0]}{c.last_name?.[0]}
+                              </div>
+                              <div>
+                                <p className="font-semibold text-on-surface text-sm">{c.first_name} {c.last_name}</p>
+                                <p className="text-xs text-on-surface-variant">{c.email}</p>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-4 py-3 text-xs font-bold text-secondary-fixed">{c.customer_uid}</td>
+                          <td className="px-4 py-3 text-xs text-on-surface-variant">{c.phone}</td>
+                          <td className="px-4 py-3">
+                            <div className="flex items-center gap-1">
+                              <span className="text-secondary-fixed font-bold">{c.stamps}</span>
+                              <span className="text-on-surface-variant text-xs">/5</span>
+                            </div>
+                          </td>
+                          <td className="px-4 py-3 text-on-surface-variant text-xs">{c.total_washes ?? 0}</td>
+                          <td className="px-4 py-3">
+                            <span className={`px-2 py-1 rounded-full text-xs font-bold ${c.is_active ? 'bg-green-500/10 text-green-400 border border-green-500/20' : 'bg-error/10 text-error border border-error/20'}`}>
+                              {c.is_active ? t('Active', 'نشط') : t('Suspended', 'موقوف')}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 text-xs text-on-surface-variant whitespace-nowrap">
+                            {c.created_at ? new Date(c.created_at).toLocaleDateString() : '—'}
+                          </td>
+                          <td className="px-4 py-3">
+                            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                              {/* Quick lookup in dashboard */}
+                              <button title={t('View in Dashboard', 'عرض في اللوحة')}
+                                onClick={() => {
+                                  setUidInput(c.customer_uid)
+                                  setActiveTab('dashboard')
+                                  setTimeout(() => lookup(c.customer_uid), 100)
+                                }}
+                                className="w-8 h-8 rounded-lg flex items-center justify-center text-secondary-fixed hover:bg-secondary-fixed/10 transition-colors">
+                                <span className="material-symbols-outlined text-base">open_in_new</span>
+                              </button>
+                              {/* Edit */}
+                              <button title={t('Edit', 'تعديل')}
+                                onClick={() => openEditModal(c)}
+                                className="w-8 h-8 rounded-lg flex items-center justify-center text-secondary-fixed hover:bg-secondary-fixed/10 transition-colors">
+                                <span className="material-symbols-outlined text-base">edit</span>
+                              </button>
+                              {/* Delete */}
+                              <button title={t('Delete', 'حذف')}
+                                onClick={async () => {
+                                  if (!confirm(t(`Delete ${c.first_name} ${c.last_name}?`, `حذف ${c.first_name}؟`))) return
+                                  try {
+                                    const res = await fetch(`${API}/api/admin/customers/${c.customer_uid}`, { method: 'DELETE', headers: hdrs })
+                                    const data = await res.json()
+                                    if (!res.ok) { showToast(data.error || t('Error','خطأ'), 'error'); return }
+                                    showToast(data.message || t('Customer deleted','تم حذف العميل'))
+                                    loadAllCustomers(customerSearch)
+                                    loadData()
+                                  } catch { showToast(t('Error','خطأ'), 'error') }
+                                }}
+                                className="w-8 h-8 rounded-lg flex items-center justify-center text-error hover:bg-error/10 transition-colors">
+                                <span className="material-symbols-outlined text-base">delete</span>
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Messages Tab */}
         {activeTab === 'messages' && (
@@ -286,6 +522,7 @@ export default function StaffDashboard() {
                       if (!msg.is_read) {
                         await fetch(`${API}/api/messages/${msg.id}/read`, { method: 'PATCH', headers: hdrs })
                         setMessages(msgs => msgs.map(m => m.id === msg.id ? {...m, is_read: 1} : m))
+                        setUnreadCount(c => Math.max(0, c - 1))
                       }
                     }}
                     style={{ cursor: msg.is_read ? 'default' : 'pointer' }}
@@ -343,53 +580,134 @@ export default function StaffDashboard() {
                 </button>
               </div>
               {scannerOn && (
-                <div className="p-4">
-                  <video ref={videoRef} autoPlay muted playsInline className="w-full rounded-xl max-h-56 object-cover bg-black" />
-                  <p className="text-xs text-on-surface-variant text-center mt-2">{t('Point camera at customer QR code', 'وجّه الكاميرا نحو رمز QR للعميل')}</p>
+                <div className="p-4 relative">
+                  <video
+                    ref={setVideoRef}
+                    autoPlay muted playsInline
+                    className="w-full rounded-xl max-h-64 object-cover bg-black"
+                    style={{ minHeight: '200px' }}
+                  />
+                  {/* Scanning overlay */}
+                  <div className="absolute inset-4 pointer-events-none flex items-center justify-center">
+                    <div className="w-48 h-48 relative">
+                      <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-secondary-fixed rounded-tl-lg" />
+                      <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-secondary-fixed rounded-tr-lg" />
+                      <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-secondary-fixed rounded-bl-lg" />
+                      <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-secondary-fixed rounded-br-lg" />
+                    </div>
+                  </div>
+                  <p className="text-xs text-secondary-fixed text-center mt-2 font-semibold">
+                    {t('Point camera at customer QR code', 'وجّه الكاميرا نحو رمز QR للعميل')}
+                  </p>
                 </div>
               )}
+              {/* Hidden canvas for QR decoding */}
+              <canvas ref={canvasRef} className="hidden" />
               <div className="p-4 flex gap-3">
                 <input value={uidInput} onChange={e => setUidInput(e.target.value.toUpperCase())} onKeyDown={e => e.key === 'Enter' && lookup()} placeholder="RW-00001" className="rasha-input flex-1 uppercase" />
                 <button onClick={() => lookup()} className="btn-primary px-6 py-3 rounded-xl shrink-0">{t('Look Up', 'بحث')}</button>
               </div>
               {/* Customer result */}
               {customer && (
-                <div className="p-4 border-t border-outline-variant/20 animate-fade-in">
+                <div className="p-5 border-t border-outline-variant/20 animate-fade-in space-y-5">
+                  {/* Customer info header */}
                   <div className="flex items-start justify-between gap-4 flex-wrap">
-                    <div>
-                      <h4 className="font-bold text-on-surface text-lg">{customer.first_name} {customer.last_name}</h4>
-                      <p className="text-sm text-on-surface-variant">{customer.phone}</p>
-                      <p className="text-xs text-secondary-fixed font-bold mt-1">{customer.customer_uid}</p>
-                      <div className="flex items-center gap-2 mt-2">
-                        <span className="text-sm text-on-surface-variant">{t('Stamps:', 'طوابع:')}</span>
-                        <span className="text-secondary-fixed font-bold text-lg">{customer.stamps}</span>
-                        <span className="text-on-surface-variant">/5</span>
-                        {customer.stamps >= 5 && <span className="text-xs bg-secondary-fixed/10 text-secondary-fixed px-2 py-0.5 rounded-full border border-secondary-fixed/30">🎉 {t('Free Wash Ready!', 'غسيل مجاني!')}</span>}
+                    <div className="flex items-center gap-4">
+                      <div className="w-14 h-14 rounded-2xl hydro-gradient flex items-center justify-center text-white text-xl font-bold shrink-0">
+                        {customer.first_name?.[0]}{customer.last_name?.[0]}
                       </div>
-                      <div className="mt-2">
-                        <span className={`text-xs px-2 py-1 rounded-full font-bold ${customer.is_active ? 'bg-green-500/10 text-green-400' : 'bg-error/10 text-error'}`}>
+                      <div>
+                        <h4 className="font-bold text-on-surface text-lg font-display">{customer.first_name} {customer.last_name}</h4>
+                        <p className="text-sm text-on-surface-variant">{customer.phone}</p>
+                        <p className="text-xs text-secondary-fixed font-bold mt-0.5">{customer.customer_uid}</p>
+                        <span className={`mt-1 inline-block text-xs px-2 py-0.5 rounded-full font-bold ${customer.is_active ? 'bg-green-500/10 text-green-400' : 'bg-error/10 text-error'}`}>
                           {customer.is_active ? t('Active', 'نشط') : t('Suspended', 'موقوف')}
                         </span>
                       </div>
                     </div>
-                    <div className="flex flex-col gap-2">
-                      <button onClick={markWash} className="btn-primary px-5 py-3 rounded-xl">
-                        <span className="material-symbols-outlined fill-icon text-base">water_drop</span>
-                        {t('Mark Wash', 'تسجيل غسيل')}
-                      </button>
-                      <button onClick={toggleAccess} className={`glass px-5 py-2 rounded-xl text-sm font-bold transition-colors ${customer.is_active ? 'text-error hover:bg-error/5' : 'text-secondary-fixed hover:bg-secondary-fixed/5'}`}>
-                        {customer.is_active ? t('Suspend', 'إيقاف') : t('Restore', 'تفعيل')}
-                      </button>
-                      <button onClick={openEditModal} className="glass px-5 py-2 rounded-xl text-secondary-fixed text-sm font-bold hover:bg-secondary-fixed/5 transition-colors flex items-center justify-center gap-1">
+                    <div className="flex gap-2">
+                      <button onClick={() => openEditModal(customer)}
+                        className="glass px-4 py-2 rounded-xl text-secondary-fixed text-xs font-bold hover:bg-secondary-fixed/5 transition-colors flex items-center gap-1">
                         <span className="material-symbols-outlined text-base">edit</span>
                         {t('Edit', 'تعديل')}
                       </button>
-                      <button onClick={deleteCustomer} className="glass px-5 py-2 rounded-xl text-error text-sm font-bold hover:bg-error/5 transition-colors flex items-center justify-center gap-1">
+                      <button onClick={deleteCustomer}
+                        className="glass px-4 py-2 rounded-xl text-error text-xs font-bold hover:bg-error/5 transition-colors flex items-center gap-1">
                         <span className="material-symbols-outlined text-base">delete</span>
                         {t('Delete', 'حذف')}
                       </button>
                     </div>
                   </div>
+
+                  {/* Stamps visual */}
+                  <div className="rounded-xl p-4" style={{ background: '#272a2c', border: '1px solid rgba(66,71,82,0.3)' }}>
+                    <div className="flex justify-between items-center mb-3">
+                      <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest">{t('Loyalty Stamps', 'طوابع الولاء')}</p>
+                      <span className="text-secondary-fixed font-extrabold text-lg font-display">{customer.stamps}/5</span>
+                    </div>
+                    {/* 5 stamp dots */}
+                    <div className="flex gap-2 mb-4">
+                      {Array.from({ length: 5 }, (_, i) => (
+                        <div key={i} className={`flex-1 h-3 rounded-full transition-all ${i < customer.stamps ? 'bg-secondary-fixed' : 'bg-surface-variant'}`}
+                          style={i < customer.stamps ? { boxShadow: '0 0 6px rgba(116,245,255,0.5)' } : {}} />
+                      ))}
+                    </div>
+                    {customer.stamps >= 5 && (
+                      <div className="text-center text-xs text-secondary-fixed font-bold mb-3 p-2 rounded-lg"
+                        style={{ background: 'rgba(116,245,255,0.08)', border: '1px solid rgba(116,245,255,0.2)' }}>
+                        🎉 {t('Free Wash Ready! Customer has earned a complimentary wash.', 'غسيل مجاني! استحق العميل غسيلاً مجانياً.')}
+                      </div>
+                    )}
+                    {/* Stamp action buttons */}
+                    <div className="grid grid-cols-2 gap-3">
+                      <button onClick={markWash}
+                        className="hydro-gradient py-3 rounded-xl text-white font-bold text-sm flex items-center justify-center gap-2 hover:opacity-90 transition-opacity cyan-glow">
+                        <span className="material-symbols-outlined fill-icon text-base">add_circle</span>
+                        {t('Add Stamp', 'إضافة طابع')}
+                      </button>
+                      <button
+                        onClick={async () => {
+                          if (customer.stamps <= 0) { showToast(t('Already at 0 stamps', 'لا يوجد طوابع للإزالة'), 'error'); return }
+                          try {
+                            const newVal = customer.stamps - 1
+                            const res = await fetch(`${API}/api/admin/customers/${customer.customer_uid}/stamps`, {
+                              method: 'PATCH', headers: hdrs,
+                              body: JSON.stringify({ newValue: newVal, reason: 'Manual stamp removal by staff' })
+                            })
+                            const data = await res.json()
+                            if (!res.ok) { showToast(data.error || t('Error', 'خطأ'), 'error'); return }
+                            setCustomer(c => ({ ...c, stamps: newVal }))
+                            showToast(t('Stamp removed', 'تم إزالة الطابع'))
+                          } catch { showToast(t('Error', 'خطأ'), 'error') }
+                        }}
+                        disabled={customer.stamps <= 0}
+                        className="glass py-3 rounded-xl text-error font-bold text-sm flex items-center justify-center gap-2 hover:bg-error/5 transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+                        <span className="material-symbols-outlined text-base">remove_circle</span>
+                        {t('Remove Stamp', 'إزالة طابع')}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Stats row */}
+                  <div className="grid grid-cols-3 gap-3 text-center">
+                    {[
+                      [t('Total Washes', 'إجمالي الغسيلات'), customer.total_washes ?? 0],
+                      [t('Free Used', 'مجاني مستخدم'), customer.free_washes_used ?? 0],
+                      [t('Bookings', 'الحجوزات'), customer.booking_count ?? 0],
+                    ].map(([label, val]) => (
+                      <div key={label} className="rounded-xl py-3 px-2" style={{ background: '#272a2c', border: '1px solid rgba(66,71,82,0.3)' }}>
+                        <p className="text-secondary-fixed font-bold text-xl font-display">{val}</p>
+                        <p className="text-on-surface-variant text-xs mt-0.5">{label}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Suspend / Restore */}
+                  <button onClick={toggleAccess}
+                    className={`w-full py-2.5 rounded-xl text-sm font-bold transition-colors flex items-center justify-center gap-2 ${customer.is_active ? 'glass text-error hover:bg-error/5' : 'glass text-secondary-fixed hover:bg-secondary-fixed/5'}`}>
+                    <span className="material-symbols-outlined text-base">{customer.is_active ? 'block' : 'check_circle'}</span>
+                    {customer.is_active ? t('Suspend Account', 'إيقاف الحساب') : t('Restore Account', 'تفعيل الحساب')}
+                  </button>
                 </div>
               )}
             </div>
