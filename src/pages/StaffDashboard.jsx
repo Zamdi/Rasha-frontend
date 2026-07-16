@@ -279,12 +279,24 @@ export default function StaffDashboard() {
               </div>
             ) : (
               <div className="divide-y divide-outline-variant/10">
-                {messages.map((msg, i) => (
-                  <div key={i} className="p-5 hover:bg-surface-variant/5 transition-colors">
+                {messages.map((msg) => (
+                  <div key={msg.id}
+                    className={`p-5 transition-colors ${msg.is_read ? 'hover:bg-surface-variant/5' : 'bg-secondary-fixed/5 hover:bg-secondary-fixed/8'}`}
+                    onClick={async () => {
+                      if (!msg.is_read) {
+                        await fetch(`${API}/api/messages/${msg.id}/read`, { method: 'PATCH', headers: hdrs })
+                        setMessages(msgs => msgs.map(m => m.id === msg.id ? {...m, is_read: 1} : m))
+                      }
+                    }}
+                    style={{ cursor: msg.is_read ? 'default' : 'pointer' }}
+                  >
                     <div className="flex justify-between items-start gap-4 mb-2">
-                      <div>
-                        <p className="font-semibold text-on-surface text-sm">{msg.name}</p>
-                        <p className="text-xs text-secondary-fixed">{msg.email}</p>
+                      <div className="flex items-center gap-2">
+                        {!msg.is_read && <span className="w-2 h-2 rounded-full bg-secondary-fixed shrink-0" />}
+                        <div>
+                          <p className={`font-semibold text-sm ${msg.is_read ? 'text-on-surface' : 'text-secondary-fixed'}`}>{msg.name}</p>
+                          <p className="text-xs text-on-surface-variant">{msg.email}</p>
+                        </div>
                       </div>
                       <div className="text-end shrink-0">
                         <span className="text-xs font-bold px-2 py-1 rounded-full bg-surface-container-high text-on-surface-variant">{msg.subject}</span>
@@ -292,6 +304,7 @@ export default function StaffDashboard() {
                       </div>
                     </div>
                     <p className="text-on-surface-variant text-sm leading-relaxed">{msg.message}</p>
+                    {!msg.is_read && <p className="text-xs text-secondary-fixed mt-2">{t('Click to mark as read', 'انقر للتعليم كمقروء')}</p>}
                   </div>
                 ))}
               </div>

@@ -22,18 +22,15 @@ export default function Contact() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
       })
-      // Accept both success and 404 (endpoint not yet created) gracefully
-      if (res.ok || res.status === 404 || res.status === 405) {
-        setSent(true)
-      } else {
-        const data = await res.json()
-        // still show success to user — message stored or will be stored
-        setSent(true)
-        console.error('Message API error:', data)
+      const data = await res.json()
+      if (!res.ok) {
+        // Show the real backend error
+        alert(data.error || 'Failed to send message. Please try again.')
+        return
       }
-    } catch {
-      // Network error — still show success (message will retry when online)
       setSent(true)
+    } catch {
+      alert('Connection error. Please check your internet and try again.')
     } finally {
       setLoading(false)
     }
