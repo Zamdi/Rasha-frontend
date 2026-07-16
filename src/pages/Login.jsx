@@ -30,16 +30,17 @@ export default function Login() {
   }
 
   const verify = async () => {
-    if (otp.length < 4) { showToast(t('Enter the full code','أدخل الرمز كاملاً'),'error'); return }
+    const code = otp.trim()
+    if (code.length < 4) { showToast(t('Enter the full code','أدخل الرمز كاملاً'),'error'); return }
     setLoading(true)
     try {
-      const res = await fetch(`${API}/api/auth/verify-login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:loginEmail,otp})})
+      const res = await fetch(`${API}/api/auth/verify-login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:loginEmail, otp: code})})
       const data = await res.json()
-      if (!res.ok) { showToast(data.error||t('Error','خطأ'),'error'); return }
+      if (!res.ok) { showToast(data.error || data.message || t('Invalid or expired code','رمز غير صحيح أو منتهي الصلاحية'),'error'); setLoading(false); return }
       login(data.token, data.customer)
       showToast(t('Welcome back!','مرحباً بك!'))
       navigate('/loyalty')
-    } catch { showToast(t('Error','خطأ'),'error') }
+    } catch { showToast(t('Connection error','خطأ في الاتصال'),'error') }
     finally { setLoading(false) }
   }
 

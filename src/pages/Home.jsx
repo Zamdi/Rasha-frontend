@@ -162,6 +162,13 @@ export default function Home() {
                 ))}
               </div>
             </div>
+            <div className="space-y-4">
+              <div className="text-on-surface font-bold mb-3">{t('Legal', 'قانوني')}</div>
+              <div className="flex flex-col gap-2 text-on-surface-variant">
+                <Link to="/privacy" className="hover:text-secondary-fixed transition-colors">{t('Privacy Policy', 'سياسة الخصوصية')}</Link>
+                <Link to="/terms" className="hover:text-secondary-fixed transition-colors">{t('Terms of Service', 'شروط الخدمة')}</Link>
+              </div>
+            </div>
           </div>
         </div>
         <div className="max-w-7xl mx-auto px-4 md:px-6 mt-8 pt-6 border-t border-outline-variant/10 text-center text-on-surface-variant text-xs">

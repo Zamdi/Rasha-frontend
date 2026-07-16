@@ -35,19 +35,20 @@ export default function Register() {
   }
 
   const verify = async () => {
-    if (otp.length < 4) { showToast(t('Enter the full code','أدخل الرمز كاملاً'),'error'); return }
+    const code = otp.trim()
+    if (code.length < 4) { showToast(t('Enter the full code','أدخل الرمز كاملاً'),'error'); return }
     setLoading(true)
     try {
       const res = await fetch(`${API}/api/auth/verify-register`, {
         method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ firstName:form.firstName, lastName:form.lastName, email:form.email, phone:'+249'+form.phone, password:form.password, otp })
+        body: JSON.stringify({ firstName:form.firstName, lastName:form.lastName, email:form.email, phone:'+249'+form.phone, password:form.password, otp: code })
       })
       const data = await res.json()
-      if (!res.ok) { showToast(data.error||t('Error','خطأ'),'error'); return }
+      if (!res.ok) { showToast(data.error || data.message || t('Invalid or expired code','رمز غير صحيح أو منتهي الصلاحية'),'error'); setLoading(false); return }
       login(data.token, data.customer)
       showToast(t('Account created!','تم إنشاء حسابك!'))
       navigate('/loyalty')
-    } catch { showToast(t('Error','خطأ'),'error') }
+    } catch { showToast(t('Connection error','خطأ في الاتصال'),'error') }
     finally { setLoading(false) }
   }
 

@@ -9,11 +9,15 @@ const INVENTORY = [
   { name_en: 'Tire Shine', name_ar: 'لامع إطارات', pct: 35, color: 'bg-yellow-400' },
 ]
 
+const MODAL_BLANK = { firstName: '', lastName: '', email: '', phone: '', password: '' }
+
 export default function StaffDashboard() {
   const { t, staffToken, setStaffToken, showToast } = useApp()
   const navigate = useNavigate()
+  const [activeTab, setActiveTab] = useState('dashboard')
   const [stats, setStats] = useState(null)
   const [bookings, setBookings] = useState([])
+  const [messages, setMessages] = useState([])
   const [loading, setLoading] = useState(true)
   const [uidInput, setUidInput] = useState('')
   const [customer, setCustomer] = useState(null)
@@ -23,6 +27,11 @@ export default function StaffDashboard() {
   const videoRef = useRef(null)
   const streamRef = useRef(null)
   const searchTimeout = useRef(null)
+  // Customer modal
+  const [showModal, setShowModal] = useState(false)
+  const [modalMode, setModalMode] = useState('add') // 'add' | 'edit'
+  const [modalForm, setModalForm] = useState(MODAL_BLANK)
+  const [modalLoading, setModalLoading] = useState(false)
 
   useEffect(() => {
     if (!staffToken) { navigate('/staff'); return }
@@ -46,6 +55,20 @@ export default function StaffDashboard() {
     } catch { showToast(t('Failed to load', 'فشل التحميل'), 'error') }
     finally { setLoading(false) }
   }
+
+  const loadMessages = async () => {
+    try {
+      const res = await fetch(`${API}/api/messages`, { headers: hdrs })
+      if (res.ok) {
+        const data = await res.json()
+        setMessages(data.messages || [])
+      }
+    } catch {}
+  }
+
+  useEffect(() => {
+    if (activeTab === 'messages') loadMessages()
+  }, [activeTab])
 
   const lookup = async (uid) => {
     const id = (uid || uidInput).trim().toUpperCase()
@@ -80,6 +103,73 @@ export default function StaffDashboard() {
       showToast(data.message)
       setCustomer(c => ({ ...c, is_active: data.isActive }))
     } catch { showToast(t('Error', 'خطأ'), 'error') }
+  }
+
+  const deleteCustomer = async () => {
+    if (!customer) return
+    if (!confirm(t(`Delete ${customer.first_name} ${customer.last_name}? This cannot be undone.`, `حذف ${customer.first_name} ${customer.last_name}؟ لا يمكن التراجع عن هذا.`))) return
+    try {
+      const res = await fetch(`${API}/api/admin/customers/${customer.customer_uid}`, { method: 'DELETE', headers: hdrs })
+      const data = await res.json()
+      if (!res.ok) { showToast(data.error || t('Error', 'خطأ'), 'error'); return }
+      showToast(t('Customer deleted', 'تم حذف العميل'))
+      setCustomer(null)
+      setUidInput('')
+      loadData()
+    } catch { showToast(t('Error', 'خطأ'), 'error') }
+  }
+
+  const openAddModal = () => {
+    setModalMode('add')
+    setModalForm(MODAL_BLANK)
+    setShowModal(true)
+  }
+
+  const openEditModal = () => {
+    if (!customer) return
+    setModalMode('edit')
+    setModalForm({
+      firstName: customer.first_name || '',
+      lastName: customer.last_name || '',
+      email: customer.email || '',
+      phone: (customer.phone || '').replace('+249', ''),
+      password: '',
+    })
+    setShowModal(true)
+  }
+
+  const submitModal = async () => {
+    setModalLoading(true)
+    try {
+      if (modalMode === 'add') {
+        const res = await fetch(`${API}/api/admin/customers`, {
+          method: 'POST', headers: hdrs,
+          body: JSON.stringify({
+            firstName: modalForm.firstName, lastName: modalForm.lastName,
+            email: modalForm.email, phone: '+249' + modalForm.phone, password: modalForm.password,
+          })
+        })
+        const data = await res.json()
+        if (!res.ok) { showToast(data.error || t('Error', 'خطأ'), 'error'); setModalLoading(false); return }
+        showToast(t('Customer added!', 'تم إضافة العميل!'))
+      } else {
+        const body = {
+          firstName: modalForm.firstName, lastName: modalForm.lastName,
+          email: modalForm.email, phone: '+249' + modalForm.phone,
+        }
+        if (modalForm.password) body.password = modalForm.password
+        const res = await fetch(`${API}/api/admin/customers/${customer.customer_uid}`, {
+          method: 'PATCH', headers: hdrs, body: JSON.stringify(body)
+        })
+        const data = await res.json()
+        if (!res.ok) { showToast(data.error || t('Error', 'خطأ'), 'error'); setModalLoading(false); return }
+        showToast(t('Customer updated!', 'تم تحديث العميل!'))
+        setCustomer(c => ({ ...c, first_name: modalForm.firstName, last_name: modalForm.lastName, email: modalForm.email, phone: '+249' + modalForm.phone }))
+      }
+      setShowModal(false)
+      loadData()
+    } catch { showToast(t('Error', 'خطأ'), 'error') }
+    finally { setModalLoading(false) }
   }
 
   const cancelBooking = async (id) => {
@@ -118,6 +208,7 @@ export default function StaffDashboard() {
     streamRef.current?.getTracks().forEach(t => t.stop())
     streamRef.current = null
     setScannerOn(false)
+
   }
 
   const staffLogout = () => { stopScanner(); setStaffToken(null); navigate('/') }
@@ -150,13 +241,66 @@ export default function StaffDashboard() {
 
       <div className="pt-24 pb-10 max-w-7xl mx-auto px-4 md:px-6">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
           <div>
             <h1 className="text-2xl font-bold text-secondary-fixed font-display">{t('Operations Overview', 'لوحة العمليات')}</h1>
             <p className="text-on-surface-variant text-sm">{shiftInfo}</p>
           </div>
+          <button onClick={openAddModal} className="hydro-gradient px-5 py-2.5 rounded-xl text-white text-xs font-bold flex items-center gap-2 hover:opacity-90 transition-opacity cyan-glow">
+            <span className="material-symbols-outlined text-base">person_add</span>
+            {t('Add Customer', 'إضافة عميل')}
+          </button>
         </div>
 
+        {/* Tabs */}
+        <div className="flex gap-1 mb-6 p-1 rounded-xl w-fit" style={{ background: '#1d2022', border: '1px solid rgba(66,71,82,0.4)' }}>
+          {[['dashboard', 'dashboard', t('Dashboard', 'اللوحة')], ['messages', 'mail', t('Messages', 'الرسائل')]].map(([tab, icon, label]) => (
+            <button key={tab} onClick={() => setActiveTab(tab)}
+              className={`flex items-center gap-2 px-5 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === tab ? 'hydro-gradient text-white' : 'text-on-surface-variant hover:text-on-surface'}`}>
+              <span className="material-symbols-outlined text-base">{icon}</span>
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {/* Messages Tab */}
+        {activeTab === 'messages' && (
+          <div className="glass rounded-2xl overflow-hidden animate-fade-in">
+            <div className="p-4 border-b border-outline-variant/20 flex justify-between items-center">
+              <h3 className="font-bold text-on-surface">{t('Customer Messages', 'رسائل العملاء')}</h3>
+              <button onClick={loadMessages} className="text-secondary-fixed text-xs hover:underline flex items-center gap-1">
+                <span className="material-symbols-outlined text-base">refresh</span>{t('Refresh', 'تحديث')}
+              </button>
+            </div>
+            {messages.length === 0 ? (
+              <div className="p-12 text-center">
+                <span className="material-symbols-outlined text-on-surface-variant text-5xl mb-3 block">mark_email_read</span>
+                <p className="text-on-surface-variant text-sm">{t('No messages yet', 'لا توجد رسائل بعد')}</p>
+              </div>
+            ) : (
+              <div className="divide-y divide-outline-variant/10">
+                {messages.map((msg, i) => (
+                  <div key={i} className="p-5 hover:bg-surface-variant/5 transition-colors">
+                    <div className="flex justify-between items-start gap-4 mb-2">
+                      <div>
+                        <p className="font-semibold text-on-surface text-sm">{msg.name}</p>
+                        <p className="text-xs text-secondary-fixed">{msg.email}</p>
+                      </div>
+                      <div className="text-end shrink-0">
+                        <span className="text-xs font-bold px-2 py-1 rounded-full bg-surface-container-high text-on-surface-variant">{msg.subject}</span>
+                        <p className="text-xs text-on-surface-variant mt-1">{msg.created_at ? new Date(msg.created_at).toLocaleDateString() : ''}</p>
+                      </div>
+                    </div>
+                    <p className="text-on-surface-variant text-sm leading-relaxed">{msg.message}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Dashboard Tab */}
+        {activeTab === 'dashboard' && (<>
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {[
@@ -222,6 +366,14 @@ export default function StaffDashboard() {
                       </button>
                       <button onClick={toggleAccess} className={`glass px-5 py-2 rounded-xl text-sm font-bold transition-colors ${customer.is_active ? 'text-error hover:bg-error/5' : 'text-secondary-fixed hover:bg-secondary-fixed/5'}`}>
                         {customer.is_active ? t('Suspend', 'إيقاف') : t('Restore', 'تفعيل')}
+                      </button>
+                      <button onClick={openEditModal} className="glass px-5 py-2 rounded-xl text-secondary-fixed text-sm font-bold hover:bg-secondary-fixed/5 transition-colors flex items-center justify-center gap-1">
+                        <span className="material-symbols-outlined text-base">edit</span>
+                        {t('Edit', 'تعديل')}
+                      </button>
+                      <button onClick={deleteCustomer} className="glass px-5 py-2 rounded-xl text-error text-sm font-bold hover:bg-error/5 transition-colors flex items-center justify-center gap-1">
+                        <span className="material-symbols-outlined text-base">delete</span>
+                        {t('Delete', 'حذف')}
                       </button>
                     </div>
                   </div>
@@ -323,7 +475,71 @@ export default function StaffDashboard() {
             </div>
           </div>
         </div>
+        </>)}
       </div>
+
+      {/* Add/Edit Customer Modal */}
+      {showModal && (
+        <div className="fixed inset-0 z-[300] flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)' }}>
+          <div className="w-full max-w-md rounded-2xl p-6 animate-fade-in" style={{ background: '#1d2022', border: '1px solid rgba(116,245,255,0.15)' }}>
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="font-bold text-on-surface text-lg font-display">
+                {modalMode === 'add' ? t('Add Customer', 'إضافة عميل') : t('Edit Customer', 'تعديل العميل')}
+              </h3>
+              <button onClick={() => setShowModal(false)} className="text-on-surface-variant hover:text-on-surface transition-colors">
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </div>
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-1.5 block">{t('First Name', 'الاسم الأول')} *</label>
+                  <input className="w-full px-3 py-2.5 rounded-lg text-on-surface text-sm focus:outline-none" style={{ background: '#272a2c', border: '1px solid #424752' }}
+                    value={modalForm.firstName} onChange={e => setModalForm(f => ({...f, firstName: e.target.value}))}
+                    onFocus={e => e.target.style.borderColor='#74f5ff'} onBlur={e => e.target.style.borderColor='#424752'} />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-1.5 block">{t('Last Name', 'اسم العائلة')} *</label>
+                  <input className="w-full px-3 py-2.5 rounded-lg text-on-surface text-sm focus:outline-none" style={{ background: '#272a2c', border: '1px solid #424752' }}
+                    value={modalForm.lastName} onChange={e => setModalForm(f => ({...f, lastName: e.target.value}))}
+                    onFocus={e => e.target.style.borderColor='#74f5ff'} onBlur={e => e.target.style.borderColor='#424752'} />
+                </div>
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-1.5 block">{t('Email', 'البريد الإلكتروني')} *</label>
+                <input type="email" className="w-full px-3 py-2.5 rounded-lg text-on-surface text-sm focus:outline-none" style={{ background: '#272a2c', border: '1px solid #424752' }}
+                  value={modalForm.email} onChange={e => setModalForm(f => ({...f, email: e.target.value}))}
+                  onFocus={e => e.target.style.borderColor='#74f5ff'} onBlur={e => e.target.style.borderColor='#424752'} />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-1.5 block">{t('Phone', 'الهاتف')} *</label>
+                <div className="flex">
+                  <span className="px-3 py-2.5 text-sm text-on-surface-variant flex items-center shrink-0 rounded-s-lg" style={{ background: '#323537', border: '1px solid #424752', borderRight: 'none' }}>+249</span>
+                  <input type="tel" className="flex-1 px-3 py-2.5 rounded-e-lg text-on-surface text-sm focus:outline-none" style={{ background: '#272a2c', border: '1px solid #424752' }}
+                    value={modalForm.phone} onChange={e => setModalForm(f => ({...f, phone: e.target.value.replace(/\D/g,'')}))}
+                    onFocus={e => e.target.style.borderColor='#74f5ff'} onBlur={e => e.target.style.borderColor='#424752'} />
+                </div>
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-1.5 block">
+                  {t('Password', 'كلمة المرور')} {modalMode === 'edit' ? t('(leave blank to keep)', '(اتركه لعدم التغيير)') : '*'}
+                </label>
+                <input type="password" className="w-full px-3 py-2.5 rounded-lg text-on-surface text-sm focus:outline-none" style={{ background: '#272a2c', border: '1px solid #424752' }}
+                  value={modalForm.password} onChange={e => setModalForm(f => ({...f, password: e.target.value}))}
+                  onFocus={e => e.target.style.borderColor='#74f5ff'} onBlur={e => e.target.style.borderColor='#424752'} />
+              </div>
+              <div className="flex gap-3 pt-2">
+                <button onClick={() => setShowModal(false)} className="flex-1 py-3 rounded-xl text-on-surface-variant font-bold text-sm transition-colors hover:bg-surface-variant" style={{ background: '#272a2c', border: '1px solid #424752' }}>
+                  {t('Cancel', 'إلغاء')}
+                </button>
+                <button onClick={submitModal} disabled={modalLoading} className="flex-1 py-3 rounded-xl font-bold text-sm hydro-gradient text-white flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
+                  {modalLoading ? <div className="loader" /> : (modalMode === 'add' ? t('Add Customer', 'إضافة') : t('Save Changes', 'حفظ'))}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
