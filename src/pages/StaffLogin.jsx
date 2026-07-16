@@ -17,8 +17,8 @@ export default function StaffLogin() {
       const res = await fetch(`${API}/api/admin/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username, password }) })
       const data = await res.json()
       if (!res.ok) { showToast(data.error || t('Invalid credentials', 'بيانات غير صحيحة'), 'error'); return }
-      setStaffToken(data.token)
-      showToast(t(`Welcome, ${data.username}`, `أهلاً ${data.username}`))
+      setStaffToken(data.token, data.role, data.permissions || {})
+      showToast(t(`Welcome, ${data.displayName || data.username}`, `أهلاً ${data.displayName || data.username}`))
       navigate('/staff/dashboard')
     } catch { showToast(t('Connection error', 'خطأ في الاتصال'), 'error') }
     finally { setLoading(false) }

@@ -12,6 +12,10 @@ export function AppProvider({ children }) {
   })
   const [token, setToken] = useState(() => localStorage.getItem('rasha_token'))
   const [staffToken, setStaffTokenState] = useState(() => localStorage.getItem('rasha_staff_token'))
+  const [staffRole, setStaffRoleState] = useState(() => localStorage.getItem('rasha_staff_role') || 'staff')
+  const [staffPermissions, setStaffPermissionsState] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('rasha_staff_perms') || '{}') } catch { return {} }
+  })
 
   const toggleLang = () => {
     const next = lang === 'en' ? 'ar' : 'en'
@@ -40,12 +44,23 @@ export function AppProvider({ children }) {
     localStorage.removeItem('rasha_customer')
   }
 
-  // Wrap setStaffToken so it always syncs with localStorage
-  const setStaffToken = (tok) => {
+  const setStaffToken = (tok, role = 'staff', permissions = {}) => {
     setStaffTokenState(tok)
-    if (tok) localStorage.setItem('rasha_staff_token', tok)
-    else localStorage.removeItem('rasha_staff_token')
+    setStaffRoleState(role)
+    setStaffPermissionsState(permissions)
+    if (tok) {
+      localStorage.setItem('rasha_staff_token', tok)
+      localStorage.setItem('rasha_staff_role', role)
+      localStorage.setItem('rasha_staff_perms', JSON.stringify(permissions))
+    } else {
+      localStorage.removeItem('rasha_staff_token')
+      localStorage.removeItem('rasha_staff_role')
+      localStorage.removeItem('rasha_staff_perms')
+    }
   }
+
+  const isSuperAdmin = staffRole === 'super_admin'
+  const hasPerm = (perm) => isSuperAdmin || !!staffPermissions[perm]
 
   useEffect(() => {
     if (!toast) return
@@ -54,7 +69,7 @@ export function AppProvider({ children }) {
   }, [toast])
 
   return (
-    <AppContext.Provider value={{ lang, toggleLang, t, toast, showToast, customer, token, login, logout, staffToken, setStaffToken }}>
+    <AppContext.Provider value={{ lang, toggleLang, t, toast, showToast, customer, token, login, logout, staffToken, setStaffToken, staffRole, staffPermissions, isSuperAdmin, hasPerm }}>
       {children}
     </AppContext.Provider>
   )

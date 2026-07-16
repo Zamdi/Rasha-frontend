@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useApp, API } from '../context/AppContext'
+import jsQR from 'jsqr'
 
 const INVENTORY = [
   { name_en: 'Car Shampoo', name_ar: 'شامبو السيارة', pct: 15, color: 'bg-error' },
@@ -12,7 +13,7 @@ const INVENTORY = [
 const MODAL_BLANK = { firstName: '', lastName: '', email: '', phone: '', password: '' }
 
 export default function StaffDashboard() {
-  const { t, staffToken, setStaffToken, showToast, lang, toggleLang } = useApp()
+  const { t, staffToken, setStaffToken, showToast, lang, toggleLang, isSuperAdmin, hasPerm } = useApp()
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('dashboard')
   const [stats, setStats] = useState(null)
@@ -22,6 +23,12 @@ export default function StaffDashboard() {
   const [allCustomers, setAllCustomers] = useState([])
   const [customersLoading, setCustomersLoading] = useState(false)
   const [customerSearch, setCustomerSearch] = useState('')
+  const [staffList, setStaffList] = useState([])
+  const [staffLoading, setStaffLoading] = useState(false)
+  const [showStaffModal, setShowStaffModal] = useState(false)
+  const [staffModalMode, setStaffModalMode] = useState('add')
+  const [staffModalData, setStaffModalData] = useState({ id: null, username: '', password: '', displayName: '', permissions: {} })
+  const [cooldownInfo, setCooldownInfo] = useState(null) // { nextScanAt, canForce }
   const [loading, setLoading] = useState(true)
   const [uidInput, setUidInput] = useState('')
   const [customer, setCustomer] = useState(null)
@@ -75,16 +82,20 @@ export default function StaffDashboard() {
   const loadAllCustomers = async (search = '') => {
     setCustomersLoading(true)
     try {
-      const url = search
-        ? `${API}/api/admin/customers?search=${encodeURIComponent(search)}`
-        : `${API}/api/admin/customers`
+      const url = search ? `${API}/api/admin/customers?search=${encodeURIComponent(search)}` : `${API}/api/admin/customers`
       const res = await fetch(url, { headers: hdrs })
-      if (res.ok) {
-        const data = await res.json()
-        setAllCustomers(data.customers || [])
-      }
+      if (res.ok) { const data = await res.json(); setAllCustomers(data.customers || []) }
     } catch {}
     finally { setCustomersLoading(false) }
+  }
+
+  const loadStaff = async () => {
+    setStaffLoading(true)
+    try {
+      const res = await fetch(`${API}/api/admin/staff`, { headers: hdrs })
+      if (res.ok) { const data = await res.json(); setStaffList(data.staff || []) }
+    } catch {}
+    finally { setStaffLoading(false) }
   }
 
   // Poll unread count every 30 seconds while on dashboard
@@ -110,11 +121,21 @@ export default function StaffDashboard() {
     } catch { showToast(t('Error', 'خطأ'), 'error') }
   }
 
-  const markWash = async () => {
+  const markWash = async (forceRescan = false) => {
     if (!customer) return
+    setCooldownInfo(null)
     try {
-      const res = await fetch(`${API}/api/admin/customers/${customer.customer_uid}/mark-wash`, { method: 'POST', headers: hdrs })
+      const res = await fetch(`${API}/api/admin/customers/${customer.customer_uid}/mark-wash`, {
+        method: 'POST', headers: hdrs,
+        body: JSON.stringify(forceRescan ? { forceRescan: true } : {})
+      })
       const data = await res.json()
+      if (res.status === 429) {
+        // QR cooldown active
+        setCooldownInfo({ nextScanAt: data.nextScanAt, canForce: data.canForce, hoursSince: data.hoursSince })
+        showToast(data.error, 'error')
+        return
+      }
       if (!res.ok) { showToast(data.error || t('Error', 'خطأ'), 'error'); return }
       showToast(data.message)
       if (data.earnedFreeWash) showToast(`🎉 ${t('Free wash ready! Mark wash again to redeem.', 'غسيل مجاني جاهز! اضغط مجدداً للاستخدام.')}`)
@@ -234,7 +255,7 @@ export default function StaffDashboard() {
   }
 
   const scanAnimRef = useRef(null)
-  const canvasRef = useRef(null)
+  const canvasRef   = useRef(document.createElement('canvas')) // persistent off-screen canvas
 
   const toggleScanner = async () => {
     if (scannerOn) { stopScanner(); return }
@@ -244,7 +265,6 @@ export default function StaffDashboard() {
       })
       streamRef.current = stream
       setScannerOn(true)
-      // videoRef will be set by the callback ref once the element mounts
     } catch (err) {
       const msg = err.name === 'NotAllowedError'
         ? t('Camera permission denied. Please allow camera access in your browser settings.', 'تم رفض إذن الكاميرا. يرجى السماح بالوصول من إعدادات المتصفح.')
@@ -253,48 +273,59 @@ export default function StaffDashboard() {
     }
   }
 
-  // Callback ref — called when video element mounts/unmounts
+  // Callback ref — fires when video element mounts after scannerOn=true
   const setVideoRef = (el) => {
     videoRef.current = el
     if (el && streamRef.current) {
       el.srcObject = streamRef.current
+      el.setAttribute('playsinline', '')
+      el.muted = true
       el.play().catch(() => {})
-      startQRLoop(el)
+      // Wait for video to be ready before starting scan loop
+      el.addEventListener('playing', () => startQRLoop(el), { once: true })
+      // Fallback: also try after short delay
+      setTimeout(() => { if (streamRef.current && !scanAnimRef.current) startQRLoop(el) }, 1000)
     }
   }
 
   const startQRLoop = (videoEl) => {
+    if (scanAnimRef.current) return // already running
     const canvas = canvasRef.current
-    if (!canvas) return
-    const ctx = canvas.getContext('2d')
+    const ctx = canvas.getContext('2d', { willReadFrequently: true })
 
     const tick = () => {
-      if (!streamRef.current) return
-      if (videoEl.readyState === videoEl.HAVE_ENOUGH_DATA && videoEl.videoWidth > 0) {
+      if (!streamRef.current || !videoEl) return
+
+      if (videoEl.readyState >= 2 && videoEl.videoWidth > 0 && videoEl.videoHeight > 0) {
         canvas.width  = videoEl.videoWidth
         canvas.height = videoEl.videoHeight
-        ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height)
+        ctx.drawImage(videoEl, 0, 0)
 
-        if (window.jsQR) {
+        try {
           const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
-          const code = window.jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: 'dontInvert' })
-          if (code && code.data) {
-            const uid = code.data.trim().toUpperCase()
-            stopScanner()
-            setUidInput(uid)
-            lookup(uid)
-            return
+          if (jsQR) {
+            const code = jsQR(imageData.data, imageData.width, imageData.height, {
+              inversionAttempts: 'attemptBoth'
+            })
+            if (code && code.data) {
+              const uid = code.data.trim().toUpperCase()
+              stopScanner()
+              setUidInput(uid)
+              lookup(uid)
+              return
+            }
           }
-        }
+        } catch {}
       }
+
       scanAnimRef.current = requestAnimationFrame(tick)
     }
+
     scanAnimRef.current = requestAnimationFrame(tick)
   }
 
   const stopScanner = () => {
-    if (scanAnimRef.current) cancelAnimationFrame(scanAnimRef.current)
-    scanAnimRef.current = null
+    if (scanAnimRef.current) { cancelAnimationFrame(scanAnimRef.current); scanAnimRef.current = null }
     streamRef.current?.getTracks().forEach(tr => tr.stop())
     streamRef.current = null
     setScannerOn(false)
@@ -353,19 +384,21 @@ export default function StaffDashboard() {
         {/* Tabs */}
         <div className="flex gap-1 mb-6 p-1 rounded-xl w-fit" style={{ background: '#1d2022', border: '1px solid rgba(66,71,82,0.4)' }}>
           {[
-            ['dashboard', 'dashboard', t('Dashboard', 'اللوحة'), null],
-            ['customers', 'group', t('Customers', 'العملاء'), null],
-            ['messages', 'mail', t('Messages', 'الرسائل'), unreadCount],
-          ].map(([tab, icon, label, badge]) => (
+            ['dashboard', 'dashboard', t('Dashboard', 'اللوحة'), null, true],
+            ['customers', 'group', t('Customers', 'العملاء'), null, true],
+            ['messages', 'mail', t('Messages', 'الرسائل'), unreadCount, true],
+            ['staff', 'manage_accounts', t('Staff', 'الموظفون'), null, isSuperAdmin],
+          ].filter(([,,,,show]) => show).map(([tab, icon, label, badge]) => (
             <button key={tab}
               onClick={() => {
                 setActiveTab(tab)
                 if (tab === 'messages') { loadMessages(); setUnreadCount(0) }
                 if (tab === 'customers') loadAllCustomers('')
+                if (tab === 'staff') loadStaff()
               }}
-              className={`relative flex items-center gap-2 px-5 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === tab ? 'hydro-gradient text-white' : 'text-on-surface-variant hover:text-on-surface'}`}>
+              className={`relative flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === tab ? 'hydro-gradient text-white' : 'text-on-surface-variant hover:text-on-surface'}`}>
               <span className="material-symbols-outlined text-base">{icon}</span>
-              {label}
+              <span className="hidden sm:block">{label}</span>
               {badge > 0 && (
                 <span className="absolute -top-2 -right-2 min-w-[18px] h-[18px] rounded-full flex items-center justify-center text-white font-extrabold px-1"
                   style={{ background: '#e53935', fontSize: '10px', boxShadow: '0 0 0 2px #1d2022', lineHeight: 1 }}>
@@ -612,8 +645,7 @@ export default function StaffDashboard() {
                   </p>
                 </div>
               )}
-              {/* Hidden canvas for QR decoding */}
-              <canvas ref={canvasRef} className="hidden" />
+              {/* Hidden canvas for QR decoding — off-screen, created in useRef */}
               <div className="p-4 flex gap-3">
                 <input value={uidInput} onChange={e => setUidInput(e.target.value.toUpperCase())} onKeyDown={e => e.key === 'Enter' && lookup()} placeholder="RW-00001" className="rasha-input flex-1 uppercase" />
                 <button onClick={() => lookup()} className="btn-primary px-6 py-3 rounded-xl shrink-0">{t('Look Up', 'بحث')}</button>
@@ -667,6 +699,23 @@ export default function StaffDashboard() {
                       <div className="text-center text-xs text-secondary-fixed font-bold mb-3 p-2 rounded-lg"
                         style={{ background: 'rgba(116,245,255,0.08)', border: '1px solid rgba(116,245,255,0.2)' }}>
                         🎉 {t('Free Wash Ready! Customer has earned a complimentary wash.', 'غسيل مجاني! استحق العميل غسيلاً مجانياً.')}
+                      </div>
+                    )}
+                    {/* Cooldown warning */}
+                    {cooldownInfo && (
+                      <div className="p-3 rounded-xl mb-2 text-center" style={{ background: 'rgba(229,57,53,0.1)', border: '1px solid rgba(229,57,53,0.3)' }}>
+                        <p className="text-error text-xs font-semibold mb-1">
+                          {t('QR already scanned today', 'تم مسح QR اليوم مسبقاً')}
+                        </p>
+                        <p className="text-on-surface-variant text-xs">
+                          {t('Next scan available:', 'المسح التالي متاح:')} {cooldownInfo.nextScanAt ? new Date(cooldownInfo.nextScanAt).toLocaleTimeString(t('en-US','ar-SA'),{hour:'2-digit',minute:'2-digit'}) : '—'}
+                        </p>
+                        {cooldownInfo.canForce && isSuperAdmin && (
+                          <button onClick={() => { setCooldownInfo(null); markWash(true) }}
+                            className="mt-2 px-4 py-1.5 rounded-lg text-xs font-bold text-white hydro-gradient hover:opacity-90 transition-opacity">
+                            {t('Force Rescan (Admin Override)', 'تجاوز القيد (صلاحية المشرف)')}
+                          </button>
+                        )}
                       </div>
                     )}
                     {/* Stamp action buttons */}
@@ -877,6 +926,173 @@ export default function StaffDashboard() {
                 </button>
                 <button onClick={submitModal} disabled={modalLoading} className="flex-1 py-3 rounded-xl font-bold text-sm hydro-gradient text-white flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
                   {modalLoading ? <div className="loader" /> : (modalMode === 'add' ? t('Add Customer', 'إضافة') : t('Save Changes', 'حفظ'))}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Staff Management Tab — super_admin only */}
+      {activeTab === 'staff' && isSuperAdmin && (
+        <div className="space-y-4 animate-fade-in max-w-7xl mx-auto px-4 md:px-6 pb-10">
+          <div className="flex justify-between items-center pt-2">
+            <div>
+              <h3 className="font-bold text-on-surface font-display text-lg">{t('Staff Management', 'إدارة الموظفين')}</h3>
+              <p className="text-on-surface-variant text-xs mt-0.5">{t('Add staff members and control their permissions.', 'أضف موظفين وتحكم في صلاحياتهم.')}</p>
+            </div>
+            <button onClick={() => { setStaffModalMode('add'); setStaffModalData({id:null,username:'',password:'',displayName:'',permissions:{}}); setShowStaffModal(true) }}
+              className="hydro-gradient px-5 py-2.5 rounded-xl text-white text-xs font-bold flex items-center gap-2 hover:opacity-90 transition-opacity cyan-glow">
+              <span className="material-symbols-outlined text-base">person_add</span>
+              {t('Add Staff', 'إضافة موظف')}
+            </button>
+          </div>
+          {staffLoading ? <div className="flex justify-center py-12"><div className="loader"/></div> : (
+            <div className="space-y-3">
+              {staffList.map(s => (
+                <div key={s.id} className="glass p-5 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-lg shrink-0"
+                      style={{background: s.role==='super_admin'?'linear-gradient(135deg,#f59e0b,#d97706)':'linear-gradient(135deg,#0056b3,#004491)'}}>
+                      {s.role==='super_admin'?'★':(s.display_name||s.username)[0].toUpperCase()}
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <p className="font-bold text-on-surface">{s.display_name||s.username}</p>
+                        <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${s.role==='super_admin'?'bg-yellow-500/15 text-yellow-400 border border-yellow-500/20':'bg-secondary-fixed/10 text-secondary-fixed border border-secondary-fixed/20'}`}>
+                          {s.role==='super_admin'?t('Super Admin','مشرف رئيسي'):t('Staff','موظف')}
+                        </span>
+                        {!s.is_active && <span className="text-xs px-2 py-0.5 rounded-full bg-error/10 text-error border border-error/20 font-bold">{t('Inactive','معطّل')}</span>}
+                      </div>
+                      <p className="text-xs text-on-surface-variant mt-0.5">@{s.username}</p>
+                      {s.role==='staff' && (
+                        <div className="flex flex-wrap gap-1 mt-2">
+                          {Object.entries(typeof s.permissions==='string'?JSON.parse(s.permissions||'{}'):(s.permissions||{})).filter(([,v])=>v).map(([k])=>(
+                            <span key={k} className="text-xs px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant border border-outline-variant/30 capitalize">
+                              {k.replace(/_/g,' ')}
+                            </span>
+                          ))}
+                          {!Object.values(typeof s.permissions==='string'?JSON.parse(s.permissions||'{}'):(s.permissions||{})).some(Boolean)&&(
+                            <span className="text-xs text-outline italic">{t('No permissions assigned','لا توجد صلاحيات')}</span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  {s.role!=='super_admin' && (
+                    <div className="flex gap-2 shrink-0">
+                      <button onClick={()=>{
+                        setStaffModalMode('edit')
+                        const perms = typeof s.permissions==='string'?JSON.parse(s.permissions||'{}'):(s.permissions||{})
+                        setStaffModalData({id:s.id,username:s.username,password:'',displayName:s.display_name||'',permissions:perms})
+                        setShowStaffModal(true)
+                      }} className="glass px-4 py-2 rounded-xl text-secondary-fixed text-xs font-bold hover:bg-secondary-fixed/5 transition-colors flex items-center gap-1">
+                        <span className="material-symbols-outlined text-base">edit</span>{t('Edit','تعديل')}
+                      </button>
+                      <button onClick={async()=>{
+                        if(!confirm(t(`Remove ${s.display_name||s.username}?`,`إزالة ${s.display_name||s.username}؟`)))return
+                        const res=await fetch(`${API}/api/admin/staff/${s.id}`,{method:'DELETE',headers:hdrs})
+                        if(res.ok){showToast(t('Staff removed','تم حذف الموظف'));loadStaff()}
+                        else showToast(t('Error','خطأ'),'error')
+                      }} className="glass px-4 py-2 rounded-xl text-error text-xs font-bold hover:bg-error/5 transition-colors flex items-center gap-1">
+                        <span className="material-symbols-outlined text-base">delete</span>{t('Remove','إزالة')}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))}
+              {staffList.length===0&&!staffLoading&&(
+                <div className="glass rounded-2xl p-12 text-center">
+                  <span className="material-symbols-outlined text-on-surface-variant text-5xl mb-3 block">group_off</span>
+                  <p className="text-on-surface-variant text-sm">{t('No staff members yet.','لا يوجد موظفون بعد.')}</p>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Add/Edit Staff Modal */}
+      {showStaffModal && (
+        <div className="fixed inset-0 z-[300] flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)' }}>
+          <div className="w-full max-w-lg rounded-2xl p-6 animate-fade-in overflow-y-auto max-h-[90vh]" style={{ background: '#1d2022', border: '1px solid rgba(116,245,255,0.15)' }}>
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="font-bold text-on-surface text-lg font-display">
+                {staffModalMode === 'add' ? t('Add Staff Member', 'إضافة موظف') : t('Edit Staff Member', 'تعديل موظف')}
+              </h3>
+              <button onClick={() => setShowStaffModal(false)} className="text-on-surface-variant hover:text-on-surface">
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <label className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-1.5 block">{t('Display Name', 'الاسم المعروض')}</label>
+                <input className="w-full px-3 py-2.5 rounded-lg text-on-surface text-sm focus:outline-none" style={{ background:'#272a2c', border:'1px solid #424752' }}
+                  value={staffModalData.displayName} onChange={e=>setStaffModalData(d=>({...d,displayName:e.target.value}))}
+                  onFocus={e=>e.target.style.borderColor='#74f5ff'} onBlur={e=>e.target.style.borderColor='#424752'} />
+              </div>
+              {staffModalMode === 'add' && (
+                <div>
+                  <label className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-1.5 block">{t('Username', 'اسم المستخدم')} *</label>
+                  <input className="w-full px-3 py-2.5 rounded-lg text-on-surface text-sm focus:outline-none" style={{ background:'#272a2c', border:'1px solid #424752' }}
+                    value={staffModalData.username} onChange={e=>setStaffModalData(d=>({...d,username:e.target.value}))}
+                    onFocus={e=>e.target.style.borderColor='#74f5ff'} onBlur={e=>e.target.style.borderColor='#424752'} />
+                </div>
+              )}
+              <div>
+                <label className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-1.5 block">
+                  {t('Password', 'كلمة المرور')} {staffModalMode==='edit'?t('(leave blank to keep)','(اتركه للإبقاء)'):'*'}
+                </label>
+                <input type="password" className="w-full px-3 py-2.5 rounded-lg text-on-surface text-sm focus:outline-none" style={{ background:'#272a2c', border:'1px solid #424752' }}
+                  value={staffModalData.password} onChange={e=>setStaffModalData(d=>({...d,password:e.target.value}))}
+                  onFocus={e=>e.target.style.borderColor='#74f5ff'} onBlur={e=>e.target.style.borderColor='#424752'} />
+              </div>
+              {/* Permissions */}
+              <div>
+                <label className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-3 block">{t('Permissions', 'الصلاحيات')}</label>
+                <div className="grid grid-cols-1 gap-2">
+                  {[
+                    ['mark_wash',        t('Mark Wash / Add Stamp',       'تسجيل الغسيل / إضافة طابع')],
+                    ['view_customers',   t('View Customers',               'عرض العملاء')],
+                    ['edit_customers',   t('Add / Edit Customers',         'إضافة / تعديل العملاء')],
+                    ['delete_customers', t('Delete Customers',             'حذف العملاء')],
+                    ['view_bookings',    t('View Bookings',                'عرض الحجوزات')],
+                    ['cancel_bookings',  t('Cancel Bookings',              'إلغاء الحجوزات')],
+                    ['view_messages',    t('View Support Messages',         'عرض رسائل الدعم')],
+                  ].map(([key, label]) => (
+                    <label key={key} className="flex items-center gap-3 p-3 rounded-xl cursor-pointer hover:bg-surface-container transition-colors"
+                      style={{ background: staffModalData.permissions[key] ? 'rgba(0,86,179,0.1)' : '#272a2c', border: `1px solid ${staffModalData.permissions[key] ? 'rgba(116,245,255,0.3)' : '#424752'}` }}>
+                      <input type="checkbox" checked={!!staffModalData.permissions[key]}
+                        onChange={e=>setStaffModalData(d=>({...d,permissions:{...d.permissions,[key]:e.target.checked}}))}
+                        style={{ accentColor:'#00f1fe', width:'16px', height:'16px' }} />
+                      <span className={`text-sm font-semibold ${staffModalData.permissions[key]?'text-secondary-fixed':'text-on-surface-variant'}`}>{label}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+              <div className="flex gap-3 pt-2">
+                <button onClick={()=>setShowStaffModal(false)} className="flex-1 py-3 rounded-xl text-on-surface-variant font-bold text-sm" style={{background:'#272a2c',border:'1px solid #424752'}}>
+                  {t('Cancel','إلغاء')}
+                </button>
+                <button
+                  onClick={async () => {
+                    const { id, username, password, displayName, permissions } = staffModalData
+                    if (staffModalMode==='add' && (!username||!password)) { showToast(t('Username and password required','اسم المستخدم وكلمة المرور مطلوبان'),'error'); return }
+                    try {
+                      let res
+                      if (staffModalMode==='add') {
+                        res = await fetch(`${API}/api/admin/staff`,{method:'POST',headers:hdrs,body:JSON.stringify({username:username.trim().toLowerCase(),password,displayName,permissions})})
+                      } else {
+                        res = await fetch(`${API}/api/admin/staff/${id}`,{method:'PATCH',headers:hdrs,body:JSON.stringify({displayName,password:password||undefined,permissions})})
+                      }
+                      const data = await res.json()
+                      if(!res.ok){showToast(data.error||t('Error','خطأ'),'error');return}
+                      showToast(staffModalMode==='add'?t('Staff member added!','تم إضافة الموظف!'):t('Staff member updated!','تم تحديث الموظف!'))
+                      setShowStaffModal(false)
+                      loadStaff()
+                    } catch { showToast(t('Error','خطأ'),'error') }
+                  }}
+                  className="flex-1 py-3 rounded-xl font-bold text-sm hydro-gradient text-white flex items-center justify-center gap-2 hover:opacity-90">
+                  {staffModalMode==='add'?t('Add Staff Member','إضافة موظف'):t('Save Changes','حفظ التغييرات')}
                 </button>
               </div>
             </div>
