@@ -116,9 +116,11 @@ export default function StaffDashboard() {
       const res = await fetch(`${API}/api/admin/customers/${customer.customer_uid}/mark-wash`, { method: 'POST', headers: hdrs })
       const data = await res.json()
       if (!res.ok) { showToast(data.error || t('Error', 'خطأ'), 'error'); return }
-      showToast(data.message || t('Wash marked!', 'تم تسجيل الغسيل!'))
-      if (data.earnedFreeWash) showToast(`🎉 ${t('Customer earned a FREE wash!', 'العميل ربح غسيلاً مجانياً!')}`)
-      setCustomer(c => ({ ...c, stamps: data.stampsNow }))
+      showToast(data.message)
+      if (data.earnedFreeWash) showToast(`🎉 ${t('Free wash ready! Mark wash again to redeem.', 'غسيل مجاني جاهز! اضغط مجدداً للاستخدام.')}`)
+      if (data.usedFreeWash)  showToast(`✅ ${t('Free wash redeemed. Stamps reset.', 'تم استخدام الغسيل المجاني. تمت إعادة الطوابع.')}`)
+      setCustomer(c => ({ ...c, stamps: data.stampsNow, total_washes: data.totalWashes,
+        free_washes_used: data.usedFreeWash ? (c.free_washes_used ?? 0) + 1 : c.free_washes_used }))
       loadData()
     } catch { showToast(t('Error', 'خطأ'), 'error') }
   }
@@ -670,9 +672,10 @@ export default function StaffDashboard() {
                     {/* Stamp action buttons */}
                     <div className="grid grid-cols-2 gap-3">
                       <button onClick={markWash}
-                        className="hydro-gradient py-3 rounded-xl text-white font-bold text-sm flex items-center justify-center gap-2 hover:opacity-90 transition-opacity cyan-glow">
-                        <span className="material-symbols-outlined fill-icon text-base">add_circle</span>
-                        {t('Add Stamp', 'إضافة طابع')}
+                        className={`py-3 rounded-xl text-white font-bold text-sm flex items-center justify-center gap-2 hover:opacity-90 transition-opacity ${customer.stamps >= 5 ? 'cyan-glow' : 'hydro-gradient cyan-glow'}`}
+                        style={customer.stamps >= 5 ? { background: 'linear-gradient(135deg,#00a86b,#00c17a)' } : {}}>
+                        <span className="material-symbols-outlined fill-icon text-base">{customer.stamps >= 5 ? 'redeem' : 'add_circle'}</span>
+                        {customer.stamps >= 5 ? t('Redeem Free Wash', 'استخدام الغسيل المجاني') : t('Add Stamp', 'إضافة طابع')}
                       </button>
                       <button
                         onClick={async () => {
