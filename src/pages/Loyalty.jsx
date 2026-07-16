@@ -10,6 +10,7 @@ export default function Loyalty() {
   const [history, setHistory] = useState([])
   const [nextBooking, setNextBooking] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [qrExpanded, setQrExpanded] = useState(false)
 
   useEffect(() => {
     if (!token) { navigate('/login'); return }
@@ -57,6 +58,19 @@ export default function Loyalty() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Mobile-only: quick QR access */}
+          <div className="lg:hidden glass p-4 rounded-2xl flex items-center justify-between">
+            <div>
+              <p className="text-xs font-bold text-secondary-fixed uppercase tracking-wider">{t('Member Pass', 'بطاقة العضوية')}</p>
+              <p className="text-on-surface text-sm font-bold mt-0.5">{customerId}</p>
+            </div>
+            <button
+              onClick={() => setQrExpanded(true)}
+              className="hydro-gradient px-4 py-2 rounded-xl text-white text-xs font-bold flex items-center gap-2 cyan-glow">
+              <span className="material-symbols-outlined text-base">qr_code</span>
+              {t('Show QR', 'عرض QR')}
+            </button>
+          </div>
           {/* Left */}
           <div className="lg:col-span-2 space-y-6">
             {/* Stamp Card */}
@@ -127,9 +141,28 @@ export default function Loyalty() {
             {/* Member Pass */}
             <div className="glass p-6 rounded-2xl text-center">
               <p className="text-xs font-bold text-secondary-fixed uppercase tracking-widest mb-4">{t('Member Pass', 'بطاقة العضوية')}</p>
-              <div className="bg-white p-3 rounded-xl mb-4 mx-auto" style={{ width: 160, height: 160 }}>
-                <QRCodeSVG value={customerId} size={136} level="H" />
-              </div>
+
+              {/* QR — tap to expand */}
+              <button
+                onClick={() => setQrExpanded(true)}
+                className="relative mx-auto block group"
+                title={t('Tap to enlarge', 'اضغط للتكبير')}
+              >
+                <div className="bg-white p-3 rounded-xl mx-auto transition-transform group-hover:scale-105 group-active:scale-95"
+                  style={{ width: 170, height: 170 }}>
+                  <QRCodeSVG value={customerId} size={146} level="M" />
+                </div>
+                {/* Expand hint */}
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"
+                  style={{ background: 'rgba(0,0,0,0.45)' }}>
+                  <span className="material-symbols-outlined text-white text-3xl">zoom_in</span>
+                </div>
+              </button>
+
+              <p className="text-xs text-on-surface-variant mt-2 mb-3">
+                {t('Tap QR to enlarge for scanning', 'اضغط على QR للتكبير والمسح')}
+              </p>
+
               <h4 className="font-bold text-on-surface font-display">{name.toUpperCase()}</h4>
               <p className="text-xs text-secondary-fixed mt-1 font-bold">{customerId}</p>
               {memberSince && <p className="text-xs text-on-surface-variant mt-1">{t('Member since', 'عضو منذ')} {new Date(memberSince).toLocaleDateString(t('en-US','ar-SA'),{year:'numeric',month:'long'})}</p>}
@@ -160,6 +193,35 @@ export default function Loyalty() {
           </div>
         </div>
       </main>
+
+      {/* QR Fullscreen Modal */}
+      {qrExpanded && (
+        <div
+          className="fixed inset-0 z-[500] flex items-center justify-center p-6 animate-fade-in"
+          style={{ background: 'rgba(0,0,0,0.92)' }}
+          onClick={() => setQrExpanded(false)}
+        >
+          <div className="flex flex-col items-center gap-6" onClick={e => e.stopPropagation()}>
+            {/* Large QR */}
+            <div className="bg-white p-5 rounded-3xl shadow-2xl"
+              style={{ boxShadow: '0 0 60px rgba(116,245,255,0.3)' }}>
+              <QRCodeSVG value={customerId} size={260} level="M" />
+            </div>
+            <div className="text-center">
+              <p className="text-secondary-fixed font-bold text-xl font-display tracking-widest">{customerId}</p>
+              <p className="text-white font-bold mt-1">{name.toUpperCase()}</p>
+              <p className="text-on-surface-variant text-sm mt-1">{t('Show this to staff for scanning', 'أرِ هذا للموظف للمسح')}</p>
+            </div>
+            <button
+              onClick={() => setQrExpanded(false)}
+              className="flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm"
+              style={{ background: 'rgba(255,255,255,0.1)', color: 'white', border: '1px solid rgba(255,255,255,0.2)' }}>
+              <span className="material-symbols-outlined text-base">close</span>
+              {t('Close', 'إغلاق')}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
