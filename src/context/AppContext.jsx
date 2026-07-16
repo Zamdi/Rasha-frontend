@@ -11,7 +11,7 @@ export function AppProvider({ children }) {
     try { return JSON.parse(localStorage.getItem('rasha_customer')) } catch { return null }
   })
   const [token, setToken] = useState(() => localStorage.getItem('rasha_token'))
-  const [staffToken, setStaffToken] = useState(null)
+  const [staffToken, setStaffTokenState] = useState(() => localStorage.getItem('rasha_staff_token'))
 
   const toggleLang = () => {
     const next = lang === 'en' ? 'ar' : 'en'
@@ -38,6 +38,13 @@ export function AppProvider({ children }) {
     setCustomer(null)
     localStorage.removeItem('rasha_token')
     localStorage.removeItem('rasha_customer')
+  }
+
+  // Wrap setStaffToken so it always syncs with localStorage
+  const setStaffToken = (tok) => {
+    setStaffTokenState(tok)
+    if (tok) localStorage.setItem('rasha_staff_token', tok)
+    else localStorage.removeItem('rasha_staff_token')
   }
 
   useEffect(() => {

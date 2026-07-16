@@ -12,7 +12,7 @@ const INVENTORY = [
 const MODAL_BLANK = { firstName: '', lastName: '', email: '', phone: '', password: '' }
 
 export default function StaffDashboard() {
-  const { t, staffToken, setStaffToken, showToast } = useApp()
+  const { t, staffToken, setStaffToken, showToast, lang, toggleLang } = useApp()
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('dashboard')
   const [stats, setStats] = useState(null)
@@ -314,6 +314,13 @@ export default function StaffDashboard() {
             <span className="hidden md:block text-xs text-on-surface-variant font-semibold uppercase tracking-widest">{t('Staff Portal', 'بوابة الموظفين')}</span>
           </div>
           <div className="flex gap-2">
+            <button
+              onClick={toggleLang}
+              className="glass px-3 py-2 rounded-xl text-secondary-fixed text-xs font-bold flex items-center gap-1 hover:border-secondary-fixed/50 transition-all"
+            >
+              <span className="material-symbols-outlined text-base">language</span>
+              <span>{lang === 'en' ? 'AR' : 'EN'}</span>
+            </button>
             <button onClick={loadData} className="glass px-4 py-2 rounded-xl text-secondary-fixed text-xs font-bold flex items-center gap-1 hover:border-secondary-fixed/50 transition-all">
               <span className="material-symbols-outlined text-base">refresh</span>
               <span className="hidden sm:block">{t('Refresh', 'تحديث')}</span>
@@ -745,7 +752,7 @@ export default function StaffDashboard() {
                             b.status==='confirmed'?'bg-secondary-container/20 text-secondary-fixed border border-secondary-container/30':
                             b.status==='completed'?'bg-green-500/10 text-green-400 border border-green-500/20':
                             'bg-error-container/20 text-error border border-error/20'
-                          }`}>{b.status}</span>
+                          }`}>{b.status === 'confirmed' ? t('Confirmed','مؤكد') : b.status === 'completed' ? t('Completed','مكتمل') : t('Cancelled','ملغى')}</span>
                         </td>
                         <td className="px-4 py-3">
                           {b.status==='confirmed'&&<button onClick={()=>cancelBooking(b.id)} className="text-error text-xs hover:underline">{t('Cancel','إلغاء')}</button>}
@@ -772,7 +779,7 @@ export default function StaffDashboard() {
                     <button key={c.id} onClick={()=>{ setUidInput(c.customer_uid); setSearchResults([]); setSearchQuery(''); lookup(c.customer_uid); }} className="w-full flex items-center justify-between p-3 rounded-xl bg-surface-container hover:bg-surface-container-high cursor-pointer transition-colors text-start">
                       <div>
                         <p className="text-sm font-semibold text-on-surface">{c.first_name} {c.last_name}</p>
-                        <p className="text-xs text-on-surface-variant">{c.customer_uid} · {c.stamps}/5 stamps</p>
+                        <p className="text-xs text-on-surface-variant">{c.customer_uid} · {c.stamps}/5 {t('stamps', 'طوابع')}</p>
                       </div>
                       <span className="material-symbols-outlined text-secondary-fixed text-base rtl-flip">chevron_right</span>
                     </button>
