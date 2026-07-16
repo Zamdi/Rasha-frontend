@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { QRCodeSVG } from 'qrcode.react'
+import { QRCodeCanvas } from 'qrcode.react'
 import { useApp, API } from '../context/AppContext'
 
 export default function Loyalty() {
@@ -148,9 +148,9 @@ export default function Loyalty() {
                 className="relative mx-auto block group"
                 title={t('Tap to enlarge', 'اضغط للتكبير')}
               >
-                <div className="bg-white p-3 rounded-xl mx-auto transition-transform group-hover:scale-105 group-active:scale-95"
-                  style={{ width: 170, height: 170 }}>
-                  <QRCodeSVG value={customerId} size={146} level="M" fgColor="#000000" bgColor="#ffffff" />
+                <div className="p-3 rounded-xl mx-auto transition-transform group-hover:scale-105 group-active:scale-95"
+                  style={{ width: 170, height: 170, background: '#ffffff' }}>
+                  <QRCodeCanvas value={customerId} size={146} level="M" fgColor="#000000" bgColor="#ffffff" style={{ display: 'block' }} />
                 </div>
                 {/* Expand hint */}
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"
@@ -203,9 +203,9 @@ export default function Loyalty() {
         >
           <div className="flex flex-col items-center gap-6" onClick={e => e.stopPropagation()}>
             {/* Large QR */}
-            <div className="bg-white p-5 rounded-3xl shadow-2xl"
-              style={{ boxShadow: '0 0 60px rgba(116,245,255,0.3)' }}>
-              <QRCodeSVG value={customerId} size={260} level="M" fgColor="#000000" bgColor="#ffffff" />
+            <div className="p-5 rounded-3xl shadow-2xl"
+              style={{ background: '#ffffff', boxShadow: '0 0 60px rgba(116,245,255,0.3)' }}>
+              <QRCodeCanvas value={customerId} size={260} level="M" fgColor="#000000" bgColor="#ffffff" style={{ display: 'block' }} />
             </div>
             <div className="text-center">
               <p className="text-secondary-fixed font-bold text-xl font-display tracking-widest">{customerId}</p>

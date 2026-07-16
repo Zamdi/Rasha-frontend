@@ -134,3 +134,7 @@
 }
 .fill-icon { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
 [dir="rtl"] .rtl-flip { transform: scaleX(-1); }
+
+/* Prevent dark mode / CSS from affecting QR canvas colors */
+canvas { color: #000000 !important; }
+
