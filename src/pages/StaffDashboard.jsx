@@ -334,7 +334,7 @@ export default function StaffDashboard() {
   const staffLogout = () => { stopScanner(); setStaffToken(null); navigate('/') }
 
   const now = new Date()
-  const shiftInfo = `${now.toLocaleDateString(t('en-US','ar-SA'),{weekday:'long',month:'long',day:'numeric'})} · ${now.toLocaleTimeString(t('en-US','ar-SA'),{hour:'2-digit',minute:'2-digit'})}`
+  const shiftInfo = `${now.toLocaleDateString(t('en-US','ar-EG'),{weekday:'long',month:'long',day:'numeric'})} · ${now.toLocaleTimeString(t('en-US','ar-EG'),{hour:'2-digit',minute:'2-digit'})}`
 
   return (
     <div className="min-h-screen bg-background">
@@ -708,7 +708,7 @@ export default function StaffDashboard() {
                           {t('QR already scanned today', 'تم مسح QR اليوم مسبقاً')}
                         </p>
                         <p className="text-on-surface-variant text-xs">
-                          {t('Next scan available:', 'المسح التالي متاح:')} {cooldownInfo.nextScanAt ? new Date(cooldownInfo.nextScanAt).toLocaleTimeString(t('en-US','ar-SA'),{hour:'2-digit',minute:'2-digit'}) : '—'}
+                          {t('Next scan available:', 'المسح التالي متاح:')} {cooldownInfo.nextScanAt ? new Date(cooldownInfo.nextScanAt).toLocaleTimeString(t('en-US','ar-EG'),{hour:'2-digit',minute:'2-digit'}) : '—'}
                         </p>
                         {cooldownInfo.canForce && isSuperAdmin && (
                           <button onClick={() => { setCooldownInfo(null); markWash(true) }}

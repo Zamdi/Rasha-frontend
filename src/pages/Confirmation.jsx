@@ -46,7 +46,7 @@ export default function Confirmation() {
   if (!state) return null
   const { ref, service, date, time, name, phone, vehicle } = state
   const svcLabel = service === 'full' ? t('Full Wash', 'غسيل كامل') : t('Exterior Only', 'خارجي فقط')
-  const formattedDate = date ? new Date(date + 'T12:00:00').toLocaleDateString(t('en-US', 'ar-SA'), { year: 'numeric', month: 'long', day: 'numeric' }) : ''
+  const formattedDate = date ? new Date(date.slice(0,10) + 'T12:00:00').toLocaleDateString(t('en-US', 'ar-EG'), { year: 'numeric', month: 'long', day: 'numeric' }) : ''
 
   const downloadPDF = () => {
     const html = `<!DOCTYPE html>

@@ -83,9 +83,9 @@ export default function Register() {
             </div>
             <div>
               <label className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2 block">{t('Phone','الهاتف')}</label>
-              <div className="flex">
-                <span className="bg-surface-container-high border border-outline-variant/50 border-e-0 rounded-s-xl px-3 py-3 text-sm text-on-surface-variant flex items-center shrink-0">+249</span>
-                <input type="tel" placeholder="9XX XXX XXXX" className="rasha-input rounded-s-none" value={form.phone} onChange={e=>set('phone',e.target.value.replace(/\D/g,''))}/>
+              <div className="flex" dir="ltr">
+                <span className="bg-surface-container-high border border-outline-variant/50 border-r-0 rounded-l-xl px-3 py-3 text-sm text-on-surface-variant flex items-center shrink-0">+249</span>
+                <input type="tel" placeholder="9XX XXX XXXX" className="rasha-input" style={{borderRadius:'0 0.75rem 0.75rem 0'}} value={form.phone} onChange={e=>set('phone',e.target.value.replace(/\D/g,''))}/>
               </div>
             </div>
             <div>

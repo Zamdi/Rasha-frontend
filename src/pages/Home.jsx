@@ -69,9 +69,9 @@ export default function Home() {
                 </div>
                 <div>
                   <label className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2 block">{t('Phone Number', 'رقم الهاتف')}</label>
-                  <div className="flex">
-                    <span className="bg-surface-container-high border border-outline-variant/50 border-e-0 rounded-s-xl px-3 py-3 text-sm text-on-surface-variant flex items-center">+249</span>
-                    <input type="tel" placeholder="9XX XXX XXXX" className="rasha-input rounded-s-none rounded-e-xl" style={{ borderStartStartRadius: 0, borderEndStartRadius: 0 }} value={heroPhone} onChange={e => setHeroPhone(e.target.value.replace(/\D/g, ''))} />
+                  <div className="flex" dir="ltr">
+                    <span className="bg-surface-container-high border border-outline-variant/50 border-r-0 rounded-l-xl px-3 py-3 text-sm text-on-surface-variant flex items-center">+249</span>
+                    <input type="tel" placeholder="9XX XXX XXXX" className="rasha-input" style={{borderRadius:'0 0.75rem 0.75rem 0'}} value={heroPhone} onChange={e => setHeroPhone(e.target.value.replace(/\D/g, ''))} />
                   </div>
                 </div>
                 <button onClick={handleHeroBook} className="w-full py-4 rounded-xl bg-secondary-container text-on-secondary-container font-extrabold text-sm uppercase tracking-widest hover:opacity-90 transition-opacity">
@@ -157,7 +157,7 @@ export default function Home() {
             <div>
               <div className="text-on-surface font-bold mb-3">{t('Quick Links', 'روابط سريعة')}</div>
               <div className="flex flex-col gap-2 text-on-surface-variant">
-                {[['/','Home','الرئيسية'],['/book','Book','احجز'],['/login','Sign In','دخول'],['/contact','Contact Support','الدعم'],['/staff','Staff Portal','الموظفون']].map(([to,en,ar])=>(
+                {[['/','Home','الرئيسية'],['/book','Book','احجز'],['/login','Sign In','دخول'],['/contact','Contact Support','الدعم']].map(([to,en,ar])=>(
                   <Link key={to} to={to} className="hover:text-secondary-fixed transition-colors">{t(en,ar)}</Link>
                 ))}
               </div>
@@ -171,8 +171,11 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div className="max-w-7xl mx-auto px-4 md:px-6 mt-8 pt-6 border-t border-outline-variant/10 text-center text-on-surface-variant text-xs">
-          © 2025 Rasha Car Wash. {t('All rights reserved.', 'جميع الحقوق محفوظة.')}
+        <div className="max-w-7xl mx-auto px-4 md:px-6 mt-8 pt-6 border-t border-outline-variant/10 flex items-center justify-between text-on-surface-variant text-xs">
+          <span>© 2025 Rasha Car Wash. {t('All rights reserved.', 'جميع الحقوق محفوظة.')}</span>
+          <Link to="/staff" className="text-outline-variant/40 hover:text-outline-variant transition-colors" title="">
+            <span className="material-symbols-outlined" style={{fontSize:'14px'}}>settings</span>
+          </Link>
         </div>
       </footer>
     </div>

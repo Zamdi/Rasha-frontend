@@ -181,8 +181,10 @@ export default function Contact() {
                 <span className="material-symbols-outlined text-on-surface-variant text-xl mt-0.5">schedule</span>
                 <div>
                   <p className="text-on-surface font-semibold text-sm">{t('Support Hours', 'ساعات الدعم')}</p>
-                  <p className="text-on-surface-variant text-sm mt-0.5" dir="ltr" style={{unicodeBidi:'embed'}}>
-                    {t('Saturday - Thursday: 11:00 AM - 12:00 AM', 'السبت - الخميس: 11:00 AM - 12:00 AM')}
+                  <p className="text-on-surface-variant text-sm mt-0.5">
+                    {t('Saturday - Thursday', 'السبت - الخميس')}
+                    {': '}
+                    <span dir="ltr" style={{unicodeBidi:'embed'}}>11:00 AM - 12:00 AM</span>
                   </p>
                 </div>
               </div>

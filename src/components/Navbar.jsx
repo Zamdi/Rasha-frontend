@@ -67,9 +67,6 @@ export default function Navbar() {
             </div>
           )}
 
-          <Link to="/staff" className="text-on-surface-variant hover:text-secondary-fixed transition-colors" title="Staff Portal">
-            <span className="material-symbols-outlined text-xl">admin_panel_settings</span>
-          </Link>
         </div>
       </div>
     </nav>

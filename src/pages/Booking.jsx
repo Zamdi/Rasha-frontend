@@ -135,9 +135,9 @@ export default function Booking() {
             </div>
             <div>
               <label className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2 block">{t('Phone', 'الهاتف')} *</label>
-              <div className="flex">
-                <span className="bg-surface-container-high border border-outline-variant/50 border-e-0 rounded-s-xl px-3 py-3 text-sm text-on-surface-variant flex items-center shrink-0">+249</span>
-                <input type="tel" placeholder="9XX XXX XXXX" className="rasha-input rounded-s-none" value={form.phone} onChange={e => setForm(f => ({...f, phone: e.target.value.replace(/\D/g,'')}))} />
+              <div className="flex" dir="ltr">
+                <span className="bg-surface-container-high border border-outline-variant/50 border-r-0 rounded-l-xl px-3 py-3 text-sm text-on-surface-variant flex items-center shrink-0">+249</span>
+                <input type="tel" placeholder="9XX XXX XXXX" className="rasha-input rounded-l-none rounded-r-xl" style={{borderRadius:'0 0.75rem 0.75rem 0'}} value={form.phone} onChange={e => setForm(f => ({...f, phone: e.target.value.replace(/\D/g,'')}))} />
               </div>
             </div>
             <div>
@@ -173,7 +173,7 @@ export default function Booking() {
               <div className="flex justify-between items-center mb-4">
                 <h3 className="font-bold text-on-surface">{t('Available Slots', 'المواعيد المتاحة')}</h3>
                 <span className="text-xs text-secondary-fixed font-bold">
-                  {new Date(form.date + 'T12:00:00').toLocaleDateString(t('en-US', 'ar-SA'), { weekday: 'short', month: 'short', day: 'numeric' })}
+                  {new Date(form.date + 'T12:00:00').toLocaleDateString(t('en-US', 'ar-EG'), { weekday: 'short', month: 'short', day: 'numeric' })}
                 </span>
               </div>
               {slotsLoading ? (
@@ -189,6 +189,7 @@ export default function Booking() {
                         disabled={booked}
                         onClick={() => setSelectedSlot(slot)}
                         className={`py-2 px-1 text-xs font-semibold rounded-xl transition-all ${booked ? 'slot-booked' : selected ? 'slot-selected' : 'slot-available'}`}
+                        dir="ltr"
                       >
                         {slot}
                       </button>
@@ -217,7 +218,7 @@ export default function Booking() {
                   [t('Name','الاسم'), `${form.firstName} ${form.lastName}`, false],
                   [t('Phone','الهاتف'), `+249${form.phone}`, true],
                   [t('Service','الخدمة'), serviceLabel, false],
-                  [t('Date','التاريخ'), new Date(form.date + 'T12:00:00').toLocaleDateString(t('en-US','ar-SA'), {year:'numeric',month:'long',day:'numeric'}), false],
+                  [t('Date','التاريخ'), new Date(form.date + 'T12:00:00').toLocaleDateString(t('en-US','ar-EG'), {year:'numeric',month:'long',day:'numeric'}), false],
                   [t('Time','الوقت'), selectedSlot, true],
                   ...(form.vehicle ? [[t('Vehicle','السيارة'), form.vehicle, false]] : []),
                 ].map(([label, value, ltr]) => (

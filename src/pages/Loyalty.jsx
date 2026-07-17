@@ -126,7 +126,7 @@ export default function Loyalty() {
                         <p className="text-sm text-on-surface font-semibold">
                           {v.is_free_wash ? `${t('Free Wash', 'غسيل مجاني')} 🎉` : t('Wash', 'غسيل')}
                         </p>
-                        <p className="text-xs text-on-surface-variant">{new Date(v.visited_at).toLocaleDateString(t('en-US','ar-SA'),{year:'numeric',month:'short',day:'numeric'})}</p>
+                        <p className="text-xs text-on-surface-variant">{new Date(v.visited_at).toLocaleDateString(t('en-US','ar-EG'),{year:'numeric',month:'short',day:'numeric'})}</p>
                       </div>
                     </div>
                     <span className="text-xs text-secondary-fixed font-bold" dir="ltr" style={{unicodeBidi:'embed'}}>{v.stamps_before} → {v.stamps_after}</span>
@@ -165,7 +165,7 @@ export default function Loyalty() {
 
               <h4 className="font-bold text-on-surface font-display">{name.toUpperCase()}</h4>
               <p className="text-xs text-secondary-fixed mt-1 font-bold" dir="ltr" style={{unicodeBidi:"embed"}}>{customerId}</p>
-              {memberSince && <p className="text-xs text-on-surface-variant mt-1">{t('Member since', 'عضو منذ')} {new Date(memberSince).toLocaleDateString(t('en-US','ar-SA'),{year:'numeric',month:'long'})}</p>}
+              {memberSince && <p className="text-xs text-on-surface-variant mt-1">{t('Member since', 'عضو منذ')} {new Date(memberSince).toLocaleDateString(t('en-US','ar-EG'),{year:'numeric',month:'long'})}</p>}
               <Link to="/book" className="btn-primary mt-4 w-full py-3 rounded-xl text-xs uppercase tracking-widest">
                 {t('Book a Wash', 'احجز غسيل')}
               </Link>
@@ -184,7 +184,7 @@ export default function Loyalty() {
                       {nextBooking.service_type === 'full' ? t('Full Wash', 'غسيل كامل') : t('Exterior Only', 'خارجي فقط')}
                     </p>
                     <p className="text-xs text-on-surface-variant" dir="ltr" style={{unicodeBidi:'embed'}}>
-                      {new Date(nextBooking.booking_date + 'T12:00:00').toLocaleDateString(t('en-US','ar-SA'),{month:'short',day:'numeric'})} · {nextBooking.booking_time}
+                      {new Date(nextBooking.booking_date.slice(0,10) + 'T12:00:00').toLocaleDateString(t('en-US','ar-EG'),{month:'short',day:'numeric'})} · {nextBooking.booking_time}
                     </p>
                   </div>
                 </div>
