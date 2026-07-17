@@ -1,3 +1,76 @@
+/* ── Dark mode (default) ───────────────────────────────────── */
+:root {
+  --color-surface:                   #101415;
+  --color-surface-dim:               #101415;
+  --color-surface-container-lowest:  #0b0f10;
+  --color-surface-container-low:     #191c1e;
+  --color-surface-container:         #1d2022;
+  --color-surface-container-high:    #272a2c;
+  --color-surface-container-highest: #323537;
+  --color-surface-bright:            #363a3b;
+  --color-surface-variant:           #323537;
+  --color-on-surface:                #e0e3e5;
+  --color-on-surface-variant:        #c2c6d4;
+  --color-outline:                   #8c909e;
+  --color-outline-variant:           #424752;
+  --color-primary:                   #acc7ff;
+  --color-on-primary:                #002f67;
+  --color-primary-container:         #0056b3;
+  --color-secondary-fixed:           #74f5ff;
+  --color-secondary-fixed-dim:       #00dbe7;
+  --color-secondary-container:       #00f1fe;
+  --color-error:                     #ffb4ab;
+  --color-error-container:           #93000a;
+  --color-background:                #101415;
+  --color-on-background:             #e0e3e5;
+
+  /* Glass / component overrides */
+  --glass-bg:        rgba(25, 28, 30, 0.5);
+  --glass-high-bg:   rgba(25, 28, 30, 0.85);
+  --glass-border:    rgba(116, 245, 255, 0.12);
+  --glass-high-border: rgba(116, 245, 255, 0.15);
+  --input-bg:        #272a2c;
+  --input-border:    #424752;
+  --navbar-bg:       rgba(16, 20, 21, 0.95);
+  --scrollbar-track: #101415;
+}
+
+/* ── Light / Daylight mode ─────────────────────────────────── */
+html.light {
+  --color-surface:                   #f4f1ec;
+  --color-surface-dim:               #e8e4de;
+  --color-surface-container-lowest:  #ffffff;
+  --color-surface-container-low:     #f9f7f4;
+  --color-surface-container:         #f0ede8;
+  --color-surface-container-high:    #e8e4de;
+  --color-surface-container-highest: #dedad4;
+  --color-surface-bright:            #ffffff;
+  --color-surface-variant:           #e4e0da;
+  --color-on-surface:                #1a1a18;
+  --color-on-surface-variant:        #4a4845;
+  --color-outline:                   #8a8782;
+  --color-outline-variant:           #cbc7c1;
+  --color-primary:                   #0056b3;
+  --color-on-primary:                #ffffff;
+  --color-primary-container:         #0056b3;
+  --color-secondary-fixed:           #007a85;
+  --color-secondary-fixed-dim:       #005f6b;
+  --color-secondary-container:       #00b4c2;
+  --color-error:                     #b3261e;
+  --color-error-container:           #f9dedc;
+  --color-background:                #f4f1ec;
+  --color-on-background:             #1a1a18;
+
+  /* Glass / component overrides */
+  --glass-bg:          rgba(255, 255, 255, 0.7);
+  --glass-high-bg:     rgba(255, 255, 255, 0.92);
+  --glass-border:      rgba(0, 86, 179, 0.15);
+  --glass-high-border: rgba(0, 86, 179, 0.2);
+  --input-bg:          #ffffff;
+  --input-border:      #cbc7c1;
+  --navbar-bg:         rgba(244, 241, 236, 0.95);
+  --scrollbar-track:   #f4f1ec;
+}
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -8,21 +81,21 @@
     font-family: 'Inter', 'Noto Kufi Arabic', sans-serif;
   }
   ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: #101415; }
+  ::-webkit-scrollbar-track { background: var(--scrollbar-track); }
   ::-webkit-scrollbar-thumb { background: #74f5ff; border-radius: 10px; }
 }
 
 @layer components {
   .glass {
-    background: rgba(25, 28, 30, 0.5);
+    background: var(--glass-bg);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(116, 245, 255, 0.12);
+    border: 1px solid var(--glass-border);
   }
   .glass-high {
-    background: rgba(25, 28, 30, 0.85);
+    background: var(--glass-high-bg);
     backdrop-filter: blur(24px);
-    border: 1px solid rgba(116, 245, 255, 0.15);
+    border: 1px solid var(--glass-high-border);
   }
   .hydro-gradient {
     background: linear-gradient(135deg, #0056b3 0%, #004491 100%);
@@ -52,7 +125,7 @@
     box-shadow: 0 0 10px rgba(0, 241, 254, 0.2);
   }
   .stamp-empty {
-    border: 1px solid #424752;
+    border: 1px solid var(--input-border);
     background: rgba(39, 42, 44, 0.5);
   }
   .slot-available {
@@ -64,12 +137,14 @@
     color: white;
   }
   .slot-booked {
-    @apply bg-error-container/10 border border-error/20 text-outline cursor-not-allowed;
+    @apply text-outline cursor-not-allowed;
+    background: rgba(147,0,10,0.1);
+    border: 1px solid rgba(255,180,171,0.2);
   }
   .otp-input {
     @apply w-11 h-14 text-center text-xl font-bold text-on-surface rounded-xl;
-    background: #272a2c;
-    border: 1px solid #424752;
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
   }
   .otp-input:focus {
     border-color: #74f5ff;
@@ -77,23 +152,25 @@
     outline: none;
   }
   .rasha-input {
-    @apply w-full px-4 py-3 text-sm text-on-surface rounded-xl;
-    background: #272a2c;
-    border: 1px solid #424752;
+    @apply w-full px-4 py-3 text-sm rounded-xl;
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    color: var(--color-on-surface);
   }
   .rasha-input:focus {
-    border-color: #74f5ff;
+    border-color: var(--color-secondary-fixed);
     box-shadow: 0 0 0 2px rgba(116, 245, 255, 0.2);
     outline: none;
   }
-  .rasha-input::placeholder { color: #8c909e; }
+  .rasha-input::placeholder { color: var(--color-outline); }
   .rasha-select {
-    @apply w-full px-4 py-3 text-sm text-on-surface rounded-xl appearance-none;
-    background: #272a2c;
-    border: 1px solid #424752;
+    @apply w-full px-4 py-3 text-sm rounded-xl appearance-none;
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    color: var(--color-on-surface);
   }
   .rasha-select:focus {
-    border-color: #74f5ff;
+    border-color: var(--color-secondary-fixed);
     outline: none;
   }
   .btn-primary {
@@ -103,7 +180,8 @@
     @apply glass text-on-surface font-bold text-sm px-6 py-3 rounded-xl hover:bg-surface-variant transition-all flex items-center justify-center gap-2;
   }
   .btn-cyan {
-    @apply text-secondary-fixed font-bold text-sm px-6 py-3 rounded-xl border border-secondary-fixed/30 hover:bg-secondary-fixed/5 transition-all flex items-center justify-center gap-2;
+    @apply text-secondary-fixed font-bold text-sm px-6 py-3 rounded-xl hover:opacity-90 transition-all flex items-center justify-center gap-2;
+    border: 1px solid rgba(116,245,255,0.3);
   }
 }
 

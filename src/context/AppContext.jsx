@@ -7,6 +7,22 @@ export const API = 'https://rasha-backend.onrender.com'
 export function AppProvider({ children }) {
   const [lang, setLang] = useState('en')
   const [toast, setToast] = useState(null)
+  const [theme, setThemeState] = useState(() => localStorage.getItem('rasha_theme') || 'dark')
+
+  // Apply theme class on mount and change
+  useEffect(() => {
+    if (theme === 'light') {
+      document.documentElement.classList.add('light')
+      document.documentElement.classList.remove('dark')
+    } else {
+      document.documentElement.classList.remove('light')
+      document.documentElement.classList.add('dark')
+    }
+    localStorage.setItem('rasha_theme', theme)
+  }, [theme])
+
+  const toggleTheme = () => setThemeState(t => t === 'dark' ? 'light' : 'dark')
+  const isDark = theme === 'dark'
   const [customer, setCustomer] = useState(() => {
     const tok = localStorage.getItem('rasha_token')
     if (!tok) return null
@@ -84,7 +100,7 @@ export function AppProvider({ children }) {
   }, [toast])
 
   return (
-    <AppContext.Provider value={{ lang, toggleLang, t, toast, showToast, customer, token, login, logout, staffToken, setStaffToken, staffRole, staffPermissions, isSuperAdmin, hasPerm }}>
+    <AppContext.Provider value={{ lang, toggleLang, t, toast, showToast, customer, token, login, logout, staffToken, setStaffToken, staffRole, staffPermissions, isSuperAdmin, hasPerm, theme, toggleTheme, isDark }}>
       {children}
     </AppContext.Provider>
   )
