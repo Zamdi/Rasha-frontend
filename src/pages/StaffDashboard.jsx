@@ -797,12 +797,12 @@ export default function StaffDashboard() {
                         <td className="px-4 py-3 text-start text-xs font-bold text-secondary-fixed whitespace-nowrap">#RSH-{b.booking_uid.replace('BK-','')}</td>
                         <td className="px-4 py-3 text-start">
                           <p className="text-sm text-on-surface font-semibold whitespace-nowrap">{b.customer_name||'-'}</p>
-                          <p className="text-xs text-on-surface-variant" dir="ltr" style={{unicodeBidi:'embed'}}>{b.customer_phone||''}</p>
+                          <p className="text-xs text-on-surface-variant whitespace-nowrap" dir="ltr" style={{unicodeBidi:'embed',display:'block'}}>{b.customer_phone||''}</p>
                         </td>
                         <td className="px-4 py-3 text-start text-sm text-on-surface-variant whitespace-nowrap">{b.service_type==='full'?t('Full','كامل'):t('Exterior','خارجي')}</td>
                         <td className="px-4 py-3 text-start text-xs text-on-surface-variant whitespace-nowrap">
-                          {new Date(b.booking_date).toLocaleDateString(t('en-US','ar-SA'),{year:'numeric',month:'short',day:'numeric'})}
-                          <br/>{b.booking_time}
+                          <span style={{display:'block'}}>{new Date(b.booking_date).toLocaleDateString(t('en-US','ar-SA'),{year:'numeric',month:'short',day:'numeric'})}</span>
+                          <span dir="ltr" style={{unicodeBidi:'embed',display:'block'}}>{b.booking_time}</span>
                         </td>
                         <td className="px-4 py-3 text-start">
                           <span className={`px-2 py-1 rounded-full text-xs font-bold whitespace-nowrap ${
