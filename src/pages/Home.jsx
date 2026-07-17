@@ -13,9 +13,9 @@ export default function Home() {
   const handleHeroBook = () => navigate('/book', { state: { service: heroService, phone: heroPhone } })
 
   return (
-    <div className="pb-16 md:pb-0">
+    <div className="pt-16 pb-16 md:pb-0">
       {/* Hero */}
-      <section className="relative min-h-screen flex items-center pt-16 overflow-hidden">
+      <section className="relative min-h-screen flex items-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <div className="w-full h-full bg-cover bg-center" style={{ backgroundImage: `url(${HERO_IMG})` }} />
           <div className="absolute inset-0 bg-gradient-to-r from-background via-background/85 to-background/20" />

@@ -124,7 +124,7 @@ export default function Confirmation() {
   }
 
   return (
-    <div className="relative min-h-screen flex flex-col" style={{ background: '#101415' }}>
+    <div className="relative min-h-screen flex flex-col pt-16" style={{ background: '#101415' }}>
       {/* Particle canvas */}
       <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-[200]" />
 

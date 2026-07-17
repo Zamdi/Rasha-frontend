@@ -51,7 +51,7 @@ export default function Contact() {
 
   return (
     <div className="min-h-screen flex flex-col pb-16 md:pb-0" style={{ background: '#101415' }}>
-      <main className="flex-grow w-full max-w-6xl mx-auto px-4 md:px-6 pt-28 pb-16">
+      <main className="flex-grow w-full max-w-6xl mx-auto px-4 md:px-6 pt-20 pb-16">
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-extrabold font-display mb-4" style={{ color: '#acc7ff' }}>
