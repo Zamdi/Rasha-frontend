@@ -5,12 +5,13 @@ import { useApp, API } from '../context/AppContext'
 import { formatTime } from '../utils/format'
 
 export default function Loyalty() {
-  const { t, token, customer, showToast } = useApp()
+  const { t, token, lang, logout } = useApp()
   const navigate = useNavigate()
   const [data, setData] = useState(null)
   const [history, setHistory] = useState([])
   const [nextBooking, setNextBooking] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   const [qrExpanded, setQrExpanded] = useState(false)
 
   useEffect(() => {
@@ -20,32 +21,63 @@ export default function Loyalty() {
 
   const loadAll = async () => {
     setLoading(true)
+    setError(null)
     try {
       const [loyRes, histRes, bkRes] = await Promise.all([
         fetch(`${API}/api/loyalty`, { headers: { Authorization: 'Bearer ' + token } }),
         fetch(`${API}/api/loyalty/history`, { headers: { Authorization: 'Bearer ' + token } }),
         fetch(`${API}/api/bookings/my`, { headers: { Authorization: 'Bearer ' + token } }),
       ])
-      if (!loyRes.ok) { navigate('/login'); return }
+      // Token expired or invalid — log out cleanly
+      if (loyRes.status === 401) {
+        logout()
+        navigate('/login')
+        return
+      }
+      if (!loyRes.ok) {
+        setError(t('Could not load your card. Please try again.', 'تعذر تحميل بطاقتك. حاول مجدداً.'))
+        setLoading(false)
+        return
+      }
       const loy = await loyRes.json()
-      const hist = await histRes.json()
-      const bk = await bkRes.json()
+      const hist = histRes.ok ? await histRes.json() : { visits: [] }
+      const bk = bkRes.ok ? await bkRes.json() : { bookings: [] }
       setData(loy)
       setHistory(hist.visits || [])
       const today = new Date().toISOString().split('T')[0]
       const upcoming = (bk.bookings || []).filter(b => b.status === 'confirmed' && b.booking_date >= today)
       setNextBooking(upcoming[0] || null)
-    } catch { showToast(t('Failed to load', 'فشل التحميل'), 'error') }
-    finally { setLoading(false) }
+    } catch {
+      setError(t('Connection error. The server may be starting up — please wait a moment and retry.', 'خطأ في الاتصال. قد يكون الخادم في وضع السكون — انتظر لحظة وحاول مجدداً.'))
+    } finally {
+      setLoading(false)
+    }
   }
 
   if (loading) return (
-    <div className="pt-14 min-h-screen flex items-center justify-center">
+    <div className="pt-14 min-h-screen flex flex-col items-center justify-center gap-4">
       <div className="loader" />
+      <p className="text-on-surface-variant text-sm">{t('Loading your card...', 'جارٍ تحميل بطاقتك...')}</p>
     </div>
   )
 
-  const { stamps = 0, totalWashes = 0, freeWashesUsed = 0, name = '', customerId = '', memberSince } = data || {}
+  if (error) return (
+    <div className="pt-14 min-h-screen flex flex-col items-center justify-center gap-4 px-6 text-center">
+      <span className="material-symbols-outlined text-error text-5xl">wifi_off</span>
+      <p className="text-on-surface text-base font-semibold">{error}</p>
+      <button onClick={loadAll} className="btn-primary px-6 py-3 rounded-xl">
+        <span className="material-symbols-outlined text-base">refresh</span>
+        {t('Retry', 'إعادة المحاولة')}
+      </button>
+      <button onClick={() => { logout(); navigate('/login') }} className="text-xs text-on-surface-variant hover:text-error transition-colors">
+        {t('Sign out', 'تسجيل خروج')}
+      </button>
+    </div>
+  )
+
+  if (!data) return null
+
+  const { stamps = 0, totalWashes = 0, freeWashesUsed = 0, name = '', customerId = '', memberSince } = data
 
   return (
     <div className="pt-14 pb-24 md:pb-10">
@@ -151,7 +183,7 @@ export default function Loyalty() {
               >
                 <div className="p-3 rounded-xl mx-auto transition-transform group-hover:scale-105 group-active:scale-95"
                   style={{ width: 170, height: 170, background: '#ffffff' }}>
-                  <QRCodeCanvas value={customerId} size={146} level="M" fgColor="#000000" bgColor="#ffffff" style={{ display: 'block' }} />
+                  {customerId && <QRCodeCanvas value={customerId} size={146} level="M" fgColor="#000000" bgColor="#ffffff" style={{ display: 'block' }} />}
                 </div>
                 {/* Expand hint */}
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"
@@ -208,7 +240,7 @@ export default function Loyalty() {
             {/* Large QR */}
             <div className="p-5 rounded-3xl shadow-2xl"
               style={{ background: '#ffffff', boxShadow: '0 0 60px rgba(116,245,255,0.3)' }}>
-              <QRCodeCanvas value={customerId} size={260} level="M" fgColor="#000000" bgColor="#ffffff" style={{ display: 'block' }} />
+              {customerId && <QRCodeCanvas value={customerId} size={260} level="M" fgColor="#000000" bgColor="#ffffff" style={{ display: 'block' }} />}
             </div>
             <div className="text-center">
               <p className="text-secondary-fixed font-bold text-xl font-display tracking-widest" dir="ltr" style={{unicodeBidi:"embed"}}>{customerId}</p>

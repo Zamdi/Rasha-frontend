@@ -8,9 +8,24 @@ export function AppProvider({ children }) {
   const [lang, setLang] = useState('en')
   const [toast, setToast] = useState(null)
   const [customer, setCustomer] = useState(() => {
+    const tok = localStorage.getItem('rasha_token')
+    if (!tok) return null
     try { return JSON.parse(localStorage.getItem('rasha_customer')) } catch { return null }
   })
-  const [token, setToken] = useState(() => localStorage.getItem('rasha_token'))
+  const [token, setToken] = useState(() => {
+    const tok = localStorage.getItem('rasha_token')
+    if (!tok) return null
+    // Check if JWT is expired without making a network call
+    try {
+      const payload = JSON.parse(atob(tok.split('.')[1]))
+      if (payload.exp && payload.exp * 1000 < Date.now()) {
+        localStorage.removeItem('rasha_token')
+        localStorage.removeItem('rasha_customer')
+        return null
+      }
+    } catch {}
+    return tok
+  })
   const [staffToken, setStaffTokenState] = useState(() => localStorage.getItem('rasha_staff_token'))
   const [staffRole, setStaffRoleState] = useState(() => localStorage.getItem('rasha_staff_role') || 'staff')
   const [staffPermissions, setStaffPermissionsState] = useState(() => {
