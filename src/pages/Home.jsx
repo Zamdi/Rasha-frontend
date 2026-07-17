@@ -13,42 +13,42 @@ export default function Home() {
   const handleHeroBook = () => navigate('/book', { state: { service: heroService, phone: heroPhone } })
 
   return (
-    <div className="pt-16 pb-16 md:pb-0">
+    <div className="pt-14 pb-16 md:pb-0">
       {/* Hero */}
       <section className="relative min-h-screen flex items-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <div className="w-full h-full bg-cover bg-center" style={{ backgroundImage: `url(${HERO_IMG})` }} />
           <div className="absolute inset-0 bg-gradient-to-r from-background via-background/85 to-background/20" />
         </div>
-        <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center py-20">
+        <div className="relative z-10 max-w-7xl mx-auto px-5 w-full grid grid-cols-1 lg:grid-cols-2 gap-8 items-center py-8 md:py-20">
           {/* Text */}
-          <div className="space-y-6 animate-fade-in">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-secondary-container/10 border border-secondary-fixed/25 text-secondary-fixed">
-              <span className="material-symbols-outlined fill-icon text-base">auto_awesome</span>
+          <div className="space-y-4 animate-fade-in">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary-container/10 border border-secondary-fixed/25 text-secondary-fixed">
+              <span className="material-symbols-outlined fill-icon text-sm">auto_awesome</span>
               <span className="text-xs font-bold uppercase tracking-widest">{t("Sudan's Premier Car Wash", 'أفضل غسيل سيارات في السودان')}</span>
             </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-on-surface leading-tight font-display">
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-on-surface leading-snug font-display">
               {t('The Ultimate', 'النظافة')}{' '}
               <span className="text-secondary-fixed">{t('Clean Shine', 'المثالية')}</span>
               <br />{t('For Your Car.', 'لسيارتك.')}
             </h1>
-            <p className="text-on-surface-variant text-base max-w-lg">
+            <p className="text-on-surface-variant text-sm max-w-md leading-relaxed">
               {t("Experience Khartoum's finest car wash. Professional care, loyalty rewards, and easy online booking.", "استمتع بأفضل خدمة غسيل سيارات في الخرطوم. عناية احترافية ومكافآت ولاء وحجز سهل.")}
             </p>
-            <div className="flex flex-wrap gap-4 pt-2">
-              <Link to="/book" className="btn-primary text-sm px-8 py-4 rounded-xl">
+            <div className="flex flex-wrap gap-3 pt-1">
+              <Link to="/book" className="btn-primary text-sm px-6 py-3 rounded-xl">
                 {t('Book Your Wash', 'احجز الآن')}
                 <span className="material-symbols-outlined rtl-flip text-base">arrow_forward</span>
               </Link>
-              <a href="#services" className="btn-cyan text-sm px-8 py-4 rounded-xl">
+              <a href="#services" className="btn-cyan text-sm px-6 py-3 rounded-xl">
                 {t('Our Services', 'خدماتنا')}
               </a>
             </div>
             {/* Stats */}
-            <div className="flex gap-8 pt-2">
+            <div className="flex gap-6 pt-1">
               {[['500+', t('Customers', 'عميل')], ['4.9★', t('Rating', 'التقييم')], ['2', t('Services', 'خدمات')]].map(([v, l]) => (
                 <div key={l}>
-                  <div className="text-2xl font-extrabold text-secondary-fixed font-display">{v}</div>
+                  <div className="text-xl font-extrabold text-secondary-fixed font-display">{v}</div>
                   <div className="text-xs text-on-surface-variant">{l}</div>
                 </div>
               ))}

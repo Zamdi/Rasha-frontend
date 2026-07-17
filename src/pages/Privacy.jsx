@@ -18,7 +18,7 @@ export default function Privacy() {
 
   return (
     <div className="min-h-screen flex flex-col pb-16 md:pb-0" style={{ background: '#101415' }}>
-      <main className="flex-grow w-full max-w-5xl mx-auto px-4 md:px-6 pt-20 pb-16">
+      <main className="flex-grow w-full max-w-5xl mx-auto px-4 md:px-6 pt-16 pb-16">
         {/* Header */}
         <div className="mb-10">
           <h1 className="text-4xl md:text-5xl font-extrabold font-display text-on-surface mb-3">

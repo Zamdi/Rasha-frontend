@@ -40,7 +40,7 @@ export default function Loyalty() {
   }
 
   if (loading) return (
-    <div className="pt-16 min-h-screen flex items-center justify-center">
+    <div className="pt-14 min-h-screen flex items-center justify-center">
       <div className="loader" />
     </div>
   )
@@ -48,7 +48,7 @@ export default function Loyalty() {
   const { stamps = 0, totalWashes = 0, freeWashesUsed = 0, name = '', customerId = '', memberSince } = data || {}
 
   return (
-    <div className="pt-16 pb-24 md:pb-10">
+    <div className="pt-14 pb-24 md:pb-10">
       <main className="max-w-5xl mx-auto px-4 md:px-6 py-10">
         {/* Welcome */}
         <div className="mb-8 animate-fade-in">
