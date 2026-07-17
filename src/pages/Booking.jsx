@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useApp, API } from '../context/AppContext'
+import { formatTime } from '../utils/format'
 
 const ALL_SLOTS = ['11:00 AM','12:00 PM','1:00 PM','2:00 PM','3:00 PM','4:00 PM','5:00 PM','6:00 PM','7:00 PM','8:00 PM','9:00 PM','10:00 PM','11:00 PM','12:00 AM']
 
@@ -191,7 +192,7 @@ export default function Booking() {
                         className={`py-2 px-1 text-xs font-semibold rounded-xl transition-all ${booked ? 'slot-booked' : selected ? 'slot-selected' : 'slot-available'}`}
                         dir="ltr"
                       >
-                        {slot}
+                        {formatTime(slot, lang)}
                       </button>
                     )
                   })}
@@ -219,7 +220,7 @@ export default function Booking() {
                   [t('Phone','الهاتف'), `+249${form.phone}`, true],
                   [t('Service','الخدمة'), serviceLabel, false],
                   [t('Date','التاريخ'), new Date(form.date + 'T12:00:00').toLocaleDateString(t('en-US','ar-EG'), {year:'numeric',month:'long',day:'numeric'}), false],
-                  [t('Time','الوقت'), selectedSlot, true],
+                  [t('Time','الوقت'), formatTime(selectedSlot, lang), true],
                   ...(form.vehicle ? [[t('Vehicle','السيارة'), form.vehicle, false]] : []),
                 ].map(([label, value, ltr]) => (
                   <div key={label} className="flex justify-between py-2 border-b border-outline-variant/20 last:border-0">

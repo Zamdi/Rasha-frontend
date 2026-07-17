@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { QRCodeCanvas } from 'qrcode.react'
 import { useApp, API } from '../context/AppContext'
+import { formatTime } from '../utils/format'
 
 export default function Loyalty() {
   const { t, token, customer, showToast } = useApp()
@@ -103,7 +104,7 @@ export default function Loyalty() {
               )}
               <div className="mt-4 text-sm text-on-surface-variant flex gap-4 flex-wrap">
                 <span><span className="text-on-surface font-bold">{totalWashes}</span> {t('total washes', 'غسيل إجمالي')}</span>
-                <span>·</span>
+                <span>|</span>
                 <span><span className="text-on-surface font-bold">{freeWashesUsed}</span> {t('free washes used', 'غسيل مجاني مستخدم')}</span>
               </div>
             </div>
@@ -183,8 +184,10 @@ export default function Loyalty() {
                     <p className="font-semibold text-on-surface text-sm">
                       {nextBooking.service_type === 'full' ? t('Full Wash', 'غسيل كامل') : t('Exterior Only', 'خارجي فقط')}
                     </p>
-                    <p className="text-xs text-on-surface-variant" dir="ltr" style={{unicodeBidi:'embed'}}>
-                      {new Date(nextBooking.booking_date.slice(0,10) + 'T12:00:00').toLocaleDateString(t('en-US','ar-EG'),{month:'short',day:'numeric'})} · {nextBooking.booking_time}
+                    <p className="text-xs text-on-surface-variant">
+                      <span>{new Date(nextBooking.booking_date.slice(0,10) + 'T12:00:00').toLocaleDateString(t('en-US','ar-EG'),{month:'short',day:'numeric'})}</span>
+                      {' | '}
+                      <span dir="ltr" style={{unicodeBidi:'embed'}}>{formatTime(nextBooking.booking_time, lang)}</span>
                     </p>
                   </div>
                 </div>

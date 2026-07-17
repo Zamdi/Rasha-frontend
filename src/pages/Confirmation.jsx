@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { useLocation, useNavigate, Link } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
+import { formatTime } from '../utils/format'
 
 const BG_IMG = "https://lh3.googleusercontent.com/aida-public/AB6AXuAn6dMfx-_iUMz1YxHBBlVHAqA4jGysA_1RmmoV8sBdF4QHkSvQlTqQ-oYGhJ8wcjWAF1iAOuN7dkkiqwhUTy4L1fsH2e-4B5cgzdqwkq0blP5jzHRDV01eLtiQGXKH9Za5xGrb3LDCHwId17a9eK-dUGMJHlx32PlZP1HKYJScfUNlqOTh4cIpJmRrEf3Jd-S2AlzUsfBqU_uYwsesTfaxpeo4qIJ5pzfZfBtsW4HYqbxWELBeHc8"
 
@@ -195,7 +196,7 @@ export default function Confirmation() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {[
                 ['calendar_month', t('Date', 'التاريخ'), formattedDate, false],
-                ['schedule',       t('Time', 'الوقت'),   time,          true],
+                ['schedule',       t('Time', 'الوقت'),   formatTime(time, lang), true],
                 ['location_on',    t('Location', 'الموقع'), t('Rasha Car Wash, Khartoum', 'رشة لغسيل السيارات، الخرطوم'), false],
                 vehicle
                   ? ['directions_car', t('Vehicle', 'السيارة'), vehicle, false]

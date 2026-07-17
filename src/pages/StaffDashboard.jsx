@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useApp, API } from '../context/AppContext'
 import jsQR from 'jsqr'
+import { formatTime } from '../utils/format'
 
 const INVENTORY = [
   { name_en: 'Car Shampoo', name_ar: 'شامبو السيارة', pct: 15, color: 'bg-error' },
@@ -334,7 +335,7 @@ export default function StaffDashboard() {
   const staffLogout = () => { stopScanner(); setStaffToken(null); navigate('/') }
 
   const now = new Date()
-  const shiftInfo = `${now.toLocaleDateString(t('en-US','ar-EG'),{weekday:'long',month:'long',day:'numeric'})} · ${now.toLocaleTimeString(t('en-US','ar-EG'),{hour:'2-digit',minute:'2-digit'})}`
+  const shiftInfo = `${now.toLocaleDateString(t('en-US','ar-EG'),{weekday:'long',month:'long',day:'numeric'})} | ${now.toLocaleTimeString(t('en-US','ar-EG'),{hour:'2-digit',minute:'2-digit'})}`
 
   return (
     <div className="min-h-screen bg-background">
@@ -805,7 +806,7 @@ export default function StaffDashboard() {
                         <td className="px-4 py-3 text-sm text-on-surface-variant whitespace-nowrap">{b.service_type==='full'?t('Full','كامل'):t('Exterior','خارجي')}</td>
                         <td className="px-4 py-3 text-xs text-on-surface-variant whitespace-nowrap">
                           <p>{new Date(b.booking_date).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</p>
-                          <p>{b.booking_time}</p>
+                          <p>{formatTime(b.booking_time, lang)}</p>
                         </td>
                         <td className="px-4 py-3">
                           <span className={`px-2 py-1 rounded-full text-xs font-bold whitespace-nowrap ${
@@ -839,7 +840,7 @@ export default function StaffDashboard() {
                     <button key={c.id} onClick={()=>{ setUidInput(c.customer_uid); setSearchResults([]); setSearchQuery(''); lookup(c.customer_uid); }} className="w-full flex items-center justify-between p-3 rounded-xl bg-surface-container hover:bg-surface-container-high cursor-pointer transition-colors text-start">
                       <div>
                         <p className="text-sm font-semibold text-on-surface">{c.first_name} {c.last_name}</p>
-                        <p className="text-xs text-on-surface-variant" dir="ltr" style={{unicodeBidi:'embed'}}>{c.customer_uid} · {c.stamps}/5 {t('stamps', 'طوابع')}</p>
+                        <p className="text-xs text-on-surface-variant" dir="ltr" style={{unicodeBidi:'embed'}}>{c.customer_uid} | {c.stamps}/5 {t('stamps', 'طوابع')}</p>
                       </div>
                       <span className="material-symbols-outlined text-secondary-fixed text-base rtl-flip">chevron_right</span>
                     </button>
