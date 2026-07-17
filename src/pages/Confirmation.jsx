@@ -184,8 +184,8 @@ export default function Confirmation() {
                 <span className="text-xs font-bold text-secondary-fixed uppercase tracking-widest mb-1 block">
                   {t('Confirmation', 'المرجع')}
                 </span>
-                <span className="text-on-surface font-bold font-display"
-                  style={{ fontSize: 'clamp(20px,4vw,32px)', lineHeight: 1.2 }}>
+                <span className="text-on-surface font-bold font-display" dir="ltr" style={{unicodeBidi:'embed',
+                  fontSize: 'clamp(20px,4vw,32px)', lineHeight: 1.2 }}>
                   {ref}
                 </span>
               </div>

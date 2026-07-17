@@ -62,7 +62,7 @@ export default function Loyalty() {
           <div className="lg:hidden glass p-4 rounded-2xl flex items-center justify-between">
             <div>
               <p className="text-xs font-bold text-secondary-fixed uppercase tracking-wider">{t('Member Pass', 'بطاقة العضوية')}</p>
-              <p className="text-on-surface text-sm font-bold mt-0.5">{customerId}</p>
+              <p className="text-on-surface text-sm font-bold mt-0.5" dir="ltr" style={{unicodeBidi:"embed"}}>{customerId}</p>
             </div>
             <button
               onClick={() => setQrExpanded(true)}
@@ -129,7 +129,7 @@ export default function Loyalty() {
                         <p className="text-xs text-on-surface-variant">{new Date(v.visited_at).toLocaleDateString(t('en-US','ar-SA'),{year:'numeric',month:'short',day:'numeric'})}</p>
                       </div>
                     </div>
-                    <span className="text-xs text-secondary-fixed font-bold">{v.stamps_before} → {v.stamps_after}</span>
+                    <span className="text-xs text-secondary-fixed font-bold" dir="ltr" style={{unicodeBidi:'embed'}}>{v.stamps_before} → {v.stamps_after}</span>
                   </div>
                 ))}
               </div>
@@ -164,7 +164,7 @@ export default function Loyalty() {
               </p>
 
               <h4 className="font-bold text-on-surface font-display">{name.toUpperCase()}</h4>
-              <p className="text-xs text-secondary-fixed mt-1 font-bold">{customerId}</p>
+              <p className="text-xs text-secondary-fixed mt-1 font-bold" dir="ltr" style={{unicodeBidi:"embed"}}>{customerId}</p>
               {memberSince && <p className="text-xs text-on-surface-variant mt-1">{t('Member since', 'عضو منذ')} {new Date(memberSince).toLocaleDateString(t('en-US','ar-SA'),{year:'numeric',month:'long'})}</p>}
               <Link to="/book" className="btn-primary mt-4 w-full py-3 rounded-xl text-xs uppercase tracking-widest">
                 {t('Book a Wash', 'احجز غسيل')}
@@ -208,7 +208,7 @@ export default function Loyalty() {
               <QRCodeCanvas value={customerId} size={260} level="M" fgColor="#000000" bgColor="#ffffff" style={{ display: 'block' }} />
             </div>
             <div className="text-center">
-              <p className="text-secondary-fixed font-bold text-xl font-display tracking-widest">{customerId}</p>
+              <p className="text-secondary-fixed font-bold text-xl font-display tracking-widest" dir="ltr" style={{unicodeBidi:"embed"}}>{customerId}</p>
               <p className="text-white font-bold mt-1">{name.toUpperCase()}</p>
               <p className="text-on-surface-variant text-sm mt-1">{t('Show this to staff for scanning', 'أرِ هذا للموظف للمسح')}</p>
             </div>

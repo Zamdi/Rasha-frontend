@@ -662,7 +662,7 @@ export default function StaffDashboard() {
                       <div>
                         <h4 className="font-bold text-on-surface text-lg font-display">{customer.first_name} {customer.last_name}</h4>
                         <p className="text-sm text-on-surface-variant" dir="ltr" style={{unicodeBidi:'embed'}}>{customer.phone}</p>
-                        <p className="text-xs text-secondary-fixed font-bold mt-0.5">{customer.customer_uid}</p>
+                        <p className="text-xs text-secondary-fixed font-bold mt-0.5" dir="ltr" style={{unicodeBidi:'embed'}}>{customer.customer_uid}</p>
                         <span className={`mt-1 inline-block text-xs px-2 py-0.5 rounded-full font-bold ${customer.is_active ? 'bg-green-500/10 text-green-400' : 'bg-error/10 text-error'}`}>
                           {customer.is_active ? t('Active', 'نشط') : t('Suspended', 'موقوف')}
                         </span>
@@ -686,7 +686,7 @@ export default function StaffDashboard() {
                   <div className="rounded-xl p-4" style={{ background: '#272a2c', border: '1px solid rgba(66,71,82,0.3)' }}>
                     <div className="flex justify-between items-center mb-3">
                       <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest">{t('Loyalty Stamps', 'طوابع الولاء')}</p>
-                      <span className="text-secondary-fixed font-extrabold text-lg font-display">{customer.stamps}/5</span>
+                      <span className="text-secondary-fixed font-extrabold text-lg font-display" dir="ltr" style={{unicodeBidi:'embed'}}>{customer.stamps}/5</span>
                     </div>
                     {/* 5 stamp dots */}
                     <div className="flex gap-2 mb-4">
@@ -839,7 +839,7 @@ export default function StaffDashboard() {
                     <button key={c.id} onClick={()=>{ setUidInput(c.customer_uid); setSearchResults([]); setSearchQuery(''); lookup(c.customer_uid); }} className="w-full flex items-center justify-between p-3 rounded-xl bg-surface-container hover:bg-surface-container-high cursor-pointer transition-colors text-start">
                       <div>
                         <p className="text-sm font-semibold text-on-surface">{c.first_name} {c.last_name}</p>
-                        <p className="text-xs text-on-surface-variant">{c.customer_uid} · {c.stamps}/5 {t('stamps', 'طوابع')}</p>
+                        <p className="text-xs text-on-surface-variant" dir="ltr" style={{unicodeBidi:'embed'}}>{c.customer_uid} · {c.stamps}/5 {t('stamps', 'طوابع')}</p>
                       </div>
                       <span className="material-symbols-outlined text-secondary-fixed text-base rtl-flip">chevron_right</span>
                     </button>

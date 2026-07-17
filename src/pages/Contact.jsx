@@ -160,7 +160,7 @@ export default function Contact() {
               <div className="flex items-center gap-3 px-4 py-4 rounded-xl mb-4"
                 style={{ background: '#272a2c', border: '1px solid rgba(66,71,82,0.4)' }}>
                 <span className="material-symbols-outlined text-secondary-fixed text-xl">call</span>
-                <span className="text-on-surface font-bold text-lg tracking-wide">{WHATSAPP_DISPLAY}</span>
+                <span className="text-on-surface font-bold text-lg tracking-wide" dir="ltr" style={{unicodeBidi:'embed'}}>{WHATSAPP_DISPLAY}</span>
               </div>
               <button onClick={openWhatsApp}
                 className="w-full py-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
