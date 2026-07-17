@@ -481,7 +481,7 @@ export default function StaffDashboard() {
                             </div>
                           </td>
                           <td className="px-4 py-3 text-xs font-bold text-secondary-fixed">{c.customer_uid}</td>
-                          <td className="px-4 py-3 text-xs text-on-surface-variant">{c.phone}</td>
+                          <td className="px-4 py-3 text-xs text-on-surface-variant" dir="ltr" style={{unicodeBidi:'embed'}}>{c.phone}</td>
                           <td className="px-4 py-3">
                             <div className="flex items-center gap-1">
                               <span className="text-secondary-fixed font-bold">{c.stamps}</span>
@@ -661,7 +661,7 @@ export default function StaffDashboard() {
                       </div>
                       <div>
                         <h4 className="font-bold text-on-surface text-lg font-display">{customer.first_name} {customer.last_name}</h4>
-                        <p className="text-sm text-on-surface-variant">{customer.phone}</p>
+                        <p className="text-sm text-on-surface-variant" dir="ltr" style={{unicodeBidi:'embed'}}>{customer.phone}</p>
                         <p className="text-xs text-secondary-fixed font-bold mt-0.5">{customer.customer_uid}</p>
                         <span className={`mt-1 inline-block text-xs px-2 py-0.5 rounded-full font-bold ${customer.is_active ? 'bg-green-500/10 text-green-400' : 'bg-error/10 text-error'}`}>
                           {customer.is_active ? t('Active', 'نشط') : t('Suspended', 'موقوف')}
@@ -779,7 +779,7 @@ export default function StaffDashboard() {
                 <h3 className="font-bold text-on-surface">{t('Recent Bookings', 'الحجوزات الأخيرة')}</h3>
               </div>
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm">
+                <table className="w-full text-sm" style={{ textAlign: 'start' }}>
                   <thead className="bg-surface-container-high/30">
                     <tr>
                       {[t('Ref','المرجع'),t('Customer','العميل'),t('Service','الخدمة'),t('Date/Time','التاريخ'),t('Status','الحالة'),''].map(h=>(
@@ -794,24 +794,24 @@ export default function StaffDashboard() {
                       <tr><td colSpan={6} className="px-4 py-8 text-center text-on-surface-variant text-sm">{t('No bookings', 'لا توجد حجوزات')}</td></tr>
                     ) : bookings.slice(0, 15).map(b => (
                       <tr key={b.id} className="hover:bg-surface-variant/10 transition-colors">
-                        <td className="px-4 py-3 text-xs font-bold text-secondary-fixed whitespace-nowrap">#RSH-{b.booking_uid.replace('BK-','')}</td>
-                        <td className="px-4 py-3">
+                        <td className="px-4 py-3 text-start text-xs font-bold text-secondary-fixed whitespace-nowrap">#RSH-{b.booking_uid.replace('BK-','')}</td>
+                        <td className="px-4 py-3 text-start">
                           <p className="text-sm text-on-surface font-semibold whitespace-nowrap">{b.customer_name||'-'}</p>
-                          <p className="text-xs text-on-surface-variant">{b.customer_phone||''}</p>
+                          <p className="text-xs text-on-surface-variant" dir="ltr" style={{unicodeBidi:'embed'}}>{b.customer_phone||''}</p>
                         </td>
-                        <td className="px-4 py-3 text-sm text-on-surface-variant whitespace-nowrap">{b.service_type==='full'?t('Full','كامل'):t('Exterior','خارجي')}</td>
-                        <td className="px-4 py-3 text-xs text-on-surface-variant whitespace-nowrap">
+                        <td className="px-4 py-3 text-start text-sm text-on-surface-variant whitespace-nowrap">{b.service_type==='full'?t('Full','كامل'):t('Exterior','خارجي')}</td>
+                        <td className="px-4 py-3 text-start text-xs text-on-surface-variant whitespace-nowrap">
                           {new Date(b.booking_date).toLocaleDateString(t('en-US','ar-SA'),{year:'numeric',month:'short',day:'numeric'})}
                           <br/>{b.booking_time}
                         </td>
-                        <td className="px-4 py-3">
+                        <td className="px-4 py-3 text-start">
                           <span className={`px-2 py-1 rounded-full text-xs font-bold whitespace-nowrap ${
                             b.status==='confirmed'?'bg-secondary-container/20 text-secondary-fixed border border-secondary-container/30':
                             b.status==='completed'?'bg-green-500/10 text-green-400 border border-green-500/20':
                             'bg-error-container/20 text-error border border-error/20'
                           }`}>{b.status === 'confirmed' ? t('Confirmed','مؤكد') : b.status === 'completed' ? t('Completed','مكتمل') : t('Cancelled','ملغى')}</span>
                         </td>
-                        <td className="px-4 py-3">
+                        <td className="px-4 py-3 text-start">
                           {b.status==='confirmed'&&<button onClick={()=>cancelBooking(b.id)} className="text-error text-xs hover:underline">{t('Cancel','إلغاء')}</button>}
                         </td>
                       </tr>

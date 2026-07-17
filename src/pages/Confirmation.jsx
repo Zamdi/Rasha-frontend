@@ -194,13 +194,13 @@ export default function Confirmation() {
             {/* Details grid — 2 col on md+ */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {[
-                ['calendar_month', t('Date', 'التاريخ'), formattedDate],
-                ['schedule',       t('Time', 'الوقت'),   time],
-                ['location_on',    t('Location', 'الموقع'), t('Rasha Car Wash, Khartoum', 'رشة لغسيل السيارات، الخرطوم')],
+                ['calendar_month', t('Date', 'التاريخ'), formattedDate, false],
+                ['schedule',       t('Time', 'الوقت'),   time,          true],
+                ['location_on',    t('Location', 'الموقع'), t('Rasha Car Wash, Khartoum', 'رشة لغسيل السيارات، الخرطوم'), false],
                 vehicle
-                  ? ['directions_car', t('Vehicle', 'السيارة'), vehicle]
-                  : ['person',         t('Customer', 'العميل'), name || '—'],
-              ].map(([icon, label, value]) => (
+                  ? ['directions_car', t('Vehicle', 'السيارة'), vehicle, false]
+                  : ['person',         t('Customer', 'العميل'), name || '—', false],
+              ].map(([icon, label, value, ltr]) => (
                 <div key={label} className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-lg flex items-center justify-center shrink-0"
                     style={{ background: '#272a2c', border: '1px solid rgba(66,71,82,0.3)' }}>
@@ -208,7 +208,8 @@ export default function Confirmation() {
                   </div>
                   <div>
                     <span className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider block mb-0.5">{label}</span>
-                    <span className="text-on-surface font-semibold text-sm">{value}</span>
+                    <span className="text-on-surface font-semibold text-sm"
+                      dir={ltr ? 'ltr' : undefined} style={ltr ? {unicodeBidi:'embed'} : undefined}>{value}</span>
                   </div>
                 </div>
               ))}

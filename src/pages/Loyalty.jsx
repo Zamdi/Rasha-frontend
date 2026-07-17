@@ -183,7 +183,7 @@ export default function Loyalty() {
                     <p className="font-semibold text-on-surface text-sm">
                       {nextBooking.service_type === 'full' ? t('Full Wash', 'غسيل كامل') : t('Exterior Only', 'خارجي فقط')}
                     </p>
-                    <p className="text-xs text-on-surface-variant">
+                    <p className="text-xs text-on-surface-variant" dir="ltr" style={{unicodeBidi:'embed'}}>
                       {new Date(nextBooking.booking_date + 'T12:00:00').toLocaleDateString(t('en-US','ar-SA'),{month:'short',day:'numeric'})} · {nextBooking.booking_time}
                     </p>
                   </div>

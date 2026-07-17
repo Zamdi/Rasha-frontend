@@ -214,16 +214,17 @@ export default function Booking() {
               <h3 className="font-bold text-on-surface mb-4">{t('Review & Confirm', 'مراجعة وتأكيد')}</h3>
               <div className="space-y-3 text-sm">
                 {[
-                  [t('Name','الاسم'), `${form.firstName} ${form.lastName}`],
-                  [t('Phone','الهاتف'), `+249${form.phone}`],
-                  [t('Service','الخدمة'), serviceLabel],
-                  [t('Date','التاريخ'), new Date(form.date + 'T12:00:00').toLocaleDateString(t('en-US','ar-SA'), {year:'numeric',month:'long',day:'numeric'})],
-                  [t('Time','الوقت'), selectedSlot],
-                  ...(form.vehicle ? [[t('Vehicle','السيارة'), form.vehicle]] : []),
-                ].map(([label, value]) => (
+                  [t('Name','الاسم'), `${form.firstName} ${form.lastName}`, false],
+                  [t('Phone','الهاتف'), `+249${form.phone}`, true],
+                  [t('Service','الخدمة'), serviceLabel, false],
+                  [t('Date','التاريخ'), new Date(form.date + 'T12:00:00').toLocaleDateString(t('en-US','ar-SA'), {year:'numeric',month:'long',day:'numeric'}), false],
+                  [t('Time','الوقت'), selectedSlot, true],
+                  ...(form.vehicle ? [[t('Vehicle','السيارة'), form.vehicle, false]] : []),
+                ].map(([label, value, ltr]) => (
                   <div key={label} className="flex justify-between py-2 border-b border-outline-variant/20 last:border-0">
                     <span className="text-on-surface-variant">{label}</span>
-                    <span className={`font-semibold ${label === t('Time','الوقت') ? 'text-secondary-fixed' : 'text-on-surface'}`}>{value}</span>
+                    <span className={`font-semibold ${label === t('Time','الوقت') ? 'text-secondary-fixed' : 'text-on-surface'}`}
+                      dir={ltr ? 'ltr' : undefined} style={ltr ? {unicodeBidi:'embed'} : undefined}>{value}</span>
                   </div>
                 ))}
               </div>
