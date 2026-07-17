@@ -15,8 +15,8 @@ export default function Navbar() {
     <nav className="fixed top-0 w-full z-50 glass-high border-b border-secondary-container/20 shadow-lg">
       <div className="max-w-7xl mx-auto flex justify-between items-center h-16 px-4 md:px-6">
         {/* Logo */}
-        <Link to="/" className="font-display font-extrabold text-xl tracking-widest text-secondary-fixed uppercase">
-          RASHA
+        <Link to="/" className="font-display font-extrabold text-2xl tracking-tight text-secondary-fixed">
+          Rasha
         </Link>
 
         {/* Desktop nav */}

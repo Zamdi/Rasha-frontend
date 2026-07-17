@@ -271,7 +271,7 @@ export default function Confirmation() {
       {/* Footer */}
       <footer className="relative z-10 w-full py-6 border-t border-outline-variant/10" style={{ background: '#0b0f10' }}>
         <div className="max-w-5xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
-          <span className="font-bold text-secondary-fixed-dim tracking-wider uppercase font-display text-lg">RASHA</span>
+          <span className="font-display font-extrabold text-2xl tracking-tight text-secondary-fixed">Rasha</span>
           <p className="text-on-surface-variant text-xs">© 2025 Rasha Automotive Detailing. {t('All rights reserved.', 'جميع الحقوق محفوظة.')}</p>
           <div className="flex gap-6">
             <Link to="/privacy" className="text-on-surface-variant hover:text-secondary-fixed transition-colors text-xs">{t('Privacy Policy', 'سياسة الخصوصية')}</Link>

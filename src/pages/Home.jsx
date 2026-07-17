@@ -150,7 +150,7 @@ export default function Home() {
       <footer className="bg-surface-container-lowest border-t border-outline-variant/10 py-12">
         <div className="max-w-7xl mx-auto px-4 md:px-6 flex flex-col md:flex-row justify-between items-start gap-8">
           <div>
-            <div className="text-xl font-extrabold text-secondary-fixed-dim tracking-widest uppercase mb-3 font-display">RASHA | رشة</div>
+            <div className="font-display font-extrabold text-2xl tracking-tight text-secondary-fixed mb-3">Rasha</div>
             <p className="text-on-surface-variant text-sm max-w-xs">{t("Khartoum's trusted car wash.", 'غسيل السيارات الموثوق في الخرطوم.')}</p>
           </div>
           <div className="flex gap-12 text-sm">

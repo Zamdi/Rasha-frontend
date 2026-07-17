@@ -342,7 +342,7 @@ export default function StaffDashboard() {
       <header className="fixed top-0 w-full z-50 glass-high border-b border-secondary-container/20 shadow-lg">
         <div className="max-w-7xl mx-auto flex justify-between items-center h-16 px-4 md:px-6">
           <div className="flex items-center gap-3">
-            <span className="font-display font-extrabold text-xl text-secondary-fixed">RASHA</span>
+            <span className="font-display font-extrabold text-2xl tracking-tight text-secondary-fixed">Rasha</span>
             <span className="hidden md:block h-5 w-px bg-outline-variant/40 mx-1" />
             <span className="hidden md:block text-xs text-on-surface-variant font-semibold uppercase tracking-widest">{t('Staff Portal', 'بوابة الموظفين')}</span>
           </div>

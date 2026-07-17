@@ -28,7 +28,7 @@ export default function StaffLogin() {
     <div className="min-h-screen flex flex-col bg-surface">
       {/* Mini header with lang toggle */}
       <header className="w-full flex justify-between items-center px-6 h-16 glass-high border-b border-secondary-container/20">
-        <span className="font-display font-extrabold text-xl tracking-widest text-secondary-fixed uppercase">RASHA</span>
+        <span className="font-display font-extrabold text-2xl tracking-tight text-secondary-fixed">Rasha</span>
         <button
           onClick={toggleLang}
           className="flex items-center gap-1 text-secondary-fixed text-xs font-bold hover:opacity-80 transition-opacity"

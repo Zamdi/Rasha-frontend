@@ -141,7 +141,7 @@ export default function Terms() {
       <footer className="w-full py-8 border-t border-outline-variant/10" style={{ background: '#0b0f10' }}>
         <div className="max-w-5xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <div>
-            <span className="text-xl font-extrabold text-on-surface tracking-wide font-display">Rasha</span>
+            <span className="font-display font-extrabold text-2xl tracking-tight text-secondary-fixed">Rasha</span>
             <p className="text-on-surface-variant text-xs mt-1">© 2025 Rasha Carwash Sudan. {t('All rights reserved.', 'جميع الحقوق محفوظة.')}</p>
           </div>
           <nav className="flex gap-6">
