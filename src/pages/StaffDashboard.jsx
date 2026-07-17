@@ -462,7 +462,7 @@ export default function StaffDashboard() {
                     <thead style={{ background: 'rgba(39,42,44,0.4)' }}>
                       <tr>
                         {[t('Customer','العميل'), t('ID','الرمز'), t('Phone','الهاتف'), t('Stamps','الطوابع'), t('Washes','الغسيلات'), t('Status','الحالة'), t('Joined','الانضمام'), ''].map(h => (
-                          <th key={h} className="px-4 py-3 text-start text-xs text-on-surface-variant uppercase font-semibold whitespace-nowrap">{h}</th>
+                          <th key={h} className="px-4 py-3 text-xs text-on-surface-variant uppercase font-semibold whitespace-nowrap">{h}</th>
                         ))}
                       </tr>
                     </thead>
@@ -779,11 +779,11 @@ export default function StaffDashboard() {
                 <h3 className="font-bold text-on-surface">{t('Recent Bookings', 'الحجوزات الأخيرة')}</h3>
               </div>
               <div className="overflow-x-auto">
-                <table className="w-full text-sm" style={{ textAlign: 'start' }}>
+                <table className="w-full text-sm">
                   <thead className="bg-surface-container-high/30">
                     <tr>
                       {[t('Ref','المرجع'),t('Customer','العميل'),t('Service','الخدمة'),t('Date/Time','التاريخ'),t('Status','الحالة'),''].map(h=>(
-                        <th key={h} className="px-4 py-3 text-start text-xs text-on-surface-variant uppercase font-semibold whitespace-nowrap">{h}</th>
+                        <th key={h} className="px-4 py-3 text-xs text-on-surface-variant uppercase font-semibold whitespace-nowrap">{h}</th>
                       ))}
                     </tr>
                   </thead>
@@ -794,19 +794,15 @@ export default function StaffDashboard() {
                       <tr><td colSpan={6} className="px-4 py-8 text-center text-on-surface-variant text-sm">{t('No bookings', 'لا توجد حجوزات')}</td></tr>
                     ) : bookings.slice(0, 15).map(b => (
                       <tr key={b.id} className="hover:bg-surface-variant/10 transition-colors">
-                        <td className="px-4 py-3 text-start text-xs font-bold text-secondary-fixed whitespace-nowrap">#RSH-{b.booking_uid.replace('BK-','')}</td>
-                        <td className="px-4 py-3 text-start">
-                          <div dir="ltr" style={{unicodeBidi:'embed'}}>
-                            <p className="text-sm text-on-surface font-semibold whitespace-nowrap">{b.customer_name||'-'}</p>
-                            <p className="text-xs text-on-surface-variant whitespace-nowrap">{b.customer_phone||''}</p>
-                          </div>
+                        <td className="px-4 py-3 text-xs font-bold text-secondary-fixed whitespace-nowrap">#RSH-{b.booking_uid.replace('BK-','')}</td>
+                        <td className="px-4 py-3">
+                          <p className="text-sm text-on-surface font-semibold">{b.customer_name||'-'}</p>
+                          <p className="text-xs text-on-surface-variant" style={{direction:'ltr',textAlign:'start',unicodeBidi:'embed'}}>{b.customer_phone||''}</p>
                         </td>
-                        <td className="px-4 py-3 text-start text-sm text-on-surface-variant whitespace-nowrap">{b.service_type==='full'?t('Full','كامل'):t('Exterior','خارجي')}</td>
-                        <td className="px-4 py-3 text-start text-xs text-on-surface-variant whitespace-nowrap">
-                          <div dir="ltr" style={{unicodeBidi:'embed'}}>
-                            <p>{new Date(b.booking_date).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</p>
-                            <p>{b.booking_time}</p>
-                          </div>
+                        <td className="px-4 py-3 text-sm text-on-surface-variant whitespace-nowrap">{b.service_type==='full'?t('Full','كامل'):t('Exterior','خارجي')}</td>
+                        <td className="px-4 py-3 text-xs text-on-surface-variant whitespace-nowrap">
+                          <p>{new Date(b.booking_date).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</p>
+                          <p style={{direction:'ltr',unicodeBidi:'embed'}}>{b.booking_time}</p>
                         </td>
                         <td className="px-4 py-3 text-start">
                           <span className={`px-2 py-1 rounded-full text-xs font-bold whitespace-nowrap ${
