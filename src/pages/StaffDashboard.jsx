@@ -802,7 +802,7 @@ export default function StaffDashboard() {
                           <p className="text-sm text-on-surface font-semibold whitespace-nowrap">{b.customer_name||'-'}</p>
                           <p className="text-xs text-on-surface-variant whitespace-nowrap">{b.customer_phone||''}</p>
                         </td>
-                        <td className="px-4 py-3 text-sm text-on-surface-variant whitespace-nowrap" dir="rtl">{b.service_type==='full'?t('Full','كامل'):t('Exterior','خارجي')}</td>
+                        <td className="px-4 py-3 text-sm text-on-surface-variant whitespace-nowrap">{b.service_type==='full'?t('Full','كامل'):t('Exterior','خارجي')}</td>
                         <td className="px-4 py-3 text-xs text-on-surface-variant whitespace-nowrap">
                           <p>{new Date(b.booking_date).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</p>
                           <p>{b.booking_time}</p>
