@@ -13,7 +13,7 @@ const INVENTORY = [
 const MODAL_BLANK = { firstName: '', lastName: '', email: '', phone: '', password: '' }
 
 export default function StaffDashboard() {
-  const { t, staffToken, setStaffToken, showToast, lang, toggleLang, isSuperAdmin, hasPerm } = useApp()
+  const { t, staffToken, setStaffToken, showToast, lang, toggleLang, isSuperAdmin } = useApp()
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('dashboard')
   const [stats, setStats] = useState(null)
@@ -373,7 +373,7 @@ export default function StaffDashboard() {
             <h1 className="text-2xl font-bold text-secondary-fixed font-display">{t('Operations Overview', 'لوحة العمليات')}</h1>
             <p className="text-on-surface-variant text-sm">{shiftInfo}</p>
           </div>
-          {activeTab !== 'customers' && (
+          {activeTab === 'dashboard' && (
             <button onClick={openAddModal} className="hydro-gradient px-5 py-2.5 rounded-xl text-white text-xs font-bold flex items-center gap-2 hover:opacity-90 transition-opacity cyan-glow">
               <span className="material-symbols-outlined text-base">person_add</span>
               {t('Add Customer', 'إضافة عميل')}
@@ -800,7 +800,10 @@ export default function StaffDashboard() {
                           <p className="text-xs text-on-surface-variant">{b.customer_phone||''}</p>
                         </td>
                         <td className="px-4 py-3 text-sm text-on-surface-variant whitespace-nowrap">{b.service_type==='full'?t('Full','كامل'):t('Exterior','خارجي')}</td>
-                        <td className="px-4 py-3 text-xs text-on-surface-variant whitespace-nowrap">{b.booking_date}<br/>{b.booking_time}</td>
+                        <td className="px-4 py-3 text-xs text-on-surface-variant whitespace-nowrap">
+                          {new Date(b.booking_date).toLocaleDateString(t('en-US','ar-SA'),{year:'numeric',month:'short',day:'numeric'})}
+                          <br/>{b.booking_time}
+                        </td>
                         <td className="px-4 py-3">
                           <span className={`px-2 py-1 rounded-full text-xs font-bold whitespace-nowrap ${
                             b.status==='confirmed'?'bg-secondary-container/20 text-secondary-fixed border border-secondary-container/30':
