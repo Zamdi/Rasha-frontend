@@ -458,11 +458,11 @@ export default function StaffDashboard() {
                 </div>
               ) : (
                 <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
+                  <table className="w-full text-sm" dir="ltr">
                     <thead style={{ background: 'rgba(39,42,44,0.4)' }}>
                       <tr>
                         {[t('Customer','العميل'), t('ID','الرمز'), t('Phone','الهاتف'), t('Stamps','الطوابع'), t('Washes','الغسيلات'), t('Status','الحالة'), t('Joined','الانضمام'), ''].map(h => (
-                          <th key={h} className="px-4 py-3 text-xs text-on-surface-variant uppercase font-semibold whitespace-nowrap">{h}</th>
+                          <th key={h} className="px-4 py-3 text-left text-xs text-on-surface-variant uppercase font-semibold whitespace-nowrap">{h}</th>
                         ))}
                       </tr>
                     </thead>
@@ -474,14 +474,14 @@ export default function StaffDashboard() {
                               <div className="w-9 h-9 rounded-full hydro-gradient flex items-center justify-center text-white text-xs font-bold shrink-0">
                                 {c.first_name?.[0]}{c.last_name?.[0]}
                               </div>
-                              <div dir="ltr" style={{unicodeBidi:'embed'}}>
+                              <div>
                                 <p className="font-semibold text-on-surface text-sm">{c.first_name} {c.last_name}</p>
                                 <p className="text-xs text-on-surface-variant">{c.email}</p>
                               </div>
                             </div>
                           </td>
                           <td className="px-4 py-3 text-xs font-bold text-secondary-fixed">{c.customer_uid}</td>
-                          <td className="px-4 py-3 text-xs text-on-surface-variant" dir="ltr" style={{unicodeBidi:'embed'}}>{c.phone}</td>
+                          <td className="px-4 py-3 text-xs text-on-surface-variant">{c.phone}</td>
                           <td className="px-4 py-3">
                             <div className="flex items-center gap-1">
                               <span className="text-secondary-fixed font-bold">{c.stamps}</span>
@@ -490,12 +490,12 @@ export default function StaffDashboard() {
                           </td>
                           <td className="px-4 py-3 text-on-surface-variant text-xs">{c.total_washes ?? 0}</td>
                           <td className="px-4 py-3">
-                            <span className={`px-2 py-1 rounded-full text-xs font-bold ${c.is_active ? 'bg-green-500/10 text-green-400 border border-green-500/20' : 'bg-error/10 text-error border border-error/20'}`}>
+                            <span className={`px-2 py-1 rounded-full text-xs font-bold ${c.is_active ? 'bg-green-500/10 text-green-400 border border-green-500/20' : 'bg-error/10 text-error border border-error/20'}`} dir="rtl">
                               {c.is_active ? t('Active', 'نشط') : t('Suspended', 'موقوف')}
                             </span>
                           </td>
                           <td className="px-4 py-3 text-xs text-on-surface-variant whitespace-nowrap">
-                            {c.created_at ? new Date(c.created_at).toLocaleDateString() : '—'}
+                            {c.created_at ? new Date(c.created_at).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : '—'}
                           </td>
                           <td className="px-4 py-3">
                             <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -779,12 +779,15 @@ export default function StaffDashboard() {
                 <h3 className="font-bold text-on-surface">{t('Recent Bookings', 'الحجوزات الأخيرة')}</h3>
               </div>
               <div className="overflow-x-auto">
-                <table className="w-full text-sm">
+                <table className="w-full text-sm" dir="ltr">
                   <thead className="bg-surface-container-high/30">
                     <tr>
-                      {[t('Ref','المرجع'),t('Customer','العميل'),t('Service','الخدمة'),t('Date/Time','التاريخ'),t('Status','الحالة'),''].map(h=>(
-                        <th key={h} className="px-4 py-3 text-xs text-on-surface-variant uppercase font-semibold whitespace-nowrap">{h}</th>
-                      ))}
+                      <th className="px-4 py-3 text-left text-xs text-on-surface-variant uppercase font-semibold whitespace-nowrap">{t('Ref','المرجع')}</th>
+                      <th className="px-4 py-3 text-left text-xs text-on-surface-variant uppercase font-semibold whitespace-nowrap">{t('Customer','العميل')}</th>
+                      <th className="px-4 py-3 text-left text-xs text-on-surface-variant uppercase font-semibold whitespace-nowrap">{t('Service','الخدمة')}</th>
+                      <th className="px-4 py-3 text-left text-xs text-on-surface-variant uppercase font-semibold whitespace-nowrap">{t('Date/Time','التاريخ')}</th>
+                      <th className="px-4 py-3 text-left text-xs text-on-surface-variant uppercase font-semibold whitespace-nowrap">{t('Status','الحالة')}</th>
+                      <th className="px-4 py-3"></th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-outline-variant/10">
@@ -796,23 +799,23 @@ export default function StaffDashboard() {
                       <tr key={b.id} className="hover:bg-surface-variant/10 transition-colors">
                         <td className="px-4 py-3 text-xs font-bold text-secondary-fixed whitespace-nowrap">#RSH-{b.booking_uid.replace('BK-','')}</td>
                         <td className="px-4 py-3">
-                          <p className="text-sm text-on-surface font-semibold">{b.customer_name||'-'}</p>
-                          <p className="text-xs text-on-surface-variant" style={{direction:'ltr',textAlign:'start',unicodeBidi:'embed'}}>{b.customer_phone||''}</p>
+                          <p className="text-sm text-on-surface font-semibold whitespace-nowrap">{b.customer_name||'-'}</p>
+                          <p className="text-xs text-on-surface-variant whitespace-nowrap">{b.customer_phone||''}</p>
                         </td>
-                        <td className="px-4 py-3 text-sm text-on-surface-variant whitespace-nowrap">{b.service_type==='full'?t('Full','كامل'):t('Exterior','خارجي')}</td>
+                        <td className="px-4 py-3 text-sm text-on-surface-variant whitespace-nowrap" dir="rtl">{b.service_type==='full'?t('Full','كامل'):t('Exterior','خارجي')}</td>
                         <td className="px-4 py-3 text-xs text-on-surface-variant whitespace-nowrap">
                           <p>{new Date(b.booking_date).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</p>
-                          <p style={{direction:'ltr',unicodeBidi:'embed'}}>{b.booking_time}</p>
+                          <p>{b.booking_time}</p>
                         </td>
-                        <td className="px-4 py-3 text-start">
+                        <td className="px-4 py-3">
                           <span className={`px-2 py-1 rounded-full text-xs font-bold whitespace-nowrap ${
                             b.status==='confirmed'?'bg-secondary-container/20 text-secondary-fixed border border-secondary-container/30':
                             b.status==='completed'?'bg-green-500/10 text-green-400 border border-green-500/20':
                             'bg-error-container/20 text-error border border-error/20'
-                          }`}>{b.status === 'confirmed' ? t('Confirmed','مؤكد') : b.status === 'completed' ? t('Completed','مكتمل') : t('Cancelled','ملغى')}</span>
+                          }`} dir="rtl">{b.status === 'confirmed' ? t('Confirmed','مؤكد') : b.status === 'completed' ? t('Completed','مكتمل') : t('Cancelled','ملغى')}</span>
                         </td>
-                        <td className="px-4 py-3 text-start">
-                          {b.status==='confirmed'&&<button onClick={()=>cancelBooking(b.id)} className="text-error text-xs hover:underline">{t('Cancel','إلغاء')}</button>}
+                        <td className="px-4 py-3">
+                          {b.status==='confirmed'&&<button onClick={()=>cancelBooking(b.id)} className="text-error text-xs hover:underline" dir="rtl">{t('Cancel','إلغاء')}</button>}
                         </td>
                       </tr>
                     ))}
