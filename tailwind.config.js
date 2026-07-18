@@ -5,7 +5,6 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Surface colors via CSS vars (no opacity modifiers needed)
         'surface':                   'var(--color-surface)',
         'surface-dim':               'var(--color-surface-dim)',
         'surface-container-lowest':  'var(--color-surface-container-lowest)',
@@ -22,14 +21,23 @@ export default {
         'primary-container':         'var(--color-primary-container)',
         'background':                'var(--color-background)',
         'on-background':             'var(--color-on-background)',
-        // Colors that use opacity modifiers — must be static hex for Tailwind to generate rgba
-        'outline':              ({ opacityValue }) => opacityValue ? `rgba(140,144,158,${opacityValue})` : '#8c909e',
-        'outline-variant':      ({ opacityValue }) => opacityValue ? `rgba(66,71,82,${opacityValue})` : '#424752',
-        'secondary-fixed':      ({ opacityValue }) => opacityValue ? `rgba(116,245,255,${opacityValue})` : '#74f5ff',
-        'secondary-fixed-dim':  ({ opacityValue }) => opacityValue ? `rgba(0,219,231,${opacityValue})` : '#00dbe7',
-        'secondary-container':  ({ opacityValue }) => opacityValue ? `rgba(0,241,254,${opacityValue})` : '#00f1fe',
-        'error':                ({ opacityValue }) => opacityValue ? `rgba(255,180,171,${opacityValue})` : '#ffb4ab',
-        'error-container':      ({ opacityValue }) => opacityValue ? `rgba(147,0,10,${opacityValue})` : '#93000a',
+        // Use rgb channel vars so opacity modifiers work AND colors switch between themes
+        'secondary-fixed':      ({ opacityValue }) =>
+          opacityValue !== undefined
+            ? `rgba(var(--color-secondary-fixed-rgb), ${opacityValue})`
+            : 'var(--color-secondary-fixed)',
+        'secondary-fixed-dim':       'var(--color-secondary-fixed-dim)',
+        'secondary-container':       'var(--color-secondary-container)',
+        'outline':                   'var(--color-outline)',
+        'outline-variant':      ({ opacityValue }) =>
+          opacityValue !== undefined
+            ? `rgba(var(--color-outline-variant-rgb), ${opacityValue})`
+            : 'var(--color-outline-variant)',
+        'error':                ({ opacityValue }) =>
+          opacityValue !== undefined
+            ? `rgba(var(--color-error-rgb), ${opacityValue})`
+            : 'var(--color-error)',
+        'error-container':           'var(--color-error-container)',
       },
       fontFamily: {
         sans:    ['Inter', 'Noto Kufi Arabic', 'sans-serif'],
