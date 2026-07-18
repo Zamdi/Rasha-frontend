@@ -5,6 +5,7 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Surface colors via CSS vars (no opacity modifiers needed)
         'surface':                   'var(--color-surface)',
         'surface-dim':               'var(--color-surface-dim)',
         'surface-container-lowest':  'var(--color-surface-container-lowest)',
@@ -16,18 +17,19 @@ export default {
         'surface-variant':           'var(--color-surface-variant)',
         'on-surface':                'var(--color-on-surface)',
         'on-surface-variant':        'var(--color-on-surface-variant)',
-        'outline':                   'var(--color-outline)',
-        'outline-variant':           'var(--color-outline-variant)',
         'primary':                   'var(--color-primary)',
         'on-primary':                'var(--color-on-primary)',
         'primary-container':         'var(--color-primary-container)',
-        'secondary-fixed':           'var(--color-secondary-fixed)',
-        'secondary-fixed-dim':       'var(--color-secondary-fixed-dim)',
-        'secondary-container':       'var(--color-secondary-container)',
-        'error':                     'var(--color-error)',
-        'error-container':           'var(--color-error-container)',
         'background':                'var(--color-background)',
         'on-background':             'var(--color-on-background)',
+        // Colors that use opacity modifiers — must be static hex for Tailwind to generate rgba
+        'outline':              ({ opacityValue }) => opacityValue ? `rgba(140,144,158,${opacityValue})` : '#8c909e',
+        'outline-variant':      ({ opacityValue }) => opacityValue ? `rgba(66,71,82,${opacityValue})` : '#424752',
+        'secondary-fixed':      ({ opacityValue }) => opacityValue ? `rgba(116,245,255,${opacityValue})` : '#74f5ff',
+        'secondary-fixed-dim':  ({ opacityValue }) => opacityValue ? `rgba(0,219,231,${opacityValue})` : '#00dbe7',
+        'secondary-container':  ({ opacityValue }) => opacityValue ? `rgba(0,241,254,${opacityValue})` : '#00f1fe',
+        'error':                ({ opacityValue }) => opacityValue ? `rgba(255,180,171,${opacityValue})` : '#ffb4ab',
+        'error-container':      ({ opacityValue }) => opacityValue ? `rgba(147,0,10,${opacityValue})` : '#93000a',
       },
       fontFamily: {
         sans:    ['Inter', 'Noto Kufi Arabic', 'sans-serif'],
