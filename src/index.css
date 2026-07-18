@@ -233,3 +233,18 @@ html.light {
 .fill-icon { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
 .rtl-flip { transform: scaleX(1); }
 [dir="rtl"] .rtl-flip { transform: scaleX(-1); }
+
+/* ── Mobile sizing adjustments ─────────────────────────────── */
+@media (max-width: 640px) {
+  body { font-size: 14px; }
+  h1 { font-size: 1.75rem !important; }
+  h2 { font-size: 1.25rem !important; }
+  .btn-primary, .btn-glass, .btn-cyan {
+    padding: 0.625rem 1rem;
+    font-size: 0.8125rem;
+  }
+  .rasha-input, .rasha-select { padding: 0.625rem 0.875rem; font-size: 0.8125rem; }
+  .otp-input { width: 2.5rem; height: 3rem; font-size: 1.1rem; }
+  .glass { backdrop-filter: blur(16px); }
+  .material-symbols-outlined { font-size: 20px; }
+}

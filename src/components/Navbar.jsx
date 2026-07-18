@@ -42,7 +42,9 @@ export default function Navbar() {
         {/* Desktop nav */}
         <div className="hidden md:flex items-center gap-6 text-sm font-semibold">
           <Link to="/" className="text-on-surface-variant hover:text-secondary-fixed transition-colors">{t('Home', 'الرئيسية')}</Link>
-          <Link to="/book" className="text-on-surface-variant hover:text-secondary-fixed transition-colors">{t('Book a Wash', 'احجز غسيل')}</Link>
+          {location.pathname !== '/book' && (
+            <Link to="/book" className="text-on-surface-variant hover:text-secondary-fixed transition-colors">{t('Book a Wash', 'احجز غسيل')}</Link>
+          )}
           {customer && <Link to="/loyalty" className="text-on-surface-variant hover:text-secondary-fixed transition-colors">{t('My Card', 'بطاقتي')}</Link>}
           <Link to="/contact" className="text-on-surface-variant hover:text-secondary-fixed transition-colors">{t('Support', 'الدعم')}</Link>
         </div>

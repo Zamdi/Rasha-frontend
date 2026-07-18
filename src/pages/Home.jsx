@@ -77,7 +77,7 @@ export default function Home() {
                 </div>
                 <button onClick={handleHeroBook}
                   className="w-full py-4 rounded-xl font-extrabold text-sm uppercase tracking-widest hover:opacity-90 transition-opacity"
-                  style={{ background: 'var(--color-secondary-container)', color: '#002022' }}>
+                  style={{ background: '#0052ac', color: '#ffffff' }}>
                   {t('Confirm Appointment', 'تأكيد الحجز')}
                 </button>
               </div>

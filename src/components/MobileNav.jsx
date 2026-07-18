@@ -44,11 +44,17 @@ export default function MobileNav() {
 
   return (
     <nav
-      className="md:hidden fixed bottom-0 left-0 w-full z-50 glass-high border-t border-outline-variant/30 transition-transform duration-300"
-      style={{ transform: visible ? 'translateY(0)' : 'translateY(100%)' }}
+      className="md:hidden fixed bottom-0 left-0 w-full z-50 border-t transition-transform duration-300"
+      style={{
+        background: 'var(--glass-high-bg)',
+        backdropFilter: 'blur(24px)',
+        WebkitBackdropFilter: 'blur(24px)',
+        borderColor: 'var(--color-outline-variant)',
+        transform: visible ? 'translateY(0)' : 'translateY(100%)'
+      }}
     >
       <div className="flex justify-around items-center px-4 py-2">
-        {items.map(item => {
+        {items.filter(item => !(item.to === '/book' && pathname === '/book')).map(item => {
           const active = pathname === item.to
           const to = item.to === '/loyalty' && !customer ? '/login' : item.to
           return (
