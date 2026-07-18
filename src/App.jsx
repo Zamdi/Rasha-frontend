@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { AppProvider } from './context/AppContext'
+import { AppProvider, useApp } from './context/AppContext'
 import Navbar from './components/Navbar'
 import MobileNav from './components/MobileNav'
 import Toast from './components/Toast'
@@ -14,9 +14,15 @@ import Contact from './pages/Contact'
 import Privacy from './pages/Privacy'
 import Terms from './pages/Terms'
 
-export default function App() {
+function AppShell() {
+  const { theme } = useApp()
   return (
-    <AppProvider>
+    <div style={{
+      minHeight: '100vh',
+      background: theme === 'light' ? '#f4f1ec' : '#101415',
+      color: theme === 'light' ? '#1a1a18' : '#e0e3e5',
+      transition: 'background 0.3s, color 0.3s',
+    }}>
       <BrowserRouter>
         <ScrollToTop />
         <Navbar />
@@ -34,6 +40,14 @@ export default function App() {
         </Routes>
         <MobileNav />
       </BrowserRouter>
+    </div>
+  )
+}
+
+export default function App() {
+  return (
+    <AppProvider>
+      <AppShell />
     </AppProvider>
   )
 }
