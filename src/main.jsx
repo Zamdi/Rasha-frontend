@@ -5,9 +5,10 @@ import './index.css'
 
 // Apply saved theme before render to avoid flash
 const savedTheme = localStorage.getItem('rasha_theme') || 'dark'
-document.documentElement.classList.add(savedTheme === 'light' ? 'light' : 'dark')
-document.documentElement.style.background = savedTheme === 'light' ? '#f4f1ec' : '#101415'
-document.body.style.background = savedTheme === 'light' ? '#f4f1ec' : '#101415'
+const isLight = savedTheme === 'light'
+document.documentElement.classList.add(isLight ? 'light' : 'dark')
+document.documentElement.style.backgroundColor = isLight ? '#f4f1ec' : '#101415'
+document.body.style.backgroundColor = isLight ? '#f4f1ec' : '#101415'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

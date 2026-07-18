@@ -8,19 +8,32 @@ export function AppProvider({ children }) {
   useEffect(() => {
     const root = document.documentElement
     const body = document.body
-    if (theme === 'light') {
+    const isLight = theme === 'light'
+
+    // Apply immediately
+    if (isLight) {
       root.classList.add('light')
       root.classList.remove('dark')
-      root.style.background = '#f4f1ec'
-      body.style.background = '#f4f1ec'
-      body.style.color = '#1a1a18'
     } else {
       root.classList.remove('light')
       root.classList.add('dark')
-      root.style.background = '#101415'
-      body.style.background = '#101415'
-      body.style.color = '#e0e3e5'
     }
+
+    // Set explicit colors — Chrome Android needs this to repaint GPU layers
+    const bg = isLight ? '#f4f1ec' : '#101415'
+    const fg = isLight ? '#1a1a18' : '#e0e3e5'
+    root.style.backgroundColor = bg
+    root.style.color = fg
+    body.style.backgroundColor = bg
+    body.style.color = fg
+
+    // Double rAF forces Chrome Android to flush and repaint
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        void root.offsetHeight // trigger reflow
+      })
+    })
+
     localStorage.setItem('rasha_theme', theme)
   }, [theme])
   const toggleTheme = () => setThemeState(t => t === 'dark' ? 'light' : 'dark')
