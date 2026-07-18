@@ -11,7 +11,7 @@ const tomorrow = () => {
 }
 
 export default function Booking() {
-  const { t, customer, token, showToast } = useApp()
+  const { t, lang, customer, token, showToast } = useApp()
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -47,14 +47,12 @@ export default function Booking() {
     if (!form.firstName || !form.lastName || !form.phone || !form.date) {
       showToast(t('Please fill all required fields', 'يرجى ملء الحقول المطلوبة'), 'error'); return
     }
-    setStep(2)
-    window.scrollTo(0, 0)
+    setStep(2); window.scrollTo(0, 0)
   }
 
   const goToStep3 = () => {
     if (!selectedSlot) { showToast(t('Please select a time slot', 'اختر موعداً'), 'error'); return }
-    setStep(3)
-    window.scrollTo(0, 0)
+    setStep(3); window.scrollTo(0, 0)
   }
 
   const submitBooking = async () => {
@@ -77,50 +75,41 @@ export default function Booking() {
       const data = await res.json()
       if (!res.ok) { showToast(data.error || t('Booking failed', 'فشل الحجز'), 'error'); return }
       const ref = '#RSH-' + data.booking.booking_uid.replace('BK-', '')
-      navigate('/confirmation', {
-        state: {
-          ref, service: form.service,
-          date: form.date, time: selectedSlot,
-          name: `${form.firstName} ${form.lastName}`,
-        }
-      })
+      navigate('/confirmation', { state: { ref, service: form.service, date: form.date, time: selectedSlot, name: `${form.firstName} ${form.lastName}` } })
     } catch { showToast(t('Connection error', 'خطأ في الاتصال'), 'error') }
     finally { setLoading(false) }
   }
 
-  const serviceLabel = form.service === 'full'
-    ? t('Full Wash', 'غسيل كامل')
-    : t('Exterior Only', 'خارجي فقط')
+  const serviceLabel = form.service === 'full' ? t('Full Wash', 'غسيل كامل') : t('Exterior Only', 'خارجي فقط')
 
   const StepCircle = ({ n, active }) => (
     <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${active || step > n ? 'hydro-gradient text-white' : 'bg-surface-container-highest border border-outline-variant text-on-surface-variant'}`}>{step > n ? '✓' : n}</div>
   )
 
   return (
-    <div className="pt-14 pb-24 md:pb-10 min-h-screen">
+    <div className="pt-16 pb-24 md:pb-10 min-h-screen">
       <div className="max-w-xl mx-auto px-4 md:px-6 py-10">
-        {/* Back */}
         <button onClick={() => step > 1 ? setStep(s => s-1) : navigate(-1)} className="flex items-center gap-2 text-on-surface-variant hover:text-secondary-fixed transition-colors text-sm mb-6">
           <span className="material-symbols-outlined rtl-flip text-base">arrow_back</span>
           {t('Back', 'رجوع')}
         </button>
 
         <h1 className="text-3xl font-bold text-on-surface font-display mb-1">{t('Book a Wash', 'احجز غسيل')}</h1>
-        <p className="text-on-surface-variant text-sm mb-8">{t('Choose your service, pick a time, and you\'re done.', 'اختر خدمتك، حدد الوقت.')}</p>
+        <p className="text-on-surface-variant text-sm mb-8">{t("Choose your service, pick a time, and you're done.", 'اختر خدمتك، حدد الوقت.')}</p>
 
         {/* Step indicator */}
         <div className="flex items-center gap-2 mb-8">
           <StepCircle n={1} active={step === 1} />
           <span className={`text-xs font-semibold hidden sm:block ${step === 1 ? 'text-secondary-fixed' : 'text-on-surface-variant'}`}>{t('Details', 'التفاصيل')}</span>
-          <div className="flex-1 h-px" style={{background:'var(--color-outline-variant)', opacity:0.3}} />
+          <div className="flex-1 h-px" style={{background:'var(--color-outline-variant)', opacity:0.4}} />
           <StepCircle n={2} active={step === 2} />
           <span className={`text-xs font-semibold hidden sm:block ${step === 2 ? 'text-secondary-fixed' : 'text-on-surface-variant'}`}>{t('Time Slot', 'الموعد')}</span>
-          <div className="flex-1 h-px" style={{background:'var(--color-outline-variant)', opacity:0.3}} />
+          <div className="flex-1 h-px" style={{background:'var(--color-outline-variant)', opacity:0.4}} />
           <StepCircle n={3} active={step === 3} />
           <span className={`text-xs font-semibold hidden sm:block ${step === 3 ? 'text-secondary-fixed' : 'text-on-surface-variant'}`}>{t('Confirm', 'التأكيد')}</span>
         </div>
 
-        {/* ── Step 1 ── */}
+        {/* Step 1 */}
         {step === 1 && (
           <div className="glass p-6 rounded-2xl space-y-4 animate-fade-in">
             <h3 className="font-bold text-on-surface mb-2">{t('Your Details', 'بياناتك')}</h3>
@@ -139,7 +128,7 @@ export default function Booking() {
               <div className="flex" dir="ltr">
                 <span className="rounded-l-xl px-3 py-3 text-sm text-on-surface-variant flex items-center shrink-0"
                   style={{background:'var(--color-surface-container-high)', border:'1px solid var(--color-outline-variant)', borderRight:'none'}}>+249</span>
-                <input type="tel" placeholder="9XX XXX XXXX" className="rasha-input rounded-l-none rounded-r-xl" style={{borderRadius:'0 0.75rem 0.75rem 0'}} value={form.phone} onChange={e => setForm(f => ({...f, phone: e.target.value.replace(/\D/g,'')}))} />
+                <input type="tel" placeholder="9XX XXX XXXX" className="rasha-input" style={{borderRadius:'0 0.75rem 0.75rem 0'}} value={form.phone} onChange={e => setForm(f => ({...f, phone: e.target.value.replace(/\D/g,'')}))} />
               </div>
             </div>
             <div>
@@ -168,7 +157,7 @@ export default function Booking() {
           </div>
         )}
 
-        {/* ── Step 2 ── */}
+        {/* Step 2 */}
         {step === 2 && (
           <div className="space-y-4 animate-fade-in">
             <div className="glass p-6 rounded-2xl">
@@ -210,7 +199,7 @@ export default function Booking() {
           </div>
         )}
 
-        {/* ── Step 3 ── */}
+        {/* Step 3 */}
         {step === 3 && (
           <div className="space-y-4 animate-fade-in">
             <div className="glass p-6 rounded-2xl">
@@ -224,7 +213,8 @@ export default function Booking() {
                   [t('Time','الوقت'), formatTime(selectedSlot, lang), true],
                   ...(form.vehicle ? [[t('Vehicle','السيارة'), form.vehicle, false]] : []),
                 ].map(([label, value, ltr], idx, arr) => (
-                  <div key={label} className="flex justify-between py-2" style={{borderBottom: idx < arr.length-1 ? '1px solid var(--color-outline-variant)' : 'none'}}>
+                  <div key={label} className="flex justify-between py-2"
+                    style={{borderBottom: idx < arr.length - 1 ? '1px solid var(--color-outline-variant)' : 'none'}}>
                     <span className="text-on-surface-variant">{label}</span>
                     <span className={`font-semibold ${label === t('Time','الوقت') ? 'text-secondary-fixed' : 'text-on-surface'}`}
                       dir={ltr ? 'ltr' : undefined} style={ltr ? {unicodeBidi:'embed'} : undefined}>{value}</span>
