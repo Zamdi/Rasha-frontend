@@ -4,7 +4,7 @@ export const API = 'https://rasha-backend.onrender.com'
 export function AppProvider({ children }) {
   const [lang, setLang] = useState('en')
   const [toast, setToast] = useState(null)
-  const [theme, setThemeState] = useState(() => localStorage.getItem('rasha_theme') || 'dark')
+  const [theme, setThemeState] = useState(() => localStorage.getItem('rasha_theme') || 'light')
   useEffect(() => {
     const root = document.documentElement
     const body = document.body
@@ -27,14 +27,17 @@ export function AppProvider({ children }) {
     body.style.backgroundColor = bg
     body.style.color = fg
 
-    // Force all mobile browsers to repaint (Chrome, Mi Browser, Samsung, UC, etc.)
+    // Update meta theme-color (used by Mi Browser, Samsung Internet, Chrome)
+    const metaTheme = document.getElementById('theme-meta')
+    if (metaTheme) metaTheme.setAttribute('content', isLight ? '#f4f1ec' : '#101415')
+
+    // Force all mobile browsers to repaint CSS variable changes
+    body.style.willChange = 'background-color, color'
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        void root.offsetHeight // reflow
-        // Toggle display to force full layer invalidation on all browsers
-        body.style.display = 'none'
-        void body.offsetHeight
-        body.style.display = ''
+        void root.offsetHeight
+        void root.offsetWidth
+        body.style.willChange = 'auto'
       })
     })
 

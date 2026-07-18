@@ -83,6 +83,7 @@ html.light {
     background: var(--color-background);
     color: var(--color-on-background);
     font-family: 'Inter', 'Noto Kufi Arabic', sans-serif;
+    transition: background-color 0.3s, color 0.3s;
   }
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: var(--scrollbar-track); }
