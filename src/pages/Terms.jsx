@@ -29,7 +29,7 @@ export default function Terms() {
         </div>
 
         <div className="space-y-4">
-          <Section icon="handshake" title={t('1. Acceptance of Terms', '1. قبول الشروط')}>
+          <Section icon="handshake" title={t('Acceptance of Terms', 'قبول الشروط')}>
             <p className="text-on-surface-variant text-sm leading-relaxed">
               {t('By accessing and using Rasha Car Wash services — including our online booking platform, loyalty program, and mobile app — you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our services.',
                 'بالوصول إلى خدمات رشة لغسيل السيارات واستخدامها — بما في ذلك منصة الحجز الإلكترونية وبرنامج الولاء والتطبيق — فإنك توافق على الالتزام بشروط الخدمة هذه.')}
@@ -37,7 +37,7 @@ export default function Terms() {
           </Section>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Section icon="local_car_wash" title={t('2. Services Provided', '2. الخدمات المقدمة')}>
+            <Section icon="local_car_wash" title={t('Services Provided', 'الخدمات المقدمة')}>
               <p className="text-on-surface-variant text-sm mb-3">
                 {t('Rasha offers the following car wash services in Khartoum, Sudan:', 'تقدم رشة خدمات غسيل السيارات التالية في الخرطوم، السودان:')}
               </p>
@@ -56,7 +56,7 @@ export default function Terms() {
               </ul>
             </Section>
 
-            <Section icon="loyalty" title={t('3. Loyalty Program', '3. برنامج الولاء')}>
+            <Section icon="loyalty" title={t('Loyalty Program', 'برنامج الولاء')}>
               <ul className="space-y-3 text-on-surface-variant text-sm">
                 {[
                   t('Every completed wash earns 1 stamp on your card.', 'كل غسيل مكتمل يمنحك طابعاً واحداً على بطاقتك.'),
@@ -73,7 +73,7 @@ export default function Terms() {
             </Section>
           </div>
 
-          <Section icon="event_busy" title={t('4. Booking & Cancellation', '4. الحجز والإلغاء')}>
+          <Section icon="event_busy" title={t('Booking & Cancellation', 'الحجز والإلغاء')}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-on-surface-variant text-sm leading-relaxed">
               <div>
                 <p className="font-semibold text-on-surface mb-2">{t('Booking Policy', 'سياسة الحجز')}</p>
@@ -89,7 +89,7 @@ export default function Terms() {
           </Section>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Section icon="gavel" title={t('5. User Responsibilities', '5. مسؤوليات المستخدم')}>
+            <Section icon="gavel" title={t('User Responsibilities', 'مسؤوليات المستخدم')}>
               <ul className="space-y-2 text-on-surface-variant text-sm">
                 {[
                   t('Provide accurate personal and vehicle information.', 'تقديم معلومات شخصية وعن السيارة دقيقة.'),
@@ -105,7 +105,7 @@ export default function Terms() {
               </ul>
             </Section>
 
-            <Section icon="policy" title={t('6. Limitation of Liability', '6. حدود المسؤولية')}>
+            <Section icon="policy" title={t('Limitation of Liability', 'حدود المسؤولية')}>
               <p className="text-on-surface-variant text-sm leading-relaxed">
                 {t('Rasha is not liable for any pre-existing damage to your vehicle. We inspect vehicles before service. Any damage claims must be reported immediately after service completion. Rasha\'s liability is limited to the cost of the service provided.',
                   'رشة غير مسؤولة عن أي أضرار موجودة مسبقاً في سيارتك. نفحص السيارات قبل الخدمة. يجب الإبلاغ عن أي مطالبات ضرر فور الانتهاء من الخدمة.')}
@@ -119,7 +119,7 @@ export default function Terms() {
             <div>
               <h2 className="text-xl font-bold text-on-surface font-display mb-2 flex items-center gap-3">
                 <span className="material-symbols-outlined text-secondary-fixed text-2xl">contact_support</span>
-                {t('7. Questions About These Terms', '7. أسئلة حول هذه الشروط')}
+                {t('Questions About These Terms', 'أسئلة حول هذه الشروط')}
               </h2>
               <p className="text-on-surface-variant text-sm">
                 {t('If you have any questions about these Terms of Service, please contact our support team.', 'إذا كانت لديك أسئلة حول شروط الخدمة هذه، يرجى التواصل مع فريق الدعم.')}

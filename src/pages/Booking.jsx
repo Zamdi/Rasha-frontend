@@ -222,8 +222,8 @@ export default function Booking() {
                   [t('Date','التاريخ'), new Date(form.date + 'T12:00:00').toLocaleDateString(t('en-US','ar-EG'), {year:'numeric',month:'long',day:'numeric'}), false],
                   [t('Time','الوقت'), formatTime(selectedSlot, lang), true],
                   ...(form.vehicle ? [[t('Vehicle','السيارة'), form.vehicle, false]] : []),
-                ].map(([label, value, ltr]) => (
-                  <div key={label} className="flex justify-between py-2 border-b border-outline-variant/20 last:border-0">
+                ].map(([label, value, ltr], idx, arr) => (
+                  <div key={label} className="flex justify-between py-2" style={{borderBottom: idx < arr.length-1 ? '1px solid var(--color-outline-variant)' : 'none'}}>
                     <span className="text-on-surface-variant">{label}</span>
                     <span className={`font-semibold ${label === t('Time','الوقت') ? 'text-secondary-fixed' : 'text-on-surface'}`}
                       dir={ltr ? 'ltr' : undefined} style={ltr ? {unicodeBidi:'embed'} : undefined}>{value}</span>

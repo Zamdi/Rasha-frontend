@@ -1,8 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 
-const BG_IMG = "https://lh3.googleusercontent.com/aida-public/AB6AXuARf1pFuG9m96gjPalKL6YFrP4hgKi8b34Su0tOKVPfliOF2hQRpWEWwMcudUu8ThBE_qh4qxV603xPs3oE-vWbbKj7HIxmmDXku3j3X9Y4ZAbm2ugxDtwHEaxJVeyFCI3J5D0BgoePAr8QuqQSRZbQ4zxk7id7BqEFD079rFVmgF5olxFO9CVW9N9MCQOzwv_q5pwxsjQf-wSVBdwUmTOw1OtjGNMwXU47gBkG19w1TKrfhKSuzQw"
-
 const Section = ({ icon, title, children }) => (
   <div className="rounded-xl p-6 md:p-8" style={{ background: 'var(--color-surface-container)', border: '1px solid var(--color-outline-variant)' }}>
     <h2 className="text-xl font-bold text-on-surface font-display mb-4 flex items-center gap-3">
@@ -32,7 +30,7 @@ export default function Privacy() {
 
         <div className="space-y-4">
           {/* 1. Introduction — full width */}
-          <Section icon="shield" title={t('1. Introduction', '1. المقدمة')}>
+          <Section icon="shield" title={t('Introduction', 'المقدمة')}>
             <p className="text-on-surface-variant text-sm leading-relaxed">
               {t('At Rasha, we value your privacy above all. This policy outlines how we handle your information when you use our premium automotive detailing services. We ensure that every interaction remains confidential and secure.',
                 'في رشة، نقدّر خصوصيتك فوق كل شيء. تحدد هذه السياسة كيفية تعاملنا مع معلوماتك عند استخدام خدمات التفصيل المتميزة لدينا. نضمن أن تظل كل تفاعل سرياً وآمناً.')}
@@ -41,7 +39,7 @@ export default function Privacy() {
 
           {/* 2 & 3 side by side */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Section icon="sync" title={t('2. Information We Collect', '2. المعلومات التي نجمعها')}>
+            <Section icon="sync" title={t('Information We Collect', 'المعلومات التي نجمعها')}>
               <ul className="space-y-3">
                 {[
                   t('Phone Number (Sudan +249)', 'رقم الهاتف (السودان +249)'),
@@ -57,7 +55,7 @@ export default function Privacy() {
               </ul>
             </Section>
 
-            <Section icon="shield_person" title={t('3. Data Usage', '3. استخدام البيانات')}>
+            <Section icon="shield_person" title={t('Data Usage', 'استخدام البيانات')}>
               <p className="text-on-surface-variant text-sm mb-3">
                 {t('We use your data strictly to provide the Hydro-Premium experience:', 'نستخدم بياناتك حصراً لتوفير تجربة هيدرو بريميوم:')}
               </p>
@@ -82,7 +80,7 @@ export default function Privacy() {
             <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[120px] font-extrabold text-on-surface-variant/5 pointer-events-none select-none font-display">4</div>
             <h2 className="text-xl font-bold text-on-surface font-display mb-4 flex items-center gap-3">
               <span className="material-symbols-outlined text-secondary-fixed text-2xl">lock</span>
-              {t('4. Security', '4. الأمان')}
+              {t('Security', 'الأمان')}
             </h2>
             <p className="text-on-surface-variant text-sm leading-relaxed max-w-2xl">
               {t('We employ professional-grade encryption protocols to safeguard your records. Your data is stored on secure servers with restricted access, ensuring that your Sudanese carwash history and loyalty progress are protected against any unauthorized entry.',
@@ -96,7 +94,7 @@ export default function Privacy() {
             <div>
               <h2 className="text-xl font-bold text-on-surface font-display mb-2 flex items-center gap-3">
                 <span className="material-symbols-outlined text-secondary-fixed text-2xl">location_on</span>
-                {t('5. Contact Us', '5. تواصل معنا')}
+                {t('Contact Us', 'تواصل معنا')}
               </h2>
               <p className="text-on-surface-variant text-sm">
                 {t("Have questions about your data? Our dedicated support team is here to help.", 'هل لديك أسئلة حول بياناتك؟ فريق الدعم المخصص لدينا هنا للمساعدة.')}
@@ -113,12 +111,6 @@ export default function Privacy() {
           </div>
         </div>
       </main>
-
-      {/* Background footer image */}
-      <div className="relative w-full h-48 overflow-hidden" style={{ marginTop: '-1px' }}>
-        <div className="absolute inset-0 bg-cover bg-center opacity-30" style={{ backgroundImage: `url(${BG_IMG})` }} />
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, var(--color-background) 0%, transparent 40%, var(--color-surface-container-lowest) 100%)' }} />
-      </div>
 
       {/* Footer */}
       <footer className="w-full py-8 border-t border-outline-variant/10" style={{ background: 'var(--color-surface-container-lowest)' }}>
