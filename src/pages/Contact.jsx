@@ -50,11 +50,11 @@ export default function Contact() {
   ]
 
   return (
-    <div className="min-h-screen flex flex-col pb-16 md:pb-0" style={{ background: '#101415' }}>
+    <div className="min-h-screen flex flex-col pb-16 md:pb-0" style={{ background: 'var(--color-background)' }}>
       <main className="flex-grow w-full max-w-6xl mx-auto px-4 md:px-6 pt-16 pb-16">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-extrabold font-display mb-4" style={{ color: '#acc7ff' }}>
+          <h1 className="text-4xl md:text-5xl font-extrabold font-display mb-4 text-secondary-fixed">
             {t('Contact Support', 'تواصل مع الدعم')}
           </h1>
           <p className="text-on-surface-variant text-base max-w-2xl mx-auto leading-relaxed">
@@ -66,7 +66,7 @@ export default function Contact() {
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start">
           {/* Left: Email form */}
           <div className="lg:col-span-3 rounded-2xl p-6 md:p-8"
-            style={{ background: '#1d2022', border: '1px solid rgba(66,71,82,0.4)' }}>
+            style={{ background: 'var(--color-surface-container)', border: '1px solid var(--color-outline-variant)' }}>
             <h2 className="text-2xl font-bold text-on-surface font-display mb-6 flex items-center gap-3">
               <span className="material-symbols-outlined text-secondary-fixed text-2xl">mail</span>
               {t('Drop us an email', 'راسلنا عبر البريد')}
@@ -90,9 +90,9 @@ export default function Contact() {
                     <input type="text" placeholder={t('John Doe', 'محمد أحمد')} value={form.name}
                       onChange={e => set('name', e.target.value)}
                       className="w-full px-4 py-3 rounded-lg text-on-surface text-sm placeholder:text-outline focus:outline-none transition-all"
-                      style={{ background: '#272a2c', border: '1px solid #424752' }}
-                      onFocus={e => { e.target.style.borderColor = '#74f5ff'; e.target.style.boxShadow = '0 0 0 1px #74f5ff' }}
-                      onBlur={e => { e.target.style.borderColor = '#424752'; e.target.style.boxShadow = 'none' }} />
+                      style={{ background: 'var(--input-bg)', border: '1px solid var(--input-border)' }}
+                      onFocus={e => { e.target.style.borderColor = 'var(--color-secondary-fixed)'; e.target.style.boxShadow = '0 0 0 1px var(--color-secondary-fixed)' }}
+                      onBlur={e => { e.target.style.borderColor = 'var(--input-border)'; e.target.style.boxShadow = 'none' }} />
                   </div>
                   <div>
                     <label className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2 block">
@@ -101,9 +101,9 @@ export default function Contact() {
                     <input type="email" placeholder="john@example.com" value={form.email}
                       onChange={e => set('email', e.target.value)}
                       className="w-full px-4 py-3 rounded-lg text-on-surface text-sm placeholder:text-outline focus:outline-none transition-all"
-                      style={{ background: '#272a2c', border: '1px solid #424752' }}
-                      onFocus={e => { e.target.style.borderColor = '#74f5ff'; e.target.style.boxShadow = '0 0 0 1px #74f5ff' }}
-                      onBlur={e => { e.target.style.borderColor = '#424752'; e.target.style.boxShadow = 'none' }} />
+                      style={{ background: 'var(--input-bg)', border: '1px solid var(--input-border)' }}
+                      onFocus={e => { e.target.style.borderColor = 'var(--color-secondary-fixed)'; e.target.style.boxShadow = '0 0 0 1px var(--color-secondary-fixed)' }}
+                      onBlur={e => { e.target.style.borderColor = 'var(--input-border)'; e.target.style.boxShadow = 'none' }} />
                   </div>
                 </div>
                 <div>
@@ -112,9 +112,9 @@ export default function Contact() {
                   </label>
                   <select value={form.subject} onChange={e => set('subject', e.target.value)}
                     className="w-full px-4 py-3 rounded-lg text-on-surface text-sm focus:outline-none transition-all appearance-none"
-                    style={{ background: '#272a2c', border: '1px solid #424752' }}
-                    onFocus={e => { e.target.style.borderColor = '#74f5ff' }}
-                    onBlur={e => { e.target.style.borderColor = '#424752' }}>
+                    style={{ background: 'var(--input-bg)', border: '1px solid var(--input-border)' }}
+                    onFocus={e => { e.target.style.borderColor = 'var(--color-secondary-fixed)' }}
+                    onBlur={e => { e.target.style.borderColor = 'var(--input-border)' }}>
                     {subjects.map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
                 </div>
@@ -125,9 +125,9 @@ export default function Contact() {
                   <textarea rows={6} placeholder={t('Describe your request in detail...', 'صف طلبك بالتفصيل...')}
                     value={form.message} onChange={e => set('message', e.target.value)}
                     className="w-full px-4 py-3 rounded-lg text-on-surface text-sm placeholder:text-outline focus:outline-none transition-all resize-none"
-                    style={{ background: '#272a2c', border: '1px solid #424752' }}
-                    onFocus={e => { e.target.style.borderColor = '#74f5ff'; e.target.style.boxShadow = '0 0 0 1px #74f5ff' }}
-                    onBlur={e => { e.target.style.borderColor = '#424752'; e.target.style.boxShadow = 'none' }} />
+                    style={{ background: 'var(--input-bg)', border: '1px solid var(--input-border)' }}
+                    onFocus={e => { e.target.style.borderColor = 'var(--color-secondary-fixed)'; e.target.style.boxShadow = '0 0 0 1px var(--color-secondary-fixed)' }}
+                    onBlur={e => { e.target.style.borderColor = 'var(--input-border)'; e.target.style.boxShadow = 'none' }} />
                 </div>
                 <button onClick={handleSubmit} disabled={loading || !form.name || !form.email || !form.message}
                   className="w-full h-14 rounded-xl font-bold text-base flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
@@ -148,7 +148,7 @@ export default function Contact() {
 
           {/* Right: WhatsApp + Hours */}
           <div className="lg:col-span-2 space-y-4">
-            <div className="rounded-2xl p-6" style={{ background: '#1d2022', border: '1px solid rgba(66,71,82,0.4)' }}>
+            <div className="rounded-2xl p-6" style={{ background: 'var(--color-surface-container)', border: '1px solid var(--color-outline-variant)' }}>
               <h2 className="text-2xl font-bold text-on-surface font-display mb-2 flex items-center gap-3">
                 <span className="material-symbols-outlined fill-icon text-secondary-fixed text-2xl">chat</span>
                 {t('WhatsApp Support', 'دعم واتساب')}
@@ -158,7 +158,7 @@ export default function Contact() {
                   'تحتاج ردًا فوريًا؟ تحدث مع ممثل دعمنا مباشرةً على واتساب.')}
               </p>
               <div className="flex items-center gap-3 px-4 py-4 rounded-xl mb-4"
-                style={{ background: '#272a2c', border: '1px solid rgba(66,71,82,0.4)' }}>
+                style={{ background: 'var(--input-bg)', border: '1px solid var(--color-outline-variant)' }}>
                 <span className="material-symbols-outlined text-secondary-fixed text-xl">call</span>
                 <span className="text-on-surface font-bold text-lg tracking-wide" dir="ltr" style={{unicodeBidi:'embed'}}>{WHATSAPP_DISPLAY}</span>
               </div>
@@ -173,7 +173,7 @@ export default function Contact() {
                 {t('Chat on WhatsApp', 'تحدث على واتساب')}
               </button>
             </div>
-            <div className="rounded-2xl p-6" style={{ background: '#1d2022', border: '1px solid rgba(66,71,82,0.4)' }}>
+            <div className="rounded-2xl p-6" style={{ background: 'var(--color-surface-container)', border: '1px solid var(--color-outline-variant)' }}>
               <h2 className="text-xl font-bold text-on-surface font-display mb-4">
                 {t('Other Ways to Reach Us', 'طرق أخرى للتواصل')}
               </h2>
@@ -194,7 +194,7 @@ export default function Contact() {
       </main>
 
       {/* Footer — no Contact Support link since we're already on it */}
-      <footer className="w-full py-8 border-t border-outline-variant/10" style={{ background: '#0b0f10' }}>
+      <footer className="w-full py-8 border-t border-outline-variant/10" style={{ background: 'var(--color-surface-container-lowest)' }}>
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <div>
             <span className="font-display font-extrabold text-2xl tracking-tight text-secondary-fixed">Rasha</span>

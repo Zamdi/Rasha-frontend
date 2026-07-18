@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 
 const Section = ({ icon, title, children }) => (
-  <div className="rounded-xl p-6 md:p-8" style={{ background: '#1d2022', border: '1px solid rgba(66,71,82,0.3)' }}>
+  <div className="rounded-xl p-6 md:p-8" style={{ background: 'var(--color-surface-container)', border: '1px solid var(--color-outline-variant)' }}>
     <h2 className="text-xl font-bold text-on-surface font-display mb-4 flex items-center gap-3">
       <span className="material-symbols-outlined text-secondary-fixed text-2xl">{icon}</span>
       {title}
@@ -15,7 +15,7 @@ export default function Terms() {
   const { t } = useApp()
 
   return (
-    <div className="min-h-screen flex flex-col pb-16 md:pb-0" style={{ background: '#101415' }}>
+    <div className="min-h-screen flex flex-col pb-16 md:pb-0" style={{ background: 'var(--color-background)' }}>
       <main className="flex-grow w-full max-w-5xl mx-auto px-4 md:px-6 pt-16 pb-16">
         {/* Header */}
         <div className="mb-10">
@@ -115,7 +115,7 @@ export default function Terms() {
 
           {/* Contact section */}
           <div className="rounded-xl p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6"
-            style={{ background: '#1d2022', border: '1px solid rgba(66,71,82,0.3)' }}>
+            style={{ background: 'var(--color-surface-container)', border: '1px solid var(--color-outline-variant)' }}>
             <div>
               <h2 className="text-xl font-bold text-on-surface font-display mb-2 flex items-center gap-3">
                 <span className="material-symbols-outlined text-secondary-fixed text-2xl">contact_support</span>
@@ -127,9 +127,9 @@ export default function Terms() {
             </div>
             <Link to="/contact"
               className="flex items-center gap-2 font-bold text-sm px-6 py-3 rounded-xl whitespace-nowrap transition-all shrink-0"
-              style={{ background: '#272a2c', border: '1px solid rgba(66,71,82,0.5)', color: '#e0e3e5' }}
+              style={{ background: 'var(--input-bg)', border: '1px solid var(--color-outline-variant)', color: 'var(--color-on-surface)' }}
               onMouseEnter={e => { e.currentTarget.style.borderColor = '#74f5ff'; e.currentTarget.style.color = '#74f5ff' }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(66,71,82,0.5)'; e.currentTarget.style.color = '#e0e3e5' }}>
+              onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(66,71,82,0.5)'; e.currentTarget.style.color = 'var(--color-on-surface)' }}>
               {t('Contact Support', 'تواصل مع الدعم')}
               <span className="material-symbols-outlined text-base">arrow_forward</span>
             </Link>
@@ -138,7 +138,7 @@ export default function Terms() {
       </main>
 
       {/* Footer — no Terms of Service link since we're on that page */}
-      <footer className="w-full py-8 border-t border-outline-variant/10" style={{ background: '#0b0f10' }}>
+      <footer className="w-full py-8 border-t border-outline-variant/10" style={{ background: 'var(--color-surface-container-lowest)' }}>
         <div className="max-w-5xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <div>
             <span className="font-display font-extrabold text-2xl tracking-tight text-secondary-fixed">Rasha</span>

@@ -129,15 +129,23 @@ html.light {
     background: rgba(39, 42, 44, 0.5);
   }
   .slot-available {
-    @apply bg-surface-container-high border border-outline-variant text-on-surface hover:border-secondary-fixed hover:text-secondary-fixed transition-all;
+    color: var(--color-on-surface);
+    background: var(--color-surface-container-high);
+    border: 1px solid var(--color-outline-variant);
+    transition: all 0.2s;
+  }
+  .slot-available:hover {
+    border-color: var(--color-secondary-fixed);
+    color: var(--color-secondary-fixed);
   }
   .slot-selected {
-    border: 1px solid #74f5ff;
+    border: 1px solid var(--color-secondary-fixed);
     background: linear-gradient(135deg, #0056b3, #004491);
     color: white;
   }
   .slot-booked {
-    @apply text-outline cursor-not-allowed;
+    color: var(--color-outline);
+    cursor: not-allowed;
     background: rgba(147,0,10,0.1);
     border: 1px solid rgba(255,180,171,0.2);
   }

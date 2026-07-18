@@ -4,7 +4,7 @@ import { useApp } from '../context/AppContext'
 const BG_IMG = "https://lh3.googleusercontent.com/aida-public/AB6AXuARf1pFuG9m96gjPalKL6YFrP4hgKi8b34Su0tOKVPfliOF2hQRpWEWwMcudUu8ThBE_qh4qxV603xPs3oE-vWbbKj7HIxmmDXku3j3X9Y4ZAbm2ugxDtwHEaxJVeyFCI3J5D0BgoePAr8QuqQSRZbQ4zxk7id7BqEFD079rFVmgF5olxFO9CVW9N9MCQOzwv_q5pwxsjQf-wSVBdwUmTOw1OtjGNMwXU47gBkG19w1TKrfhKSuzQw"
 
 const Section = ({ icon, title, children }) => (
-  <div className="rounded-xl p-6 md:p-8" style={{ background: '#1d2022', border: '1px solid rgba(66,71,82,0.3)' }}>
+  <div className="rounded-xl p-6 md:p-8" style={{ background: 'var(--color-surface-container)', border: '1px solid var(--color-outline-variant)' }}>
     <h2 className="text-xl font-bold text-on-surface font-display mb-4 flex items-center gap-3">
       <span className="material-symbols-outlined text-secondary-fixed text-2xl">{icon}</span>
       {title}
@@ -17,7 +17,7 @@ export default function Privacy() {
   const { t } = useApp()
 
   return (
-    <div className="min-h-screen flex flex-col pb-16 md:pb-0" style={{ background: '#101415' }}>
+    <div className="min-h-screen flex flex-col pb-16 md:pb-0" style={{ background: 'var(--color-background)' }}>
       <main className="flex-grow w-full max-w-5xl mx-auto px-4 md:px-6 pt-16 pb-16">
         {/* Header */}
         <div className="mb-10">
@@ -78,7 +78,7 @@ export default function Privacy() {
 
           {/* 4. Security — full width with watermark number */}
           <div className="rounded-xl p-6 md:p-8 relative overflow-hidden"
-            style={{ background: '#1d2022', border: '1px solid rgba(66,71,82,0.3)' }}>
+            style={{ background: 'var(--color-surface-container)', border: '1px solid var(--color-outline-variant)' }}>
             <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[120px] font-extrabold text-on-surface-variant/5 pointer-events-none select-none font-display">4</div>
             <h2 className="text-xl font-bold text-on-surface font-display mb-4 flex items-center gap-3">
               <span className="material-symbols-outlined text-secondary-fixed text-2xl">lock</span>
@@ -92,7 +92,7 @@ export default function Privacy() {
 
           {/* 5. Contact Us */}
           <div className="rounded-xl p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6"
-            style={{ background: '#1d2022', border: '1px solid rgba(66,71,82,0.3)' }}>
+            style={{ background: 'var(--color-surface-container)', border: '1px solid var(--color-outline-variant)' }}>
             <div>
               <h2 className="text-xl font-bold text-on-surface font-display mb-2 flex items-center gap-3">
                 <span className="material-symbols-outlined text-secondary-fixed text-2xl">location_on</span>
@@ -104,9 +104,9 @@ export default function Privacy() {
             </div>
             <Link to="/contact"
               className="flex items-center gap-2 font-bold text-sm px-6 py-3 rounded-xl whitespace-nowrap transition-all shrink-0"
-              style={{ background: '#272a2c', border: '1px solid rgba(66,71,82,0.5)', color: '#e0e3e5' }}
+              style={{ background: 'var(--input-bg)', border: '1px solid var(--color-outline-variant)', color: 'var(--color-on-surface)' }}
               onMouseEnter={e => { e.currentTarget.style.borderColor = '#74f5ff'; e.currentTarget.style.color = '#74f5ff' }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(66,71,82,0.5)'; e.currentTarget.style.color = '#e0e3e5' }}>
+              onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(66,71,82,0.5)'; e.currentTarget.style.color = 'var(--color-on-surface)' }}>
               {t('Contact Support', 'تواصل مع الدعم')}
               <span className="material-symbols-outlined text-base">arrow_forward</span>
             </Link>
@@ -117,11 +117,11 @@ export default function Privacy() {
       {/* Background footer image */}
       <div className="relative w-full h-48 overflow-hidden" style={{ marginTop: '-1px' }}>
         <div className="absolute inset-0 bg-cover bg-center opacity-30" style={{ backgroundImage: `url(${BG_IMG})` }} />
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, #101415 0%, transparent 40%, #0b0f10 100%)' }} />
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, var(--color-background) 0%, transparent 40%, var(--color-surface-container-lowest) 100%)' }} />
       </div>
 
       {/* Footer */}
-      <footer className="w-full py-8 border-t border-outline-variant/10" style={{ background: '#0b0f10' }}>
+      <footer className="w-full py-8 border-t border-outline-variant/10" style={{ background: 'var(--color-surface-container-lowest)' }}>
         <div className="max-w-5xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <div>
             <span className="font-display font-extrabold text-2xl tracking-tight text-secondary-fixed">Rasha</span>
