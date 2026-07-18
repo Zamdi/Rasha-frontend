@@ -5,7 +5,13 @@ import { formatTime } from '../utils/format'
 
 const ALL_SLOTS = ['11:00 AM','12:00 PM','1:00 PM','2:00 PM','3:00 PM','4:00 PM','5:00 PM','6:00 PM','7:00 PM','8:00 PM','9:00 PM','10:00 PM','11:00 PM','12:00 AM']
 
-const today = () => new Date().toISOString().split('T')[0]
+const today = () => {
+  const d = new Date()
+  const yyyy = d.getFullYear()
+  const mm = String(d.getMonth() + 1).padStart(2, '0')
+  const dd = String(d.getDate()).padStart(2, '0')
+  return `${yyyy}-${mm}-${dd}`
+}
 
 export default function Booking() {
   const { t, lang, customer, token, showToast } = useApp()
@@ -145,7 +151,7 @@ export default function Booking() {
             </div>
             <div>
               <label className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2 block">{t('Date', 'التاريخ')} *</label>
-              <input type="date" className="rasha-input" min={new Date().toISOString().split('T')[0]} value={form.date} onChange={e => setForm(f => ({...f, date: e.target.value}))} />
+              <input type="date" className="rasha-input" min={today()} value={form.date} onChange={e => setForm(f => ({...f, date: e.target.value}))} />
             </div>
             <button onClick={goToStep2} className="btn-primary w-full py-4 rounded-xl">
               {t('Choose Time Slot', 'اختر الموعد')}
