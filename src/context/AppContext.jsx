@@ -27,10 +27,14 @@ export function AppProvider({ children }) {
     body.style.backgroundColor = bg
     body.style.color = fg
 
-    // Double rAF forces Chrome Android to flush and repaint
+    // Force all mobile browsers to repaint (Chrome, Mi Browser, Samsung, UC, etc.)
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        void root.offsetHeight // trigger reflow
+        void root.offsetHeight // reflow
+        // Toggle display to force full layer invalidation on all browsers
+        body.style.display = 'none'
+        void body.offsetHeight
+        body.style.display = ''
       })
     })
 
