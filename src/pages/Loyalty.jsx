@@ -123,7 +123,7 @@ export default function Loyalty() {
                 {Array.from({ length: 5 }, (_, i) => (
                   <div key={i} className={`aspect-square rounded-xl flex items-center justify-center ${i < stamps ? 'stamp-filled glass' : 'stamp-empty'}`}>
                     <span className={`material-symbols-outlined text-3xl ${i < stamps ? 'fill-icon text-secondary-fixed' : 'text-outline-variant/50'}`}
-                      style={i < stamps ? { filter: 'drop-shadow(0 0 6px rgba(0,241,254,0.5))' } : {}}>
+                      style={i < stamps ? { filter: 'drop-shadow(0 0 6px rgba(var(--color-secondary-fixed-rgb), 0.5))' } : {}}>
                       water_drop
                     </span>
                   </div>
@@ -239,7 +239,7 @@ export default function Loyalty() {
           <div className="flex flex-col items-center gap-6" onClick={e => e.stopPropagation()}>
             {/* Large QR */}
             <div className="p-5 rounded-3xl shadow-2xl"
-              style={{ background: '#ffffff', boxShadow: '0 0 60px rgba(116,245,255,0.3)' }}>
+              style={{ background: '#ffffff', boxShadow: '0 0 60px rgba(var(--color-secondary-fixed-rgb), 0.3)' }}>
               {customerId && <QRCodeCanvas value={customerId} size={260} level="M" fgColor="#000000" bgColor="#ffffff" style={{ display: 'block' }} />}
             </div>
             <div className="text-center">

@@ -132,11 +132,11 @@ export default function Contact() {
                 <button onClick={handleSubmit} disabled={loading || !form.name || !form.email || !form.message}
                   className="w-full h-14 rounded-xl font-bold text-base flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
                   style={{
-                    background: form.name && form.email && form.message ? '#00f1fe' : 'rgba(0,241,254,0.3)',
-                    color: form.name && form.email && form.message ? '#002022' : '#8c909e',
+                    background: form.name && form.email && form.message ? 'var(--color-secondary-container)' : 'rgba(0,241,254,0.3)',
+                    color: form.name && form.email && form.message ? '#002022' : 'var(--color-outline)',
                     cursor: !form.name || !form.email || !form.message ? 'not-allowed' : 'pointer',
                   }}
-                  onMouseEnter={e => { if (form.name && form.email && form.message) e.currentTarget.style.boxShadow = '0 0 20px rgba(0,241,254,0.4)' }}
+                  onMouseEnter={e => { if (form.name && form.email && form.message) e.currentTarget.style.boxShadow = '0 0 20px rgba(var(--color-secondary-fixed-rgb), 0.4)' }}
                   onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none' }}>
                   {loading
                     ? <><div className="loader" style={{ borderTopColor: '#002022' }} />{t('Sending...', 'جارٍ الإرسال...')}</>

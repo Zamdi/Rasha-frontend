@@ -61,8 +61,8 @@ export default function Navbar() {
               <button
                 onClick={() => setMenuOpen(o => !o)}
                 className="flex items-center gap-1.5 text-xs font-bold text-secondary-fixed px-3 py-1.5 rounded-full transition-all"
-                style={{ border: '1px solid rgba(116,245,255,0.3)' }}
-                onMouseEnter={e => e.currentTarget.style.background = 'rgba(116,245,255,0.08)'}
+                style={{ border: '1px solid rgba(var(--color-secondary-fixed-rgb), 0.3)' }}
+                onMouseEnter={e => e.currentTarget.style.background = 'rgba(var(--color-secondary-fixed-rgb), 0.08)'}
                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
               >
                 <span className="material-symbols-outlined fill-icon text-sm">account_circle</span>
