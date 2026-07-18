@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* ── Dark mode (default) ───────────────────────────────────── */
 :root {
   --color-surface:                   #101415;
@@ -23,16 +27,14 @@
   --color-error-container:           #93000a;
   --color-background:                #101415;
   --color-on-background:             #e0e3e5;
-
-  /* Glass / component overrides */
-  --glass-bg:        rgba(25, 28, 30, 0.5);
-  --glass-high-bg:   rgba(25, 28, 30, 0.85);
-  --glass-border:    rgba(116, 245, 255, 0.12);
+  --glass-bg:          rgba(25, 28, 30, 0.5);
+  --glass-high-bg:     rgba(25, 28, 30, 0.85);
+  --glass-border:      rgba(116, 245, 255, 0.12);
   --glass-high-border: rgba(116, 245, 255, 0.15);
-  --input-bg:        #272a2c;
-  --input-border:    #424752;
-  --navbar-bg:       rgba(16, 20, 21, 0.95);
-  --scrollbar-track: #101415;
+  --input-bg:          #272a2c;
+  --input-border:      #424752;
+  --navbar-bg:         rgba(16, 20, 21, 0.95);
+  --scrollbar-track:   #101415;
 }
 
 /* ── Light / Daylight mode ─────────────────────────────────── */
@@ -60,8 +62,6 @@ html.light {
   --color-error-container:           #f9dedc;
   --color-background:                #f4f1ec;
   --color-on-background:             #1a1a18;
-
-  /* Glass / component overrides */
   --glass-bg:          rgba(255, 255, 255, 0.7);
   --glass-high-bg:     rgba(255, 255, 255, 0.92);
   --glass-border:      rgba(0, 86, 179, 0.15);
@@ -71,13 +71,11 @@ html.light {
   --navbar-bg:         rgba(244, 241, 236, 0.95);
   --scrollbar-track:   #f4f1ec;
 }
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
 @layer base {
   body {
-    @apply bg-background text-on-background;
+    background: var(--color-background);
+    color: var(--color-on-background);
     font-family: 'Inter', 'Noto Kufi Arabic', sans-serif;
   }
   ::-webkit-scrollbar { width: 4px; }
@@ -97,19 +95,10 @@ html.light {
     backdrop-filter: blur(24px);
     border: 1px solid var(--glass-high-border);
   }
-  .hydro-gradient {
-    background: linear-gradient(135deg, #0056b3 0%, #004491 100%);
-  }
-  .cyan-glow {
-    box-shadow: 0 0 20px rgba(0, 241, 254, 0.25);
-  }
-  .inner-glow {
-    box-shadow: inset 0 0 12px rgba(116, 245, 255, 0.08);
-  }
-  .wet-shine {
-    position: relative;
-    overflow: hidden;
-  }
+  .hydro-gradient { background: linear-gradient(135deg, #0056b3 0%, #004491 100%); }
+  .cyan-glow { box-shadow: 0 0 20px rgba(0, 241, 254, 0.25); }
+  .inner-glow { box-shadow: inset 0 0 12px rgba(116, 245, 255, 0.08); }
+  .wet-shine { position: relative; overflow: hidden; }
   .wet-shine::after {
     content: '';
     position: absolute;
@@ -121,13 +110,10 @@ html.light {
     pointer-events: none;
   }
   .stamp-filled {
-    border: 1px solid rgba(116, 245, 255, 0.4);
-    box-shadow: 0 0 10px rgba(0, 241, 254, 0.2);
+    background: linear-gradient(135deg, #0056b3, #00dbe7);
+    box-shadow: 0 0 10px rgba(116, 245, 255, 0.3);
   }
-  .stamp-empty {
-    border: 1px solid var(--input-border);
-    background: rgba(39, 42, 44, 0.5);
-  }
+  .stamp-empty { background: #323537; }
   .slot-available {
     color: var(--color-on-surface);
     background: var(--color-surface-container-high);
@@ -150,9 +136,12 @@ html.light {
     border: 1px solid rgba(255,180,171,0.2);
   }
   .otp-input {
-    @apply w-11 h-14 text-center text-xl font-bold text-on-surface rounded-xl;
+    width: 2.75rem; height: 3.5rem;
+    text-align: center; font-size: 1.25rem; font-weight: 700;
+    color: var(--color-on-surface);
     background: var(--input-bg);
     border: 1px solid var(--input-border);
+    border-radius: 0.75rem;
   }
   .otp-input:focus {
     border-color: #74f5ff;
@@ -160,37 +149,47 @@ html.light {
     outline: none;
   }
   .rasha-input {
-    @apply w-full px-4 py-3 text-sm rounded-xl;
+    width: 100%; padding: 0.75rem 1rem; font-size: 0.875rem; border-radius: 0.75rem;
     background: var(--input-bg);
     border: 1px solid var(--input-border);
     color: var(--color-on-surface);
   }
-  .rasha-input:focus {
-    border-color: var(--color-secondary-fixed);
-    box-shadow: 0 0 0 2px rgba(116, 245, 255, 0.2);
-    outline: none;
-  }
+  .rasha-input:focus { border-color: var(--color-secondary-fixed); box-shadow: 0 0 0 2px rgba(116,245,255,0.2); outline: none; }
   .rasha-input::placeholder { color: var(--color-outline); }
   .rasha-select {
-    @apply w-full px-4 py-3 text-sm rounded-xl appearance-none;
+    width: 100%; padding: 0.75rem 1rem; font-size: 0.875rem; border-radius: 0.75rem; appearance: none;
     background: var(--input-bg);
     border: 1px solid var(--input-border);
     color: var(--color-on-surface);
   }
-  .rasha-select:focus {
-    border-color: var(--color-secondary-fixed);
-    outline: none;
-  }
+  .rasha-select:focus { border-color: var(--color-secondary-fixed); outline: none; }
   .btn-primary {
-    @apply hydro-gradient text-white font-bold text-sm px-6 py-3 rounded-xl hover:opacity-90 transition-all cyan-glow flex items-center justify-center gap-2;
+    background: linear-gradient(135deg, #0056b3 0%, #004491 100%);
+    color: white; font-weight: 700; font-size: 0.875rem;
+    padding: 0.75rem 1.5rem; border-radius: 0.75rem;
+    box-shadow: 0 0 20px rgba(0, 241, 254, 0.25);
+    transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center; gap: 0.5rem;
   }
+  .btn-primary:hover { opacity: 0.9; }
   .btn-glass {
-    @apply glass text-on-surface font-bold text-sm px-6 py-3 rounded-xl hover:bg-surface-variant transition-all flex items-center justify-center gap-2;
+    background: var(--glass-bg);
+    backdrop-filter: blur(24px);
+    border: 1px solid var(--glass-border);
+    color: var(--color-on-surface); font-weight: 700; font-size: 0.875rem;
+    padding: 0.75rem 1.5rem; border-radius: 0.75rem;
+    transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center; gap: 0.5rem;
   }
+  .btn-glass:hover { background: var(--glass-high-bg); }
   .btn-cyan {
-    @apply text-secondary-fixed font-bold text-sm px-6 py-3 rounded-xl hover:opacity-90 transition-all flex items-center justify-center gap-2;
+    color: var(--color-secondary-fixed); font-weight: 700; font-size: 0.875rem;
+    padding: 0.75rem 1.5rem; border-radius: 0.75rem;
     border: 1px solid rgba(116,245,255,0.3);
+    transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center; gap: 0.5rem;
   }
+  .btn-cyan:hover { opacity: 0.9; }
 }
 
 @keyframes shine {
@@ -201,13 +200,16 @@ html.light {
   from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: translateY(0); }
 }
-@keyframes spin {
-  to { transform: rotate(360deg); }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes pulse-cyan {
+  0%, 100% { opacity: 0.8; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
 }
+
 .animate-fade-in { animation: fadeInUp 0.35s ease; }
 .loader {
   width: 22px; height: 22px;
-  border: 3px solid #272a2c;
+  border: 3px solid rgba(116,245,255,0.2);
   border-top: 3px solid #74f5ff;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
@@ -219,8 +221,5 @@ html.light {
   user-select: none;
 }
 .fill-icon { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+.rtl-flip { transform: scaleX(1); }
 [dir="rtl"] .rtl-flip { transform: scaleX(-1); }
-
-/* Prevent dark mode / CSS from affecting QR canvas colors */
-canvas { color: #000000 !important; }
-
