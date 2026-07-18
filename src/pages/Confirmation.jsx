@@ -3,8 +3,6 @@ import { useLocation, useNavigate, Link } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 import { formatTime } from '../utils/format'
 
-const BG_IMG = "https://lh3.googleusercontent.com/aida-public/AB6AXuAn6dMfx-_iUMz1YxHBBlVHAqA4jGysA_1RmmoV8sBdF4QHkSvQlTqQ-oYGhJ8wcjWAF1iAOuN7dkkiqwhUTy4L1fsH2e-4B5cgzdqwkq0blP5jzHRDV01eLtiQGXKH9Za5xGrb3LDCHwId17a9eK-dUGMJHlx32PlZP1HKYJScfUNlqOTh4cIpJmRrEf3Jd-S2AlzUsfBqU_uYwsesTfaxpeo4qIJ5pzfZfBtsW4HYqbxWELBeHc8"
-
 export default function Confirmation() {
   const { t, lang } = useApp()
   const { state } = useLocation()
@@ -124,17 +122,10 @@ export default function Confirmation() {
   }
 
   return (
-    <div className="relative min-h-screen flex flex-col" style={{ background: 'var(--color-background)' }}>
+    <div className="min-h-screen flex flex-col" style={{ background: 'var(--color-background)' }}>
       <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-[200]" />
 
-      <div className="absolute inset-0 z-0">
-        <div className="w-full h-full bg-cover bg-center opacity-30 grayscale brightness-50"
-          style={{ backgroundImage: `url(${BG_IMG})` }} />
-        <div className="absolute inset-0"
-          style={{ background: 'linear-gradient(to bottom, transparent 0%, var(--color-background) 100%)' }} />
-      </div>
-
-      <main className="relative z-10 flex flex-col items-center justify-center flex-grow px-6 py-12 pb-24 md:pb-12">
+      <main className="flex flex-col items-center justify-center flex-grow px-6 py-12 pb-24 md:pb-12">
         <div className="w-full max-w-2xl flex flex-col items-center animate-fade-in">
 
           <div className="mb-6 flex items-center justify-center">

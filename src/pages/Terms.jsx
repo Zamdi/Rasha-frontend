@@ -128,8 +128,8 @@ export default function Terms() {
             <Link to="/contact"
               className="flex items-center gap-2 font-bold text-sm px-6 py-3 rounded-xl whitespace-nowrap transition-all shrink-0"
               style={{ background: 'var(--input-bg)', border: '1px solid var(--color-outline-variant)', color: 'var(--color-on-surface)' }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = '#74f5ff'; e.currentTarget.style.color = '#74f5ff' }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(66,71,82,0.5)'; e.currentTarget.style.color = 'var(--color-on-surface)' }}>
+              onMouseDown={e => { e.currentTarget.style.borderColor = 'var(--color-secondary-fixed)'; e.currentTarget.style.color = 'var(--color-secondary-fixed)' }}
+              onMouseUp={e => { e.currentTarget.style.borderColor = 'var(--color-outline-variant)'; e.currentTarget.style.color = 'var(--color-on-surface)' }}>
               {t('Contact Support', 'تواصل مع الدعم')}
               <span className="material-symbols-outlined text-base">arrow_forward</span>
             </Link>
