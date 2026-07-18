@@ -6,7 +6,7 @@ import { formatTime } from '../utils/format'
 const BG_IMG = "https://lh3.googleusercontent.com/aida-public/AB6AXuAn6dMfx-_iUMz1YxHBBlVHAqA4jGysA_1RmmoV8sBdF4QHkSvQlTqQ-oYGhJ8wcjWAF1iAOuN7dkkiqwhUTy4L1fsH2e-4B5cgzdqwkq0blP5jzHRDV01eLtiQGXKH9Za5xGrb3LDCHwId17a9eK-dUGMJHlx32PlZP1HKYJScfUNlqOTh4cIpJmRrEf3Jd-S2AlzUsfBqU_uYwsesTfaxpeo4qIJ5pzfZfBtsW4HYqbxWELBeHc8"
 
 export default function Confirmation() {
-  const { t } = useApp()
+  const { t, lang } = useApp()
   const { state } = useLocation()
   const navigate = useNavigate()
   const canvasRef = useRef(null)
@@ -124,11 +124,9 @@ export default function Confirmation() {
   }
 
   return (
-    <div className="relative min-h-screen flex flex-col pt-16" style={{ background: '#101415' }}>
-      {/* Particle canvas */}
+    <div className="relative min-h-screen flex flex-col" style={{ background: '#101415' }}>
       <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-[200]" />
 
-      {/* Atmospheric background */}
       <div className="absolute inset-0 z-0">
         <div className="w-full h-full bg-cover bg-center opacity-30 grayscale brightness-50"
           style={{ backgroundImage: `url(${BG_IMG})` }} />
@@ -136,11 +134,9 @@ export default function Confirmation() {
           style={{ background: 'linear-gradient(to bottom, rgba(16,20,21,0.8) 0%, rgba(16,20,21,1) 100%)' }} />
       </div>
 
-      {/* Main content — no top nav, centred, extra bottom padding for mobile */}
       <main className="relative z-10 flex flex-col items-center justify-center flex-grow px-6 py-12 pb-24 md:pb-12">
         <div className="w-full max-w-2xl flex flex-col items-center animate-fade-in">
 
-          {/* ── Success Icon ── */}
           <div className="mb-6 flex items-center justify-center">
             <div className="relative">
               <div className="absolute inset-0 rounded-full blur-3xl"
@@ -153,7 +149,6 @@ export default function Confirmation() {
             </div>
           </div>
 
-          {/* ── Title ── */}
           <div className="text-center mb-8">
             <h1 className="text-on-surface mb-2 tracking-tight font-display"
               style={{ fontSize: 'clamp(28px,5vw,48px)', fontWeight: 800, lineHeight: 1.15 }}>
@@ -165,11 +160,9 @@ export default function Confirmation() {
             </p>
           </div>
 
-          {/* ── Summary Card ── */}
           <div className="w-full rounded-xl p-6 md:p-8 mb-6 flex flex-col gap-6"
             style={{ background: 'rgba(25,28,30,0.4)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', border: '1px solid rgba(116,245,255,0.1)' }}>
 
-            {/* Package + Reference header */}
             <div className="flex justify-between items-start pb-4"
               style={{ borderBottom: '1px solid rgba(66,71,82,0.2)' }}>
               <div>
@@ -192,7 +185,6 @@ export default function Confirmation() {
               </div>
             </div>
 
-            {/* Details grid — 2 col on md+ */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {[
                 ['calendar_month', t('Date', 'التاريخ'), formattedDate, false],
@@ -216,7 +208,6 @@ export default function Confirmation() {
               ))}
             </div>
 
-            {/* Info notice */}
             <div className="p-4 rounded-lg flex items-start gap-3"
               style={{ background: 'rgba(0,241,254,0.04)', border: '1px solid rgba(0,241,254,0.1)' }}>
               <span className="material-symbols-outlined text-secondary-fixed shrink-0" style={{ fontSize: '16px', marginTop: '2px' }}>info</span>
@@ -227,9 +218,7 @@ export default function Confirmation() {
             </div>
           </div>
 
-          {/* ── Action buttons ── */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-            {/* Download PDF — primary */}
             <button
               onClick={downloadPDF}
               className="h-14 rounded-xl flex items-center justify-center gap-2 font-bold text-sm transition-all active:scale-[0.98] group"
@@ -241,7 +230,6 @@ export default function Confirmation() {
               {t('Download PDF Receipt', 'تحميل إيصال PDF')}
             </button>
 
-            {/* Glass secondary — Book Again */}
             <Link to="/book"
               className="h-14 rounded-xl flex items-center justify-center gap-2 font-bold text-sm transition-all active:scale-[0.98] group"
               style={{ background: 'rgba(25,28,30,0.4)', backdropFilter: 'blur(24px)', border: '1px solid rgba(116,245,255,0.1)', color: '#e0e3e5' }}
@@ -253,7 +241,6 @@ export default function Confirmation() {
             </Link>
           </div>
 
-          {/* ── Secondary links ── */}
           <div className="mt-6 flex flex-wrap justify-center gap-x-8 gap-y-3">
             <Link to="/contact"
               className="text-on-surface-variant hover:text-on-surface transition-colors flex items-center gap-1 text-xs font-semibold">
@@ -269,8 +256,7 @@ export default function Confirmation() {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="relative z-10 w-full py-6 border-t border-outline-variant/10" style={{ background: '#0b0f10' }}>
+      <footer className="relative z-10 w-full py-6" style={{ background: '#0b0f10', borderTop: '1px solid rgba(66,71,82,0.1)' }}>
         <div className="max-w-5xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <span className="font-display font-extrabold text-2xl tracking-tight text-secondary-fixed">Rasha</span>
           <p className="text-on-surface-variant text-xs">© 2025 Rasha Automotive Detailing. {t('All rights reserved.', 'جميع الحقوق محفوظة.')}</p>
