@@ -39,14 +39,20 @@ export default function Navbar() {
           Rasha
         </Link>
 
-        {/* Desktop nav */}
+        {/* Desktop nav — hide link for current page */}
         <div className="hidden md:flex items-center gap-6 text-sm font-semibold">
-          <Link to="/" className="text-on-surface-variant hover:text-secondary-fixed transition-colors">{t('Home', 'الرئيسية')}</Link>
+          {location.pathname !== '/' && (
+            <Link to="/" className="text-on-surface-variant hover:text-secondary-fixed transition-colors">{t('Home', 'الرئيسية')}</Link>
+          )}
           {location.pathname !== '/book' && (
             <Link to="/book" className="text-on-surface-variant hover:text-secondary-fixed transition-colors">{t('Book a Wash', 'احجز غسيل')}</Link>
           )}
-          {customer && <Link to="/loyalty" className="text-on-surface-variant hover:text-secondary-fixed transition-colors">{t('My Card', 'بطاقتي')}</Link>}
-          <Link to="/contact" className="text-on-surface-variant hover:text-secondary-fixed transition-colors">{t('Support', 'الدعم')}</Link>
+          {customer && location.pathname !== '/loyalty' && (
+            <Link to="/loyalty" className="text-on-surface-variant hover:text-secondary-fixed transition-colors">{t('My Card', 'بطاقتي')}</Link>
+          )}
+          {location.pathname !== '/contact' && (
+            <Link to="/contact" className="text-on-surface-variant hover:text-secondary-fixed transition-colors">{t('Support', 'الدعم')}</Link>
+          )}
         </div>
 
         {/* Right actions */}
@@ -59,7 +65,6 @@ export default function Navbar() {
 
           {customer ? (
             <div className="relative" ref={menuRef}>
-              {/* Customer name button */}
               <button
                 onClick={() => setMenuOpen(o => !o)}
                 className="flex items-center gap-1.5 text-xs font-bold text-secondary-fixed px-3 py-1.5 rounded-full transition-all"
@@ -69,15 +74,11 @@ export default function Navbar() {
               >
                 <span className="material-symbols-outlined fill-icon text-sm">account_circle</span>
                 <span>{customer.first_name}</span>
-                <span className="material-symbols-outlined text-xs" style={{fontSize:'14px', transition:'transform 0.2s', transform: menuOpen ? 'rotate(180deg)' : 'rotate(0deg)'}}>expand_more</span>
+                <span className="material-symbols-outlined" style={{fontSize:'14px', transition:'transform 0.2s', transform: menuOpen ? 'rotate(180deg)' : 'rotate(0deg)'}}>expand_more</span>
               </button>
-
-              {/* Dropdown */}
               {menuOpen && (
-                <div
-                  className="absolute end-0 mt-2 w-48 rounded-2xl py-2 animate-fade-in z-50"
-                  style={{ background: 'var(--color-surface-container)', border: '1px solid var(--color-outline-variant)', boxShadow: '0 8px 32px rgba(0,0,0,0.2)' }}
-                >
+                <div className="absolute end-0 mt-2 w-48 rounded-2xl py-2 animate-fade-in z-50"
+                  style={{ background: 'var(--color-surface-container)', border: '1px solid var(--color-outline-variant)', boxShadow: '0 8px 32px rgba(0,0,0,0.2)' }}>
                   <div className="px-4 py-2 border-b" style={{borderColor: 'var(--color-outline-variant)'}}>
                     <p className="text-xs font-bold text-on-surface">{customer.first_name} {customer.last_name}</p>
                     <p className="text-xs text-on-surface-variant truncate">{customer.email}</p>
@@ -102,7 +103,8 @@ export default function Navbar() {
               )}
             </div>
           ) : (
-            <Link to="/login" className="text-xs font-bold text-on-surface-variant hover:text-secondary-fixed transition-colors">
+            // Sign In — hidden on mobile since Profile tab in MobileNav handles it
+            <Link to="/login" className="hidden md:block text-xs font-bold text-on-surface-variant hover:text-secondary-fixed transition-colors">
               {t('Sign In', 'تسجيل الدخول')}
             </Link>
           )}

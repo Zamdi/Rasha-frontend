@@ -82,11 +82,18 @@ html.light {
   --scrollbar-track:   #f4f1ec;
 }
 
+/* Ensure theme applies on mobile browsers */
+html {
+  background: var(--color-background);
+  color: var(--color-on-background);
+}
+
 @layer base {
   body {
     background: var(--color-background);
     color: var(--color-on-background);
     font-family: 'Inter', 'Noto Kufi Arabic', sans-serif;
+    min-height: 100vh;
   }
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: var(--scrollbar-track); }

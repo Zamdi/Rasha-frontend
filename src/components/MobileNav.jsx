@@ -54,20 +54,22 @@ export default function MobileNav() {
       }}
     >
       <div className="flex justify-around items-center px-4 py-2">
-        {items.filter(item => !(item.to === '/book' && pathname === '/book')).map(item => {
-          const active = pathname === item.to
-          const to = item.to === '/loyalty' && !customer ? '/login' : item.to
-          return (
-            <Link
-              key={item.to}
-              to={to}
-              className={`flex flex-col items-center gap-0.5 p-2 transition-colors ${active ? 'text-secondary-fixed' : 'text-on-surface-variant'}`}
-            >
-              <span className={`material-symbols-outlined text-xl ${active ? 'fill-icon' : ''}`}>{item.icon}</span>
-              <span className="text-xs font-semibold">{t(item.en, item.ar)}</span>
-            </Link>
-          )
-        })}
+        {items
+          .filter(item => item.to !== pathname) // hide current page
+          .filter(item => !(item.to === '/login' && customer)) // hide login when signed in
+          .map(item => {
+            const to = item.to === '/loyalty' && !customer ? '/login' : item.to
+            return (
+              <Link
+                key={item.to}
+                to={to}
+                className="flex flex-col items-center gap-0.5 p-2 transition-colors text-on-surface-variant"
+              >
+                <span className="material-symbols-outlined text-xl">{item.icon}</span>
+                <span className="text-xs font-semibold">{t(item.en, item.ar)}</span>
+              </Link>
+            )
+          })}
       </div>
     </nav>
   )

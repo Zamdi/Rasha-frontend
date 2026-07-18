@@ -11,13 +11,18 @@ export function AppProvider({ children }) {
 
   // Apply theme class on mount and change
   useEffect(() => {
+    const root = document.documentElement
     if (theme === 'light') {
-      document.documentElement.classList.add('light')
-      document.documentElement.classList.remove('dark')
+      root.classList.add('light')
+      root.classList.remove('dark')
     } else {
-      document.documentElement.classList.remove('light')
-      document.documentElement.classList.add('dark')
+      root.classList.remove('light')
+      root.classList.add('dark')
     }
+    // Force mobile browsers to repaint with new CSS vars
+    root.style.colorScheme = theme === 'light' ? 'light' : 'dark'
+    document.body.style.background = theme === 'light' ? '#f4f1ec' : '#101415'
+    document.body.style.color = theme === 'light' ? '#1a1a18' : '#e0e3e5'
     localStorage.setItem('rasha_theme', theme)
   }, [theme])
 
