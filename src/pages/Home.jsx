@@ -70,7 +70,8 @@ export default function Home() {
                 <div>
                   <label className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2 block">{t('Phone Number', 'رقم الهاتف')}</label>
                   <div className="flex" dir="ltr">
-                    <span className="bg-surface-container-high border border-outline-variant/50 border-r-0 rounded-l-xl px-3 py-3 text-sm text-on-surface-variant flex items-center">+249</span>
+                    <span className="rounded-l-xl px-3 py-3 text-sm text-on-surface-variant flex items-center"
+                      style={{background:'var(--color-surface-container-high)', border:'1px solid var(--color-outline-variant)', borderRight:'none'}}>+249</span>
                     <input type="tel" placeholder="9XX XXX XXXX" className="rasha-input" style={{borderRadius:'0 0.75rem 0.75rem 0'}} value={heroPhone} onChange={e => setHeroPhone(e.target.value.replace(/\D/g, ''))} />
                   </div>
                 </div>

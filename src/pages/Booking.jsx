@@ -112,10 +112,10 @@ export default function Booking() {
         <div className="flex items-center gap-2 mb-8">
           <StepCircle n={1} active={step === 1} />
           <span className={`text-xs font-semibold hidden sm:block ${step === 1 ? 'text-secondary-fixed' : 'text-on-surface-variant'}`}>{t('Details', 'التفاصيل')}</span>
-          <div className="flex-1 h-px bg-outline-variant/30" />
+          <div className="flex-1 h-px" style={{background:'var(--color-outline-variant)', opacity:0.3}} />
           <StepCircle n={2} active={step === 2} />
           <span className={`text-xs font-semibold hidden sm:block ${step === 2 ? 'text-secondary-fixed' : 'text-on-surface-variant'}`}>{t('Time Slot', 'الموعد')}</span>
-          <div className="flex-1 h-px bg-outline-variant/30" />
+          <div className="flex-1 h-px" style={{background:'var(--color-outline-variant)', opacity:0.3}} />
           <StepCircle n={3} active={step === 3} />
           <span className={`text-xs font-semibold hidden sm:block ${step === 3 ? 'text-secondary-fixed' : 'text-on-surface-variant'}`}>{t('Confirm', 'التأكيد')}</span>
         </div>
@@ -137,7 +137,8 @@ export default function Booking() {
             <div>
               <label className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2 block">{t('Phone', 'الهاتف')} *</label>
               <div className="flex" dir="ltr">
-                <span className="bg-surface-container-high border border-outline-variant/50 border-r-0 rounded-l-xl px-3 py-3 text-sm text-on-surface-variant flex items-center shrink-0">+249</span>
+                <span className="rounded-l-xl px-3 py-3 text-sm text-on-surface-variant flex items-center shrink-0"
+                  style={{background:'var(--color-surface-container-high)', border:'1px solid var(--color-outline-variant)', borderRight:'none'}}>+249</span>
                 <input type="tel" placeholder="9XX XXX XXXX" className="rasha-input rounded-l-none rounded-r-xl" style={{borderRadius:'0 0.75rem 0.75rem 0'}} value={form.phone} onChange={e => setForm(f => ({...f, phone: e.target.value.replace(/\D/g,'')}))} />
               </div>
             </div>
