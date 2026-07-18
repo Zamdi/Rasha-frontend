@@ -124,14 +124,14 @@ export default function Confirmation() {
   }
 
   return (
-    <div className="relative min-h-screen flex flex-col" style={{ background: '#101415' }}>
+    <div className="relative min-h-screen flex flex-col" style={{ background: 'var(--color-background)' }}>
       <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-[200]" />
 
       <div className="absolute inset-0 z-0">
         <div className="w-full h-full bg-cover bg-center opacity-30 grayscale brightness-50"
           style={{ backgroundImage: `url(${BG_IMG})` }} />
         <div className="absolute inset-0"
-          style={{ background: 'linear-gradient(to bottom, rgba(16,20,21,0.8) 0%, rgba(16,20,21,1) 100%)' }} />
+          style={{ background: 'linear-gradient(to bottom, transparent 0%, var(--color-background) 100%)' }} />
       </div>
 
       <main className="relative z-10 flex flex-col items-center justify-center flex-grow px-6 py-12 pb-24 md:pb-12">
@@ -142,7 +142,7 @@ export default function Confirmation() {
               <div className="absolute inset-0 rounded-full blur-3xl"
                 style={{ background: 'rgba(0,241,254,0.2)', animation: 'pulse-cyan 3s ease-in-out infinite' }} />
               <div className="relative w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-secondary-fixed flex items-center justify-center backdrop-blur-xl"
-                style={{ background: 'rgba(29,32,34,0.5)', boxShadow: '0 0 20px rgba(0,241,254,0.3)' }}>
+                style={{ background: 'var(--glass-bg)', boxShadow: '0 0 20px rgba(0,241,254,0.3)' }}>
                 <span className="material-symbols-outlined fill-icon text-secondary-fixed"
                   style={{ fontSize: '4rem' }}>check_circle</span>
               </div>
@@ -161,7 +161,7 @@ export default function Confirmation() {
           </div>
 
           <div className="w-full rounded-xl p-6 md:p-8 mb-6 flex flex-col gap-6"
-            style={{ background: 'rgba(25,28,30,0.4)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', border: '1px solid rgba(116,245,255,0.1)' }}>
+            style={{ background: 'var(--glass-bg)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', border: '1px solid var(--glass-border)' }}>
 
             <div className="flex justify-between items-start pb-4"
               style={{ borderBottom: '1px solid rgba(66,71,82,0.2)' }}>
@@ -196,7 +196,7 @@ export default function Confirmation() {
               ].map(([icon, label, value, ltr]) => (
                 <div key={label} className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-lg flex items-center justify-center shrink-0"
-                    style={{ background: '#272a2c', border: '1px solid rgba(66,71,82,0.3)' }}>
+                    style={{ background: 'var(--color-surface-container-high)', border: '1px solid var(--color-outline-variant)' }}>
                     <span className="material-symbols-outlined text-secondary-fixed text-xl">{icon}</span>
                   </div>
                   <div>
@@ -232,9 +232,9 @@ export default function Confirmation() {
 
             <Link to="/book"
               className="h-14 rounded-xl flex items-center justify-center gap-2 font-bold text-sm transition-all active:scale-[0.98] group"
-              style={{ background: 'rgba(25,28,30,0.4)', backdropFilter: 'blur(24px)', border: '1px solid rgba(116,245,255,0.1)', color: '#e0e3e5' }}
-              onMouseEnter={e => e.currentTarget.style.background = 'rgba(50,53,55,0.5)'}
-              onMouseLeave={e => e.currentTarget.style.background = 'rgba(25,28,30,0.4)'}
+              style={{ background: 'var(--glass-bg)', backdropFilter: 'blur(24px)', border: '1px solid var(--glass-border)', color: 'var(--color-on-surface)' }}
+              onMouseEnter={e => e.currentTarget.style.background = 'var(--color-surface-container-high)'}
+              onMouseLeave={e => e.currentTarget.style.background = 'var(--glass-bg)'}
             >
               <span className="material-symbols-outlined text-secondary-fixed">add</span>
               {t('Book Another Wash', 'حجز غسيل آخر')}
@@ -256,7 +256,7 @@ export default function Confirmation() {
         </div>
       </main>
 
-      <footer className="relative z-10 w-full py-6" style={{ background: '#0b0f10', borderTop: '1px solid rgba(66,71,82,0.1)' }}>
+      <footer className="relative z-10 w-full py-6" style={{ background: 'var(--color-surface-container-lowest)', borderTop: '1px solid var(--color-outline-variant)' }}>
         <div className="max-w-5xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <span className="font-display font-extrabold text-2xl tracking-tight text-secondary-fixed">Rasha</span>
           <p className="text-on-surface-variant text-xs">© 2025 Rasha Automotive Detailing. {t('All rights reserved.', 'جميع الحقوق محفوظة.')}</p>
