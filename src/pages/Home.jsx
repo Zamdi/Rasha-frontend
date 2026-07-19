@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 
-const HERO_IMG = "https://lh3.googleusercontent.com/aida-public/AB6AXuDgGElfNBbSdeaGdQMMvL0bdnCO-qOmWspE9L2UzK9pDhqWeEL-n09rHYs9SXiHmjB2LE6lTX2-5x-bgDSkbRHlmFsbFBNrtiD4GNNAEM6CeaZHJwMnYjf6uT3-jsBppDB9YHpqOni9A1FAjQzqxhH7sBTRTSgi5h3y1_DCOHLQc-wo1xNp0qHMBz56LFHvYIkB7jWihSAVRpbAJa6B9zRryqF4mnW5jHq9Vu3HoIed75x_h-EUpwI"
 
 export default function Home() {
   const { t } = useApp()
@@ -16,10 +15,11 @@ export default function Home() {
     <div className="pt-14 pb-16 md:pb-0">
       {/* Hero */}
       <section className="relative min-h-screen flex items-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <div className="w-full h-full bg-cover bg-center" style={{ backgroundImage: `url(${HERO_IMG})` }} />
-          <div className="absolute inset-0 bg-gradient-to-r from-background via-background/85 to-background/20" />
-        </div>
+        {/* Subtle background — theme-aware, no blur */}
+        <div className="absolute inset-0 z-0" style={{
+          background: 'radial-gradient(ellipse at 70% 50%, rgba(0,86,179,0.08) 0%, transparent 60%)'
+        }} />
+
         <div className="relative z-10 max-w-7xl mx-auto px-5 w-full grid grid-cols-1 lg:grid-cols-2 gap-8 items-center py-8 md:py-20">
           {/* Text */}
           <div className="space-y-4 animate-fade-in">
@@ -56,7 +56,45 @@ export default function Home() {
           </div>
 
           {/* Hero Quick Booking Card */}
-          <div className="hidden lg:block animate-fade-in">
+          {/* Car image — 3D pop effect, theme-aware */}
+          <div className="flex justify-center lg:hidden mb-2 animate-fade-in">
+            <img
+              src="/hero-car.png"
+              alt="Rasha Car Wash"
+              style={{
+                width: '100%',
+                maxWidth: '340px',
+                filter: 'drop-shadow(0 20px 40px rgba(0,86,179,0.25)) drop-shadow(0 4px 12px rgba(0,0,0,0.3))',
+                transform: 'perspective(800px) rotateY(-8deg) rotateX(2deg)',
+              }}
+            />
+          </div>
+
+          {/* Right column — desktop: car + quick booking */}
+          <div className="hidden lg:flex flex-col gap-6 animate-fade-in">
+            {/* 3D Car */}
+            <div className="flex justify-center">
+              <img
+                src="/hero-car.png"
+                alt="Rasha Car Wash"
+                style={{
+                  width: '100%',
+                  maxWidth: '520px',
+                  filter: 'drop-shadow(0 30px 60px rgba(0,86,179,0.3)) drop-shadow(0 8px 20px rgba(0,0,0,0.4))',
+                  transform: 'perspective(1000px) rotateY(-12deg) rotateX(3deg)',
+                  transition: 'transform 0.4s ease, filter 0.4s ease',
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.transform = 'perspective(1000px) rotateY(-6deg) rotateX(1deg) scale(1.03)'
+                  e.currentTarget.style.filter = 'drop-shadow(0 40px 80px rgba(0,86,179,0.4)) drop-shadow(0 10px 25px rgba(0,0,0,0.5))'
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.transform = 'perspective(1000px) rotateY(-12deg) rotateX(3deg)'
+                  e.currentTarget.style.filter = 'drop-shadow(0 30px 60px rgba(0,86,179,0.3)) drop-shadow(0 8px 20px rgba(0,0,0,0.4))'
+                }}
+              />
+            </div>
+            {/* Quick Booking */}
             <div className="glass p-8 rounded-3xl wet-shine inner-glow">
               <h3 className="text-xl font-bold text-secondary-fixed mb-6 font-display">{t('Quick Booking', 'حجز سريع')}</h3>
               <div className="space-y-4">
