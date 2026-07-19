@@ -15,8 +15,22 @@ export default function Home() {
     <div className="pt-14 pb-16 md:pb-0">
       {/* Hero */}
       <section className="relative min-h-screen flex items-center overflow-hidden">
+
+        {/* Car — positioned absolutely on right, huge, bleeding off edge — desktop only */}
+        <div className="hidden lg:block absolute right-0 bottom-0 z-0" style={{width:'58%', maxWidth:'900px'}}>
+          <img
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzDpk0A0rYX3m93CTbPjsQUl4YUKRswB1EZ4bcVZ_FEQMMbXgbHGUShdjTlWi5wlJcHWU_tOwzWLvCi9ybbYO0h5xQGHTUReyk7_wtpnlJeKW9YcHfk0CqCmOz7p7CPrDx2WFwljU_i3gUSrNAFpPl6RIkt1Yi6DTsz9EJEwSyCl1sXBTL3p0fZmwVZV1p-cuc5JQVaFn3DLZ6X-HbBAWX6jroejf-2MkCTxHhdOx7YPWSVNqT0CMBrjc-RNYWzDuG"
+            alt="Grey BMW Sports Car"
+            style={{
+              width: '100%',
+              display: 'block',
+              filter: 'drop-shadow(-20px 40px 40px rgba(0,0,0,0.4))',
+            }}
+          />
+        </div>
+
         <div className="relative z-10 max-w-7xl mx-auto px-5 w-full py-8 md:py-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-end">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
 
             {/* Left — Text */}
             <div className="space-y-4 animate-fade-in">
@@ -52,20 +66,8 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Right — Car parked naturally, desktop only */}
-            <div className="hidden lg:flex items-end justify-center animate-fade-in" style={{minHeight: '500px'}}>
-              <img
-                src="/hero-car.png"
-                alt="Premium Car"
-                style={{
-                  width: '110%',
-                  maxWidth: '720px',
-                  marginRight: '-60px',
-                  filter: 'drop-shadow(0px 40px 30px rgba(0,0,0,0.35))',
-                  objectFit: 'contain',
-                }}
-              />
-            </div>
+            {/* Right — empty on desktop (car is absolute positioned) */}
+            <div className="hidden lg:block" />
 
           </div>
         </div>
@@ -82,7 +84,7 @@ export default function Home() {
           <Link to="/book" state={{ service: 'full' }} className="glass rounded-3xl hover:border-secondary-fixed/40 transition-all group wet-shine block overflow-hidden">
             <div className="w-full h-48 overflow-hidden">
               <img
-                src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_jO7XyleM3iFOJrmDPs2teXvHDS9Zltt9DAehpgjFuvenenm7_ZWWUVfjcxgzWEOR5_1fj8_qf-ejH6VFl1yIad2gT9SlKrancMX0ljwpuS2eriaJuiz-ArC-rF8n9u6wt9FQNAfe2_IFqGWUbftS46A1tcHBV_kFcfdawKdDG4Q6MvjGc_Vjq4tMNSDaPJt1tuJNctg-Srx-9dGI9LCCoMMlZHKT-7GhI5FEzTwXbEe83XoHdeQ"
                 alt="Full Wash"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
@@ -110,7 +112,7 @@ export default function Home() {
           <Link to="/book" state={{ service: 'outside' }} className="glass rounded-3xl hover:border-secondary-fixed/40 transition-all group wet-shine block overflow-hidden">
             <div className="w-full h-48 overflow-hidden">
               <img
-                src="https://images.unsplash.com/photo-1520340356584-f9917d1eea6f?w=800&q=80"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3pxjVHrXFtPlLv-RGq2Sef4rqM7Lh9Gpg_QLgV5NmIcIUqSEIpyBCEPeTmX3QVoXBIiAFv8oTi80VayMXsEr35Uk73tEhu7BFNiw3vZKQfbHBQmqLyFsoUwYR085I6QQXWCETFVq3o64WaLpLxKF_nkEmheTk7wnNU9jVIpRcx1Bs_Hz90N0kHmwitil4WWI8E3WpMqLsn6BS9F-U4MAn0IBwEcSj60mMcXrTF7ROJ0gSk5a_vSA"
                 alt="Exterior Wash"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
