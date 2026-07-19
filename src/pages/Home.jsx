@@ -19,7 +19,7 @@ export default function Home() {
         {/* Car — positioned absolutely on right, huge, bleeding off edge — desktop only */}
         <div className="hidden lg:block absolute right-0 bottom-0 z-0" style={{width:'58%', maxWidth:'900px'}}>
           <img
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzDpk0A0rYX3m93CTbPjsQUl4YUKRswB1EZ4bcVZ_FEQMMbXgbHGUShdjTlWi5wlJcHWU_tOwzWLvCi9ybbYO0h5xQGHTUReyk7_wtpnlJeKW9YcHfk0CqCmOz7p7CPrDx2WFwljU_i3gUSrNAFpPl6RIkt1Yi6DTsz9EJEwSyCl1sXBTL3p0fZmwVZV1p-cuc5JQVaFn3DLZ6X-HbBAWX6jroejf-2MkCTxHhdOx7YPWSVNqT0CMBrjc-RNYWzDuG"
+            src="/hero-car.png"
             alt="Grey BMW Sports Car"
             style={{
               width: '100%',
