@@ -14,67 +14,44 @@ export default function Home() {
   return (
     <div className="pt-14 pb-16 md:pb-0">
       {/* Hero */}
-      <section className="relative min-h-screen flex items-center overflow-hidden">
-
-        {/* Car — positioned absolutely on right, huge, bleeding off edge — desktop only */}
-        <div className="hidden lg:block absolute right-0 bottom-0 z-0" style={{width:'58%', maxWidth:'900px'}}>
-          <img
-            src="/hero-car.png"
-            alt="Grey BMW Sports Car"
-            style={{
-              width: '100%',
-              display: 'block',
-              filter: 'drop-shadow(-20px 40px 40px rgba(0,0,0,0.4))',
-            }}
-          />
-        </div>
-
-        <div className="relative z-10 max-w-7xl mx-auto px-5 w-full py-8 md:py-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-
-            {/* Left — Text */}
-            <div className="space-y-4 animate-fade-in">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary-container/10 border border-secondary-fixed/25 text-secondary-fixed">
-                <span className="material-symbols-outlined fill-icon text-sm">auto_awesome</span>
-                <span className="text-xs font-bold uppercase tracking-widest">{t("Sudan's Premier Car Wash", 'أفضل غسيل سيارات في السودان')}</span>
-              </div>
-              <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-on-surface leading-snug font-display">
-                {t('The Ultimate', 'النظافة')}{' '}
-                <span className="text-secondary-fixed">{t('Clean Shine', 'المثالية')}</span>
-                <br />{t('For Your Car.', 'لسيارتك.')}
-              </h1>
-              <p className="text-on-surface-variant text-sm max-w-md leading-relaxed">
-                {t("Experience Khartoum's finest car wash. Professional care, loyalty rewards, and easy online booking.", "استمتع بأفضل خدمة غسيل سيارات في الخرطوم. عناية احترافية ومكافآت ولاء وحجز سهل.")}
-              </p>
-              <div className="flex flex-wrap gap-3 pt-1">
-                <Link to="/book" className="btn-primary text-sm px-6 py-3 rounded-xl">
-                  {t('Book Your Wash', 'احجز الآن')}
-                  <span className="material-symbols-outlined rtl-flip text-base">arrow_forward</span>
-                </Link>
-                <a href="#services" className="btn-cyan text-sm px-6 py-3 rounded-xl">
-                  {t('Our Services', 'خدماتنا')}
-                </a>
-              </div>
-              {/* Stats */}
-              <div className="flex gap-6 pt-1">
-                {[['500+', t('Customers', 'عميل')], ['4.9★', t('Rating', 'التقييم')], ['2', t('Services', 'خدمات')]].map(([v, l]) => (
-                  <div key={l}>
-                    <div className="text-xl font-extrabold text-secondary-fixed font-display">{v}</div>
-                    <div className="text-xs text-on-surface-variant">{l}</div>
-                  </div>
-                ))}
-              </div>
+      <section className="relative min-h-[70vh] flex items-center overflow-hidden">
+        <div className="relative z-10 max-w-7xl mx-auto px-5 w-full py-8 md:py-16">
+          <div className="max-w-2xl space-y-4 animate-fade-in">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary-container/10 border border-secondary-fixed/25 text-secondary-fixed">
+              <span className="material-symbols-outlined fill-icon text-sm">auto_awesome</span>
+              <span className="text-xs font-bold uppercase tracking-widest">{t("Sudan's Premier Car Wash", 'أفضل غسيل سيارات في السودان')}</span>
             </div>
-
-            {/* Right — empty on desktop (car is absolute positioned) */}
-            <div className="hidden lg:block" />
-
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-on-surface leading-snug font-display">
+              {t('The Ultimate', 'النظافة')}{' '}
+              <span className="text-secondary-fixed">{t('Clean Shine', 'المثالية')}</span>
+              <br />{t('For Your Car.', 'لسيارتك.')}
+            </h1>
+            <p className="text-on-surface-variant text-sm max-w-md leading-relaxed">
+              {t("Experience Khartoum's finest car wash. Professional care, loyalty rewards, and easy online booking.", "استمتع بأفضل خدمة غسيل سيارات في الخرطوم. عناية احترافية ومكافآت ولاء وحجز سهل.")}
+            </p>
+            <div className="flex flex-wrap gap-3 pt-1">
+              <Link to="/book" className="btn-primary text-sm px-6 py-3 rounded-xl">
+                {t('Book Your Wash', 'احجز الآن')}
+                <span className="material-symbols-outlined rtl-flip text-base">arrow_forward</span>
+              </Link>
+              <a href="#services" className="btn-cyan text-sm px-6 py-3 rounded-xl">
+                {t('Our Services', 'خدماتنا')}
+              </a>
+            </div>
+            <div className="flex gap-6 pt-1">
+              {[['500+', t('Customers', 'عميل')], ['4.9★', t('Rating', 'التقييم')], ['2', t('Services', 'خدمات')]].map(([v, l]) => (
+                <div key={l}>
+                  <div className="text-xl font-extrabold text-secondary-fixed font-display">{v}</div>
+                  <div className="text-xs text-on-surface-variant">{l}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
       {/* Services */}
-      <section id="services" className="py-20 max-w-7xl mx-auto px-4 md:px-6">
+      <section id="services" className="py-10 max-w-7xl mx-auto px-4 md:px-6">
         <div className="mb-12">
           <h2 className="text-3xl font-bold text-on-surface font-display">{t('Our Services', 'خدماتنا')}</h2>
           <p className="text-on-surface-variant mt-2">{t('Professional care for every car.', 'عناية احترافية لكل سيارة.')}</p>
