@@ -52,15 +52,16 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Right — Car parked naturally */}
-            <div className="flex items-end justify-center animate-fade-in">
+            {/* Right — Car parked naturally, desktop only */}
+            <div className="hidden lg:flex items-end justify-center animate-fade-in" style={{minHeight: '500px'}}>
               <img
                 src="/hero-car.png"
                 alt="Premium Car"
-                className="w-full"
                 style={{
-                  maxWidth: '600px',
-                  filter: 'drop-shadow(0px 30px 20px rgba(0,0,0,0.25))',
+                  width: '110%',
+                  maxWidth: '720px',
+                  marginRight: '-60px',
+                  filter: 'drop-shadow(0px 40px 30px rgba(0,0,0,0.35))',
                   objectFit: 'contain',
                 }}
               />
@@ -78,7 +79,15 @@ export default function Home() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Full Wash */}
-          <Link to="/book" state={{ service: 'full' }} className="glass p-8 rounded-3xl hover:border-secondary-fixed/40 transition-all group wet-shine block">
+          <Link to="/book" state={{ service: 'full' }} className="glass rounded-3xl hover:border-secondary-fixed/40 transition-all group wet-shine block overflow-hidden">
+            <div className="w-full h-48 overflow-hidden">
+              <img
+                src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80"
+                alt="Full Wash"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+            </div>
+            <div className="p-8">
             <div className="flex justify-between items-start mb-6">
               <span className="material-symbols-outlined fill-icon text-secondary-fixed text-4xl">local_car_wash</span>
               <span className="bg-secondary-fixed/10 text-secondary-fixed text-xs font-bold px-3 py-1 rounded-full border border-secondary-fixed/30">{t('Full Wash', 'غسيل كامل')}</span>
@@ -94,10 +103,19 @@ export default function Home() {
               ))}
             </ul>
             <button className="btn-primary w-full py-3 rounded-xl">{t('Book Full Wash', 'احجز غسيل كامل')}</button>
+            </div>
           </Link>
 
           {/* Exterior Only */}
-          <Link to="/book" state={{ service: 'outside' }} className="glass p-8 rounded-3xl hover:border-secondary-fixed/40 transition-all group wet-shine block">
+          <Link to="/book" state={{ service: 'outside' }} className="glass rounded-3xl hover:border-secondary-fixed/40 transition-all group wet-shine block overflow-hidden">
+            <div className="w-full h-48 overflow-hidden">
+              <img
+                src="https://images.unsplash.com/photo-1520340356584-f9917d1eea6f?w=800&q=80"
+                alt="Exterior Wash"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+            </div>
+            <div className="p-8">
             <div className="flex justify-between items-start mb-6">
               <span className="material-symbols-outlined text-secondary-fixed text-4xl">water_drop</span>
               <span className="bg-surface-container-highest/50 text-on-surface-variant text-xs font-bold px-3 py-1 rounded-full border border-outline-variant">{t('Exterior', 'خارجي')}</span>
@@ -113,6 +131,7 @@ export default function Home() {
               ))}
             </ul>
             <button className="btn-cyan w-full py-3 rounded-xl">{t('Book Exterior', 'احجز خارجي')}</button>
+            </div>
           </Link>
         </div>
 
