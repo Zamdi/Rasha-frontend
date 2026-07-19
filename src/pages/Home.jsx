@@ -15,111 +15,57 @@ export default function Home() {
     <div className="pt-14 pb-16 md:pb-0">
       {/* Hero */}
       <section className="relative min-h-screen flex items-center overflow-hidden">
-        {/* Subtle background — theme-aware, no blur */}
-        <div className="absolute inset-0 z-0" style={{
-          background: 'radial-gradient(ellipse at 70% 50%, rgba(0,86,179,0.08) 0%, transparent 60%)'
-        }} />
+        <div className="relative z-10 max-w-7xl mx-auto px-5 w-full py-8 md:py-20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-end">
 
-        <div className="relative z-10 max-w-7xl mx-auto px-5 w-full grid grid-cols-1 lg:grid-cols-2 gap-8 items-center py-8 md:py-20">
-          {/* Text */}
-          <div className="space-y-4 animate-fade-in">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary-container/10 border border-secondary-fixed/25 text-secondary-fixed">
-              <span className="material-symbols-outlined fill-icon text-sm">auto_awesome</span>
-              <span className="text-xs font-bold uppercase tracking-widest">{t("Sudan's Premier Car Wash", 'أفضل غسيل سيارات في السودان')}</span>
+            {/* Left — Text */}
+            <div className="space-y-4 animate-fade-in">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary-container/10 border border-secondary-fixed/25 text-secondary-fixed">
+                <span className="material-symbols-outlined fill-icon text-sm">auto_awesome</span>
+                <span className="text-xs font-bold uppercase tracking-widest">{t("Sudan's Premier Car Wash", 'أفضل غسيل سيارات في السودان')}</span>
+              </div>
+              <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-on-surface leading-snug font-display">
+                {t('The Ultimate', 'النظافة')}{' '}
+                <span className="text-secondary-fixed">{t('Clean Shine', 'المثالية')}</span>
+                <br />{t('For Your Car.', 'لسيارتك.')}
+              </h1>
+              <p className="text-on-surface-variant text-sm max-w-md leading-relaxed">
+                {t("Experience Khartoum's finest car wash. Professional care, loyalty rewards, and easy online booking.", "استمتع بأفضل خدمة غسيل سيارات في الخرطوم. عناية احترافية ومكافآت ولاء وحجز سهل.")}
+              </p>
+              <div className="flex flex-wrap gap-3 pt-1">
+                <Link to="/book" className="btn-primary text-sm px-6 py-3 rounded-xl">
+                  {t('Book Your Wash', 'احجز الآن')}
+                  <span className="material-symbols-outlined rtl-flip text-base">arrow_forward</span>
+                </Link>
+                <a href="#services" className="btn-cyan text-sm px-6 py-3 rounded-xl">
+                  {t('Our Services', 'خدماتنا')}
+                </a>
+              </div>
+              {/* Stats */}
+              <div className="flex gap-6 pt-1">
+                {[['500+', t('Customers', 'عميل')], ['4.9★', t('Rating', 'التقييم')], ['2', t('Services', 'خدمات')]].map(([v, l]) => (
+                  <div key={l}>
+                    <div className="text-xl font-extrabold text-secondary-fixed font-display">{v}</div>
+                    <div className="text-xs text-on-surface-variant">{l}</div>
+                  </div>
+                ))}
+              </div>
             </div>
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-on-surface leading-snug font-display">
-              {t('The Ultimate', 'النظافة')}{' '}
-              <span className="text-secondary-fixed">{t('Clean Shine', 'المثالية')}</span>
-              <br />{t('For Your Car.', 'لسيارتك.')}
-            </h1>
-            <p className="text-on-surface-variant text-sm max-w-md leading-relaxed">
-              {t("Experience Khartoum's finest car wash. Professional care, loyalty rewards, and easy online booking.", "استمتع بأفضل خدمة غسيل سيارات في الخرطوم. عناية احترافية ومكافآت ولاء وحجز سهل.")}
-            </p>
-            <div className="flex flex-wrap gap-3 pt-1">
-              <Link to="/book" className="btn-primary text-sm px-6 py-3 rounded-xl">
-                {t('Book Your Wash', 'احجز الآن')}
-                <span className="material-symbols-outlined rtl-flip text-base">arrow_forward</span>
-              </Link>
-              <a href="#services" className="btn-cyan text-sm px-6 py-3 rounded-xl">
-                {t('Our Services', 'خدماتنا')}
-              </a>
-            </div>
-            {/* Stats */}
-            <div className="flex gap-6 pt-1">
-              {[['500+', t('Customers', 'عميل')], ['4.9★', t('Rating', 'التقييم')], ['2', t('Services', 'خدمات')]].map(([v, l]) => (
-                <div key={l}>
-                  <div className="text-xl font-extrabold text-secondary-fixed font-display">{v}</div>
-                  <div className="text-xs text-on-surface-variant">{l}</div>
-                </div>
-              ))}
-            </div>
-          </div>
 
-          {/* Hero Quick Booking Card */}
-          {/* Car image — 3D pop effect, theme-aware */}
-          <div className="flex justify-center lg:hidden mb-2 animate-fade-in">
-            <img
-              src="/hero-car.png"
-              alt="Rasha Car Wash"
-              style={{
-                width: '100%',
-                maxWidth: '340px',
-                filter: 'drop-shadow(0 20px 40px rgba(0,86,179,0.25)) drop-shadow(0 4px 12px rgba(0,0,0,0.3))',
-                transform: 'perspective(800px) rotateY(-8deg) rotateX(2deg)',
-              }}
-            />
-          </div>
-
-          {/* Right column — desktop: car + quick booking */}
-          <div className="hidden lg:flex flex-col gap-6 animate-fade-in">
-            {/* 3D Car */}
-            <div className="flex justify-center">
+            {/* Right — Car parked naturally */}
+            <div className="flex items-end justify-center animate-fade-in">
               <img
                 src="/hero-car.png"
-                alt="Rasha Car Wash"
+                alt="Premium Car"
+                className="w-full"
                 style={{
-                  width: '100%',
-                  maxWidth: '520px',
-                  filter: 'drop-shadow(0 30px 60px rgba(0,86,179,0.3)) drop-shadow(0 8px 20px rgba(0,0,0,0.4))',
-                  transform: 'perspective(1000px) rotateY(-12deg) rotateX(3deg)',
-                  transition: 'transform 0.4s ease, filter 0.4s ease',
-                }}
-                onMouseEnter={e => {
-                  e.currentTarget.style.transform = 'perspective(1000px) rotateY(-6deg) rotateX(1deg) scale(1.03)'
-                  e.currentTarget.style.filter = 'drop-shadow(0 40px 80px rgba(0,86,179,0.4)) drop-shadow(0 10px 25px rgba(0,0,0,0.5))'
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.transform = 'perspective(1000px) rotateY(-12deg) rotateX(3deg)'
-                  e.currentTarget.style.filter = 'drop-shadow(0 30px 60px rgba(0,86,179,0.3)) drop-shadow(0 8px 20px rgba(0,0,0,0.4))'
+                  maxWidth: '600px',
+                  filter: 'drop-shadow(0px 30px 20px rgba(0,0,0,0.25))',
+                  objectFit: 'contain',
                 }}
               />
             </div>
-            {/* Quick Booking */}
-            <div className="glass p-8 rounded-3xl wet-shine inner-glow">
-              <h3 className="text-xl font-bold text-secondary-fixed mb-6 font-display">{t('Quick Booking', 'حجز سريع')}</h3>
-              <div className="space-y-4">
-                <div>
-                  <label className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2 block">{t('Service Type', 'نوع الخدمة')}</label>
-                  <select className="rasha-select" value={heroService} onChange={e => setHeroService(e.target.value)}>
-                    <option value="full">{t('Full Wash', 'غسيل كامل')}</option>
-                    <option value="outside">{t('Exterior Only', 'خارجي فقط')}</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2 block">{t('Phone Number', 'رقم الهاتف')}</label>
-                  <div className="flex" dir="ltr">
-                    <span className="rounded-l-xl px-3 py-3 text-sm text-on-surface-variant flex items-center"
-                      style={{background:'var(--color-surface-container-high)', border:'1px solid var(--color-outline-variant)', borderRight:'none'}}>+249</span>
-                    <input type="tel" placeholder="9XX XXX XXXX" className="rasha-input" style={{borderRadius:'0 0.75rem 0.75rem 0'}} value={heroPhone} onChange={e => setHeroPhone(e.target.value.replace(/\D/g, ''))} />
-                  </div>
-                </div>
-                <button onClick={handleHeroBook}
-                  className="w-full py-4 rounded-xl font-extrabold text-sm uppercase tracking-widest hover:opacity-90 transition-opacity"
-                  style={{ background: '#0052ac', color: '#ffffff' }}>
-                  {t('Confirm Appointment', 'تأكيد الحجز')}
-                </button>
-              </div>
-            </div>
+
           </div>
         </div>
       </section>
